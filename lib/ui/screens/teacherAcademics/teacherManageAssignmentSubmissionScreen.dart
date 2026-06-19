@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/app/routes.dart';
+import 'package:eschool_saas_staff/app/routes.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/assignmentSubmissions/assignmentSubmissionsCubit.dart';
 import 'package:eschool_saas_staff/data/models/academic/assignment.dart';
 import 'package:eschool_saas_staff/data/models/academic/assignmentSubmission.dart';
@@ -814,79 +814,88 @@ class _TeacherManageAssignmentSubmissionScreenState
                       const SizedBox(height: 12),
                       // Render each file in the submission
                       ...assignmentSubmission.file
-                          .map((fileItem) => Container(
-                                margin: const EdgeInsets.only(bottom: 8),
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFF9F5F6)
-                                      .withValues(alpha: 0.7),
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    color: const Color(0xFFEADADA),
-                                    width: 1,
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 42,
-                                      height: 42,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFF6A1B31)
-                                            .withValues(alpha: 0.1),
-                                        borderRadius: BorderRadius.circular(8),
+                            .map((fileItem) => GestureDetector(
+                                  onTap: () {
+                                    Utils.viewOrDownloadStudyMaterial(
+                                      context: context,
+                                      storeInExternalStorage: true,
+                                      studyMaterial: fileItem,
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.only(bottom: 8),
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFF9F5F6)
+                                          .withValues(alpha: 0.7),
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: const Color(0xFFEADADA),
+                                        width: 1,
                                       ),
-                                      child: Center(
-                                        child: Icon(
-                                          _getFileIcon(fileItem.fileName),
-                                          color: const Color(0xFF6A1B31),
-                                          size: 24,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 42,
+                                          height: 42,
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFF6A1B31)
+                                                .withValues(alpha: 0.1),
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: Center(
+                                            child: Icon(
+                                              _getFileIcon(fileItem.fileName),
+                                              color: const Color(0xFF6A1B31),
+                                              size: 24,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            fileItem.fileName,
-                                            style: const TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black87,
-                                            ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                fileItem.fileName,
+                                                style: const TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.black87,
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              const SizedBox(height: 2),
+                                              const Text(
+                                                "Klik untuk mengunduh berkas",
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.black54,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          const SizedBox(height: 2),
-                                          const Text(
-                                            "Klik untuk mengunduh berkas",
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.black54,
-                                            ),
+                                        ),
+                                        Container(
+                                          padding: const EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFF6A1B31)
+                                                .withValues(alpha: 0.1),
+                                            shape: BoxShape.circle,
                                           ),
-                                        ],
-                                      ),
+                                          child: const Icon(
+                                            Icons.download_rounded,
+                                            size: 16,
+                                            color: Color(0xFF6A1B31),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFF6A1B31)
-                                            .withValues(alpha: 0.1),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: const Icon(
-                                        Icons.download_rounded,
-                                        size: 16,
-                                        color: Color(0xFF6A1B31),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ))
+                                  ),
+                                ))
                           .toList()
                           .animate(interval: 100.ms)
                           .fadeIn(duration: 400.ms, delay: 200.ms)

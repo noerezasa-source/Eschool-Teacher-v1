@@ -1,4 +1,4 @@
-﻿import 'dart:math';
+import 'dart:math';
 import 'package:eschool_saas_staff/app/routes.dart';
 import 'package:eschool_saas_staff/cubits/authentication/authCubit.dart';
 import 'package:eschool_saas_staff/cubits/userDetails/staffAllowedPermissionsAndModulesCubit.dart';
@@ -281,12 +281,7 @@ class _StaffAcademicsContainerState extends State<StaffAcademicsContainer>
                         title: "Bank Soal",
                         index: 11,
                         onTap: () {
-                          if (staffAllowedPermissionsAndModulesCubit
-                              .isModuleEnabled(
-                                  moduleId:
-                                      lessonManagementModuleId.toString())) {
-                            Get.toNamed(Routes.questionSubjectScreen);
-                          }
+                          Get.toNamed(Routes.questionSubjectScreen, arguments: {'isStaffView': true});
                         },
                       ),
                     ],

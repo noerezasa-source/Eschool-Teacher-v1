@@ -146,11 +146,19 @@ class _CustomFilterModernAppBarState extends State<CustomFilterModernAppBar>
 
     // Start animations with delays for more natural feel
     _glowAnimationController.repeat(reverse: true);
+    
     Future.delayed(const Duration(milliseconds: 500), () {
-      _pulseAnimationController.repeat(reverse: true);
+      // Ditambahkan cek mounted
+      if (mounted) {
+        _pulseAnimationController.repeat(reverse: true);
+      }
     });
+    
     Future.delayed(const Duration(milliseconds: 1000), () {
-      _rotationAnimationController.repeat();
+      // Ditambahkan cek mounted
+      if (mounted) {
+        _rotationAnimationController.repeat();
+      }
     });
   }
 

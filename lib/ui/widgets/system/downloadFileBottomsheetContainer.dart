@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/cubits/settings/downloadFileCubit.dart';
+import 'package:eschool_saas_staff/cubits/settings/downloadFileCubit.dart';
 import 'package:eschool_saas_staff/data/models/academic/studyMaterial.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customBottomsheet.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customRoundedButton.dart';
@@ -102,7 +102,8 @@ class _DownloadFileBottomsheetContainerState
                                   ),
                                   Utils.buildProgressContainer(
                                     width: boxConstraints.maxWidth *
-                                        state.uploadedPercentage *
+                                        state.uploadedPercentage
+                                            .clamp(0.0, 100.0) *
                                         0.01,
                                     color:
                                         Theme.of(context).colorScheme.primary,

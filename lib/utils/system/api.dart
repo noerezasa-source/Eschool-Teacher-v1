@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
@@ -22,11 +22,85 @@ class ApiException implements Exception {
 }
 
 class Api {
+  static Dio? _dioInstance;
+
+  static Dio get _dio {
+    if (_dioInstance == null) {
+      _dioInstance = Dio();
+      _dioInstance!.interceptors.add(InterceptorsWrapper(
+        onRequest: (options, handler) {
+          // Jika data adalah FormData, pastikan tidak ada Content-Type manual agar Dio bisa membuat boundary
+          if (options.data is FormData) {
+            options.headers.remove('Content-Type');
+          }
+          if (kDebugMode) {
+            AppLogger.debug('Dio.Request', '${options.method} ${options.uri}',
+                data: {
+                  'headers': options.headers,
+                  'data': options.data,
+                  'query': options.queryParameters,
+                });
+          }
+          return handler.next(options);
+        },
+        onResponse: (response, handler) {
+          // Deteksi Redirect
+          if (response.realUri != response.requestOptions.uri) {
+            AppLogger.warn('Dio.Redirect', 'Redirect detected!', data: {
+              'original': response.requestOptions.uri.toString(),
+              'redirectedTo': response.realUri.toString(),
+              'method': response.requestOptions.method,
+            });
+          }
+          return handler.next(response);
+        },
+        onError: (e, handler) {
+          if (kDebugMode) {
+            AppLogger.error('Dio.Error', '${e.requestOptions.method} ${e.requestOptions.uri}',
+                data: {
+                  'statusCode': e.response?.statusCode,
+                  'response': e.response?.data,
+                  'message': e.message,
+                  'redirects': e.response?.redirects.length,
+                },
+                error: e);
+          }
+          return handler.next(e);
+        },
+      ));
+    }
+    return _dioInstance!;
+  }
+
+  /// Ekstraksi pesan error dari response sesuai standar baru backend
+  static String _extractErrorMessage(Response? response,
+      {String? fallbackCode}) {
+    try {
+      final data = response?.data;
+      if (data is Map) {
+        if (data.containsKey('message') && data['message'] != null) {
+          return data['message'].toString();
+        }
+      }
+    } catch (_) {}
+
+    final statusCode = response?.statusCode;
+    if (statusCode == 400) return "Permintaan tidak valid (Bad Request)";
+    if (statusCode == 401) return "Sesi habis, silakan login kembali";
+    if (statusCode == 422) return "Data tidak valid atau kurang lengkap";
+    if (statusCode == 500)
+      return "Terjadi kesalahan pada server (Internal Server Error)";
+    if (statusCode == 404) return "Data atau file tidak ditemukan";
+
+    return fallbackCode ?? "Terjadi kesalahan, silakan coba lagi";
+  }
+
   static String get login => "${databaseUrl}teacher/login";
   static String get logout => "${databaseUrl}logout";
 
   static String get passwordResetEmail => "${databaseUrl}forgot-password";
   static String get changepassword => "${databaseUrl}change-password";
+  // Jika terjadi redirect 301/302 yang mengubah POST ke GET, coba tambahkan slash di akhir: "${databaseUrl}update-profile/"
   static String get editProfile => "${databaseUrl}update-profile";
   static String get getStaffPermissionAndFeatures =>
       "${databaseUrl}staff/features-permission";
@@ -163,6 +237,8 @@ class Api {
   static String get getUsers => "${databaseUrl}users";
   static String get getUserChatHistory => "${databaseUrl}users/chat/history";
 
+  static String get recapDownload => "${baseUrl}/recap-download";
+
   //-------------
 
   static String get downloadStudentResult =>
@@ -268,7 +344,9 @@ class Api {
   static String get getContactStats => "${databaseUrl}contacts/stats";
 
   static Map<String, String> headers(
-      {bool useAuthToken = false, bool includeSchoolCode = true}) {
+      {bool useAuthToken = false,
+      bool includeSchoolCode = true,
+      String? contentType}) {
     final String jwtToken = AuthRepository.getAuthToken();
     final schoolCode = AuthRepository().schoolCode;
 
@@ -285,7 +363,7 @@ class Api {
     return {
       "Authorization": "Bearer $jwtToken",
       if (includeSchoolCode) "school-code": schoolCode,
-      "Content-Type": "application/json",
+      if (contentType != null) "Content-Type": contentType,
       "Accept": "application/json",
       "X-Requested-With": "XMLHttpRequest",
       "role": "teacher",
@@ -299,13 +377,31 @@ class Api {
   }
 
   static Future<XFile> fetchImg(String url) async {
-    var response = await http.get(Uri.parse("$storageUrl$url"));
+    // Jika link sudah absolut (http), jangan tambahkan storageUrl lagi
+    final String finalUrl = url.startsWith('http') ? url : "$storageUrl$url";
+    var response = await http.get(Uri.parse(finalUrl));
 
     if (response.statusCode == 200) {
       return XFile.fromData(response.bodyBytes, mimeType: 'image/jpeg');
     } else {
       throw Exception("Gagal mengunduh gambar");
     }
+  }
+
+  /// Mengambil data dokumen (PDF) dengan prioritas 'pdf_url' (Fase 2 Backend).
+  static Future<Uint8List> fetchDocumentBytes(Map<String, dynamic> data) async {
+    if (data['pdf_url'] != null && data['pdf_url'].toString().isNotEmpty) {
+      final dio = _dio;
+      final response = await dio.get<List<int>>(
+        data['pdf_url'].toString(),
+        options: Options(responseType: ResponseType.bytes),
+      );
+      return Uint8List.fromList(response.data!);
+    }
+    if (data['pdf'] != null && data['pdf'].toString().isNotEmpty) {
+      return base64Decode(data['pdf'].toString());
+    }
+    throw ApiException("Konten dokumen tidak ditemukan.");
   }
 
   static Future<Map<String, dynamic>> post({
@@ -325,7 +421,7 @@ class Api {
           'queryParameters': queryParameters,
         });
       }
-      final Dio dio = Dio();
+      final Dio dio = _dio;
       final FormData formData =
           FormData.fromMap(body, ListFormat.multiCompatible);
 
@@ -336,9 +432,14 @@ class Api {
           onReceiveProgress: onReceiveProgress,
           onSendProgress: onSendProgress,
           options: Options(
+              // Pastikan followRedirects dikonfigurasi dengan benar
+              // Jika ingin mendeteksi 301/302, set followRedirects: false
+              followRedirects: true,
+              validateStatus: (status) => status! < 300,
               headers: headers(
                   useAuthToken: useAuthToken ?? true,
-                  includeSchoolCode: useAuthToken ?? true)));
+                  includeSchoolCode: useAuthToken ?? true,
+                  contentType: null))); // Biarkan Dio yang mengatur Content-Type untuk FormData
 
       AppLogger.debug('Api.post', 'Response meta', data: {
         'statusCode': response.statusCode,
@@ -365,16 +466,7 @@ class Api {
             error: e);
       }
 
-      // Extract server-side error message if available
-      String errorMessage = defaultErrorMessageKey;
-      if (e.response?.data is Map && e.response?.data['message'] != null) {
-        errorMessage =
-            e.response?.data['message']?.toString() ?? defaultErrorMessageKey;
-      } else if (e.error is SocketException) {
-        errorMessage = noInternetKey;
-      }
-
-      throw ApiException(errorMessage);
+      throw ApiException(_extractErrorMessage(e.response));
     } on ApiException catch (e) {
       throw ApiException(e.errorMessage);
     } catch (e) {
@@ -403,7 +495,7 @@ class Api {
           'queryParameters': queryParameters,
         });
       }
-      final Dio dio = Dio();
+      final Dio dio = _dio;
 
       final response = await dio.post(url,
           data: body, // Send as JSON directly, not FormData
@@ -412,11 +504,13 @@ class Api {
           onReceiveProgress: onReceiveProgress,
           onSendProgress: onSendProgress,
           options: Options(
+            followRedirects: true,
+            validateStatus: (status) => status! < 300,
             headers: {
               ...headers(
                   useAuthToken: useAuthToken ?? true,
-                  includeSchoolCode: useAuthToken ?? true),
-              'Content-Type': 'application/json',
+                  includeSchoolCode: useAuthToken ?? true,
+                  contentType: 'application/json'),
             },
           ));
 
@@ -428,18 +522,11 @@ class Api {
         'errorValue': response.data is Map ? response.data['error'] : null,
       });
 
-      // Check for API errors - only throw if error is true
       if (response.data is Map &&
           response.data.containsKey('error') &&
           response.data['error'] == true) {
         throw ApiException(response.data['message'].toString());
       }
-
-      AppLogger.debug('Api.postJson', 'Response successful', data: {
-        'hasData': response.data is Map && response.data.containsKey('data'),
-        'message': response.data is Map ? response.data['message'] : null,
-      });
-
       return response.data as Map<String, dynamic>;
     } on DioException catch (e) {
       if (kDebugMode) {
@@ -451,17 +538,7 @@ class Api {
             },
             error: e.toString());
       }
-
-      // Extract server-side error message if available
-      String errorMessage = defaultErrorMessageKey;
-      if (e.response?.data is Map && e.response?.data['message'] != null) {
-        errorMessage =
-            e.response?.data['message']?.toString() ?? defaultErrorMessageKey;
-      } else if (e.error is SocketException) {
-        errorMessage = noInternetKey;
-      }
-
-      throw ApiException(errorMessage);
+      throw ApiException(_extractErrorMessage(e.response));
     } on ApiException catch (e) {
       throw ApiException(e.errorMessage);
     } catch (e) {
@@ -479,7 +556,7 @@ class Api {
     Map<String, dynamic>? queryParameters,
   }) async {
     try {
-      final Dio dio = Dio();
+      final Dio dio = _dio;
 
       // Add default parameters
       queryParameters = {
@@ -494,7 +571,6 @@ class Api {
 
       // Set response type based on URL
       final bool isPdfEndpoint = url.contains('pdf') ||
-          url == downloadPayRollSlip ||
           url == downloadStudentFeeReceipt ||
           url == downloadStudentResult;
 
@@ -503,7 +579,7 @@ class Api {
         queryParameters: queryParameters,
         options: Options(
             headers: requestHeaders,
-            validateStatus: (status) => status! < 500,
+            validateStatus: (status) => status! < 300,
             responseType:
                 isPdfEndpoint ? ResponseType.bytes : ResponseType.json),
       );
@@ -521,53 +597,14 @@ class Api {
                 ? '${response.data.toString().substring(0, 200)}...<truncated>'
                 : response.data.toString(),
       });
-      if (response.statusCode == 200) {
-        if (isPdfEndpoint && response.data is List<int>) {
-          // Handle PDF binary data
-          return {'pdf': base64Encode(response.data), 'error': false};
-        } else if (response.data is Map) {
-          // Handle regular JSON response
-          if (response.data['error'] == true) {
-            String errorMessage =
-                response.data['message'] ?? defaultErrorMessageKey;
-            String details = '';
-
-            // Add server details if available
-            if (response.data['details'] != null) {
-              details = ' | Server Details: ${response.data['details']}';
-            }
-            if (response.data['code'] != null) {
-              details += ' | Error Code: ${response.data['code']}';
-            }
-
-            AppLogger.error('Api.get', 'Server returned error response', data: {
-              'url': url,
-              'errorMessage': errorMessage,
-              'errorCode': response.data['code'],
-              'serverDetails': response.data['details'],
-              'fullResponse': response.data.toString(),
-            });
-
-            throw ApiException(errorMessage + details);
-          }
-          return Map<String, dynamic>.from(response.data);
-        }
-        // Log detailed information about unexpected response format
-        AppLogger.error('Api.get', 'Invalid response format', data: {
-          'url': url,
-          'statusCode': response.statusCode,
-          'expectedFormat': 'Map or PDF bytes',
-          'actualType': response.data.runtimeType.toString(),
-          'responseData': response.data.toString().length > 500
-              ? '${response.data.toString().substring(0, 500)}...<truncated>'
-              : response.data.toString(),
-          'isPdfEndpoint': isPdfEndpoint,
-        });
-        throw ApiException(
-            "Invalid response format: expected Map but got ${response.data.runtimeType}");
-      } else {
-        throw ApiException(response.data['message'] ?? defaultErrorMessageKey);
+      debugPrint("DEBUG STATUS CODE: ${response.statusCode}");
+      debugPrint("DEBUG RESPONSE BODY: ${response.data}");
+      debugPrint("DEBUG STATUS CODE: ${response.statusCode}");
+      debugPrint("DEBUG RESPONSE BODY: ${response.data}");
+      if (isPdfEndpoint && response.data is List<int>) {
+        return {'pdf': base64Encode(response.data), 'error': false};
       }
+      return Map<String, dynamic>.from(response.data);
     } catch (e, st) {
       AppLogger.error('Api.get', 'Request failed',
           data: {
@@ -586,10 +623,15 @@ class Api {
       required String savePath,
       required Function updateDownloadedPercentage}) async {
     try {
-      final Dio dio = Dio();
+      final Dio dio = _dio;
       await dio.download(url, savePath, cancelToken: cancelToken,
           onReceiveProgress: ((count, total) {
-        updateDownloadedPercentage((count / total) * 100);
+        if (total != -1) {
+          updateDownloadedPercentage(((count / total) * 100).clamp(0.0, 100.0));
+        } else {
+          // Jika total tidak diketahui (-1), hindari hasil negatif
+          updateDownloadedPercentage(0.0);
+        }
       }));
     } on DioException catch (e) {
       debugPrint(e.toString());
@@ -616,7 +658,7 @@ class Api {
         'query': queryParameters,
       });
 
-      final Dio dio = Dio();
+      final Dio dio = _dio;
       final response = await dio.delete(
         url,
         data: body,
@@ -624,20 +666,10 @@ class Api {
         options: Options(
           headers: headers(useAuthToken: useAuthToken ?? false),
           validateStatus: (status) {
-            return status! < 500;
+            return status! < 300;
           },
         ),
       );
-
-      AppLogger.debug('Api.delete', 'Response meta', data: {
-        'statusCode': response.statusCode,
-        'hasErrorKey':
-            response.data is Map && (response.data as Map).containsKey('error'),
-      });
-
-      if (response.statusCode == 404) {
-        throw ApiException(response.data['message'] ?? 'Exam not found');
-      }
 
       if (response.data is Map) {
         return response.data;
@@ -681,7 +713,7 @@ class Api {
           'queryParameters': queryParameters,
         });
       }
-      final Dio dio = Dio();
+      final Dio dio = _dio;
 
       // For PUT requests, send JSON data instead of FormData
       final response = await dio.put(url,

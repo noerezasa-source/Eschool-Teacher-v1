@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/assignment/createAssignmentCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/assignment/editAssignmentCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/classSectionsAndSubjects.dart';
@@ -1380,9 +1380,14 @@ class _TeacherAddEditAssignmentScreenState
                 ? []
                 : state.classSections
                     .where((e) {
-                      final gradeLevel = gradeLevelState.gradeLevels
-                          .firstWhere((gl) => gl.id == e.gradeLevelId);
-                      return gradeLevel.name == selectedTingkatan;
+                      final gradeLevelMatches = gradeLevelState.gradeLevels
+                          .where((gl) => gl.id == e.gradeLevelId);
+                      if (gradeLevelMatches.isEmpty) {
+                        debugPrint(
+                            '[ASSIGNMENT SCREEN] Warning: Grade level not found for classSection ${e.fullName} (id: ${e.id}, gradeLevelId: ${e.gradeLevelId})');
+                        return false;
+                      }
+                      return gradeLevelMatches.first.name == selectedTingkatan;
                     })
                     .map((e) => e.fullName ?? "")
                     .toSet()

@@ -46,4 +46,27 @@ class Extracurricular {
   }
 
   bool get isArchived => deletedAt != null;
+
+  Extracurricular copyWith({
+    int? id,
+    String? name,
+    String? description,
+    int? coachId,
+    String? coachName,
+    String? deletedAt,
+    bool clearDeletedAt = false,
+    String? createdAt,
+    String? updatedAt,
+  }) {
+    return Extracurricular(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      coachId: coachId ?? this.coachId,
+      coachName: coachName ?? this.coachName,
+      deletedAt: clearDeletedAt ? null : (deletedAt ?? this.deletedAt),
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 }

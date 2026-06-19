@@ -1,4 +1,4 @@
-﻿import 'dart:math' as math;
+import 'dart:math' as math;
 import 'package:eschool_saas_staff/ui/widgets/system/customErrorWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -560,26 +560,37 @@ class _QuestionSubjectScreenState extends State<QuestionSubjectScreen>
 
                         return GestureDetector(
                           onTap: () async {
-                            if (subject.subject.id != 0) {
-                              // Add spectacular tap effect
-                              setState(() {
-                                _hoveredCardIndex = index;
-                              });
+                            // Add spectacular tap effect
+                            setState(() {
+                              _hoveredCardIndex = index;
+                            });
 
-                              // Elaborate haptic pattern
-                              HapticFeedback.mediumImpact();
-                              await Future.delayed(
-                                  const Duration(milliseconds: 50));
-                              HapticFeedback.lightImpact();
+                            // Elaborate haptic pattern
+                            HapticFeedback.mediumImpact();
+                            await Future.delayed(
+                                const Duration(milliseconds: 50));
+                            HapticFeedback.lightImpact();
 
-                              // Exaggerated scale animation on tap
-                              _cardHoverController.forward().then((_) {
-                                _cardHoverController.reverse();
-                              });
+                            // Exaggerated scale animation on tap
+                            _cardHoverController.forward().then((_) {
+                              _cardHoverController.reverse();
+                            });
 
+                            try {
                               await Get.toNamed(Routes.questionBankScreen,
                                   arguments: subject);
                               _reloadData();
+                            } catch (e, stacktrace) {
+                              debugPrint("Navigation error: $e");
+                              debugPrint(stacktrace.toString());
+                              Get.snackbar(
+                                'Error Navigasi',
+                                e.toString(),
+                                backgroundColor: Colors.red,
+                                colorText: Colors.white,
+                                snackPosition: SnackPosition.BOTTOM,
+                                duration: const Duration(seconds: 5),
+                              );
                             }
                           },
                           onTapDown: (_) {

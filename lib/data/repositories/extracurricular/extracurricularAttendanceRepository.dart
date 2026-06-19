@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/data/models/extracurricular/extracurricularAttendance.dart';
+import 'package:eschool_saas_staff/data/models/extracurricular/extracurricularAttendance.dart';
 import 'package:eschool_saas_staff/utils/system/api.dart';
 import 'package:eschool_saas_staff/utils/system/dateFormatter.dart';
 import 'package:eschool_saas_staff/utils/system/hiveBoxKeys.dart';
@@ -35,7 +35,7 @@ class ExtracurricularAttendanceRepository {
 
       debugPrint('🔍 [ATTENDANCE REPO] Response: $response');
 
-      if (response['error'] == false) {
+      if (response['error'] == false || response['success'] == true) {
         debugPrint('🔍 [ATTENDANCE REPO] Parsing response with fromJson...');
         final attendanceResponse =
             ExtracurricularAttendanceResponse.fromJson(response);

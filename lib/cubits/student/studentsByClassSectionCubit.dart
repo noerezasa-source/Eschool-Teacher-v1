@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/data/models/student/studentDetails.dart';
+import 'package:eschool_saas_staff/data/models/student/studentDetails.dart';
 import 'package:eschool_saas_staff/data/repositories/student/studentRepository.dart';
 import 'package:eschool_saas_staff/utils/system/constants.dart';
 import 'package:eschool_saas_staff/utils/system/errorMessageUtils.dart';
@@ -76,12 +76,14 @@ class StudentsByClassSectionCubit extends Cubit<StudentsByClassSectionState> {
 
       debugPrint(
           'Fetched Students: ${studentDetailsList.map((student) => student.toJson()).toList()}');
+      if (isClosed) return;
       emit(
         StudentsByClassSectionFetchSuccess(
           studentDetailsList: studentDetailsList,
         ),
       );
     } catch (e) {
+      if (isClosed) return;
       final userFriendlyMessage = ErrorMessageUtils.getReadableErrorMessage(e);
       emit(StudentsByClassSectionFetchFailure(userFriendlyMessage));
       debugPrint(
@@ -112,6 +114,7 @@ class StudentsByClassSectionCubit extends Cubit<StudentsByClassSectionState> {
       )
           .then(
         (list) {
+          if (isClosed) return;
           emit(
             (state as StudentsByClassSectionFetchSuccess).copyWith(
               searchStatus: StudentByClassSectionSearchStatus.success,
@@ -121,6 +124,7 @@ class StudentsByClassSectionCubit extends Cubit<StudentsByClassSectionState> {
         },
       ).catchError(
         (e) {
+          if (isClosed) return;
           final userFriendlyMessage =
               ErrorMessageUtils.getReadableErrorMessage(e);
           emit(

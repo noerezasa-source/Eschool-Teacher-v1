@@ -209,7 +209,7 @@ class _SchoolListScreenState extends State<SchoolListScreen>
       // Debug logging untuk memastikan data teacher tidak hilang
       debugPrint('=== DEBUG TEACHER DATA PRESERVATION ===');
       debugPrint('Original globalUser teacher: ${globalUser['teacher']}');
-      debugPrint('Selected school user teacher: ${school['user']['teacher']}');
+      debugPrint('Selected school user teacher: ${school['user']?['teacher']}');
       debugPrint(
           'Complete user details teacher: ${completeUserDetails['teacher']}');
       debugPrint(
@@ -723,7 +723,7 @@ class _SchoolListScreenState extends State<SchoolListScreen>
           (context, index) {
             final school = filteredSchools[index];
             debugPrint(
-                'Image URL for school ${school['school_name']}: ${school['user']['school']?['logo'] ?? school['user']['image'] ?? ''}');
+                'Image URL for school ${school['school_name']}: ${school['user']?['school']?['logo'] ?? school['user']?['image'] ?? ''}');
             return Container(
               margin: const EdgeInsets.only(bottom: 18),
               child: Material(
@@ -829,8 +829,8 @@ class _SchoolListScreenState extends State<SchoolListScreen>
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(28),
                                   child: Image.network(
-                                    school['user']['school']?['logo'] ??
-                                        school['user']['image'] ??
+                                    school['user']?['school']?['logo'] ??
+                                        school['user']?['image'] ??
                                         '',
                                     fit: BoxFit.cover,
                                     errorBuilder: (context, error, stackTrace) {
@@ -907,7 +907,7 @@ class _SchoolListScreenState extends State<SchoolListScreen>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               // Address Section yang ringkas tapi lengkap
-                              if (school['user']['school']['address'] != null)
+                              if (school['user']?['school']?['address'] != null)
                                 Container(
                                   width: double.infinity,
                                   padding: const EdgeInsets.all(14),
@@ -968,8 +968,9 @@ class _SchoolListScreenState extends State<SchoolListScreen>
                                             const SizedBox(height: 2),
                                             // Tampilkan alamat lengkap tanpa ellipsis
                                             Text(
-                                              school['user']['school']
-                                                  ['address'],
+                                              school['user']?['school']
+                                                      ?['address'] ??
+                                                  'Alamat tidak tersedia',
                                               style: TextStyle(
                                                 color: accentColor.withValues(
                                                     alpha: 0.8),

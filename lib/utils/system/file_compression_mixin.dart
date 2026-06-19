@@ -634,6 +634,11 @@ mixin FileCompressionMixin<T extends StatefulWidget> on State<T> {
         debugPrint('Compression error: $e');
       }
     } finally {
+      // Tutup dialog loading
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
+
       setState(() {
         _isCompressing = false;
       });

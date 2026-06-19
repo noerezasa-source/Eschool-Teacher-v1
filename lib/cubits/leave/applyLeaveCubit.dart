@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/data/repositories/leave/leaveRepository.dart';
+import 'package:eschool_saas_staff/data/repositories/leave/leaveRepository.dart';
 import 'package:eschool_saas_staff/utils/system/constants.dart';
 import 'package:eschool_saas_staff/utils/system/errorMessageUtils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,9 +31,14 @@ class ApplyLeaveCubit extends Cubit<ApplyLeaveState> {
       List<Map<String, String>> leaveDetails = [];
 
       for (var leaveDay in leaveDays.keys) {
+        // Ensure standard YYYY-MM-DD format with zero-padding for months and days
+        final year = leaveDay.year;
+        final month = leaveDay.month.toString().padLeft(2, '0');
+        final day = leaveDay.day.toString().padLeft(2, '0');
+
         leaveDetails.add({
           "type": getLeaveTypeValueFromKey(leaveTypeKey: leaveDays[leaveDay]!),
-          "date": "${leaveDay.year}-${leaveDay.month}-${leaveDay.day}"
+          "date": "$year-$month-$day"
         });
       }
       emit(ApplyLeaveInProgress());

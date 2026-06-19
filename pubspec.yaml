@@ -103,6 +103,24 @@ dependencies:
   vibration: ^3.1.4
   http_parser: ^4.1.0
 
+  # ============ TAMBAHAN BARU ============
+  # Dibutuhkan oleh flutter_bloc agar context.read() dan context.watch() bisa berjalan
+  provider: ^6.1.2
+
+  # Dibutuhkan untuk method firstWhereOrNull() yang dipakai di banyak file
+  collection: ^1.18.0
+
+  # Dibutuhkan oleh chewie agar VideoPlayerController bisa dikenali
+  video_player: ^2.9.1
+
+  # Dibutuhkan untuk AudioPlayer di fwfh_just_audio
+  just_audio: ^0.9.38
+
+  # Dibutuhkan oleh flutter_cache_manager untuk database lokal
+  sqflite: ^2.3.3+1
+
+  # PERBAIKAN UTAMA: Mengganti open_settings yang eror lStar dengan package yang up-to-date
+  app_settings: ^6.0.0
 
 dependency_overrides:
   webview_flutter_android: ^3.16.0

@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'package:eschool_saas_staff/utils/system/api.dart';
 import 'package:eschool_saas_staff/data/models/exam/questionOnlineExam.dart';
 import 'package:eschool_saas_staff/data/models/exam/BankOnlineQuestion.dart'; // Update this importimport 'package:eschool_saas_staff/data/models/bankSoalQuestion.dart';import 'package:eschool_saas_staff/utils/system/labelKeys.dart';
@@ -10,48 +10,86 @@ class OnlineExamRepository {
   Future<Map<String, dynamic>> getOnlineExams(
       {String? search,
       int? subjectId,
-      dynamic archive,
+      dynamic archive = false,
       int? classSectionId,
       int? sessionYearId,
-      String status = 'active',
+      String? status,
       DateTime? startDate,
       DateTime? endDate,
       int offset = 0,
-      int limit = 10,
+      int limit = 50,
       bool? modeAll = false}) async {
     try {
+      final queryParameters = {
+        'offset': offset.toString(),
+        'limit': limit.toString(),
+        'sort': 'id',
+        'order': 'DESC',
+        if (startDate != null) 'start_date': startDate,
+        if (endDate != null) 'end_date': endDate,
+        if (search != null && search.isNotEmpty) 'search': search,
+        if (subjectId != null) 'class_subject_id': subjectId.toString(),
+        if (classSectionId != null)
+          'class_section_id': classSectionId.toString(),
+        if (sessionYearId != null) 'session_year_id': sessionYearId.toString(),
+        'type': 'all',
+        if (modeAll == true)
+          'mode':
+              'all', // Tambahkan parameter mode=all untuk menampilkan semua kelas
+        if (archive == true || archive == 1 || archive == '1') 'archive': 1,
+        if (status != null && status.isNotEmpty) 'status': status,
+      };
+
       final response = await Api.get(
         url: Api.getOnlineExamList,
         useAuthToken: true,
-        queryParameters: {
-          'offset': offset.toString(),
-          'limit': limit.toString(),
-          'sort': 'id',
-          'order': 'DESC',
-          if (startDate != null) 'start_date': startDate,
-          if (endDate != null) 'end_date': endDate,
-          if (search != null && search.isNotEmpty) 'search': search,
-          if (subjectId != null) 'class_subject_id': subjectId.toString(),
-          if (classSectionId != null)
-            'class_section_id': classSectionId.toString(),
-          if (sessionYearId != null)
-            'session_year_id': sessionYearId.toString(),
-          'type': 'all',
-          if (modeAll == true)
-            'mode':
-                'all', // Tambahkan parameter mode=all untuk menampilkan semua kelas
-          if (archive != null) 'archive': archive,
-        },
+        queryParameters: queryParameters,
       );
 
-      for (var line
-          in const JsonEncoder.withIndent("  ").convert(response).split("\n")) {
-        debugPrint(line.toString());
+      debugPrint('=== [DIAGNOSTIK RAW] START ===');
+      debugPrint('RAW Response Type: ${response.runtimeType}');
+      debugPrint('RAW Response Keys: ${response.keys.toList()}');
+      if (response['data'] != null) {
+        debugPrint('Data Type: ${response['data'].runtimeType}');
+        if (response['data'] is Map) {
+          debugPrint('Data Keys: ${response['data'].keys.toList()}');
+        }
+      }
+      debugPrint('=== [DIAGNOSTIK RAW] END ===');
+
+      // Ultra-robust data extraction
+      List<dynamic> examsData = [];
+      List<dynamic> subjectDetails = [];
+
+      final dynamic rawData = response['data'];
+
+      if (rawData is List) {
+        examsData = rawData;
+      } else if (rawData is Map) {
+        // Check for 'rows' first (common in some modules)
+        if (rawData.containsKey('rows') && rawData['rows'] is List) {
+          examsData = rawData['rows'];
+        }
+        // Check for nested 'data' (common in Laravel pagination)
+        else if (rawData.containsKey('data') && rawData['data'] is List) {
+          examsData = rawData['data'];
+        }
+
+        // Extract subject details if present in the map
+        subjectDetails = rawData['subjectDetails'] ?? [];
       }
 
+      // If subjectDetails still empty, check at the root of response
+      if (subjectDetails.isEmpty) {
+        subjectDetails = response['subjectDetails'] ?? [];
+      }
+
+      debugPrint(
+          'DEBUG: Extracted ${examsData.length} exams from API response');
+
       return {
-        'exams': response['data']['rows'] ?? [],
-        'subjectDetails': response['data']['subjectDetails'] ?? [],
+        'exams': examsData,
+        'subjectDetails': subjectDetails,
       };
     } catch (e) {
       debugPrint("Repository Error: $e");
@@ -213,7 +251,7 @@ class OnlineExamRepository {
 
       debugPrint('Restore Exam Response: $response');
 
-      if (response['error'] != false) {
+      if (response['error'] == true) {
         throw ApiException(
             response['message'] ?? 'Failed to restore online exam');
       }
@@ -233,6 +271,7 @@ class OnlineExamRepository {
     required String examKey,
     required int duration,
     required DateTime startDate,
+    int? sessionYearId,
   }) async {
     try {
       final response = await Api.post(
@@ -245,18 +284,35 @@ class OnlineExamRepository {
           'exam_key': examKey,
           'duration': duration.toString(),
           'start_date': DateFormat('yyyy-MM-dd HH:mm').format(startDate),
+          if (sessionYearId != null)
+            'session_year_id': sessionYearId.toString(),
         },
       );
 
       debugPrint('Create Exam Response: $response');
 
-      if (response['error'] == false) {
+      if (response['success'] == true || response['error'] == false) {
         return response['data'] ?? {};
       } else {
-        throw Exception(response['message'] ?? 'Failed to create online exam');
+        // Handle validation errors or other server-side failures
+        String errorMessage =
+            response['message'] ?? 'Failed to create online exam';
+        if (response['errors'] != null && response['errors'] is Map) {
+          final errors = response['errors'] as Map;
+          if (errors.isNotEmpty) {
+            errorMessage = errors.values.first.toString();
+            // Clean up the error message if it's a list string [message]
+            errorMessage = errorMessage.replaceAll('[', '').replaceAll(']', '');
+          }
+        }
+        throw Exception(errorMessage);
       }
     } catch (e) {
       debugPrint('Error creating exam: $e');
+      // If it's already an exception with a specific message, just rethrow it
+      if (e is Exception && !e.toString().contains('DioException')) {
+        rethrow;
+      }
       throw Exception(e.toString());
     }
   }
@@ -275,7 +331,7 @@ class OnlineExamRepository {
       // Debug di repository untuk melihat respons asli dari API
       debugPrint('Raw Response: $response');
 
-      if (response['error'] == false) {
+      if (response['success'] == true || response['error'] == false) {
         final data = response['data'] as Map<String, dynamic>;
         final examQuestions = data['exam_questions'] as List;
 
@@ -369,7 +425,8 @@ class OnlineExamRepository {
 
       debugPrint('Bank Soal Response: $response');
 
-      if (response['error'] == false && response['data'] != null) {
+      if ((response['success'] == true || response['error'] == false) &&
+          response['data'] != null) {
         // Extract exam data untuk mendapatkan class_section_id dan class_subject_id
 
         final examData = response['data']['exam'] as Map<String, dynamic>?;

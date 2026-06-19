@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eschool_saas_staff/cubits/extracurricular/extracurricularCubit.dart';
@@ -114,25 +114,7 @@ class _ExtracurricularScreenState extends State<ExtracurricularScreen>
     }
   }
 
-  void _forceRefreshAfterRestore() {
-    if (mounted) {
-      Future.delayed(const Duration(milliseconds: 300), () {
-        if (mounted) {
-          context.read<ExtracurricularCubit>().getExtracurriculars();
-        }
-      });
-      Future.delayed(const Duration(milliseconds: 800), () {
-        if (mounted) {
-          context.read<ExtracurricularCubit>().getExtracurriculars();
-        }
-      });
-      Future.delayed(const Duration(milliseconds: 1500), () {
-        if (mounted) {
-          context.read<ExtracurricularCubit>().getExtracurriculars();
-        }
-      });
-    }
-  }
+
 
   @override
   void didChangeDependencies() {
@@ -180,6 +162,7 @@ class _ExtracurricularScreenState extends State<ExtracurricularScreen>
           showArchiveButton: true,
           onArchivePressed: () async {
             final result = await Get.toNamed(Routes.archiveExtracurricular);
+            if (!context.mounted) return;
             if (result != null && result is Map) {
               // Handle restore result from archive page
               if (result['action'] == 'restored') {
@@ -187,8 +170,56 @@ class _ExtracurricularScreenState extends State<ExtracurricularScreen>
                   _restoredExtracurricularId =
                       result['extracurricularId'].toString();
                 });
-                _forceRefreshAfterRestore();
-                Future.delayed(const Duration(seconds: 3), () {
+
+                // Immediately inject restored extracurricular into active list
+                if (result['extracurricular'] != null &&
+                    result['extracurricular'] is Extracurricular) {
+                  final restoredEC = (result['extracurricular'] as Extracurricular)
+                      .copyWith(clearDeletedAt: true);
+                  context.read<ExtracurricularCubit>().addExtracurricular(restoredEC);
+                }
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.check_circle, color: Colors.white),
+                          SizedBox(width: 12),
+                          Text(
+                            'Ekstrakurikuler berhasil dipulihkan!',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    backgroundColor: Colors.green.shade400,
+                    duration: const Duration(seconds: 2),
+                    behavior: SnackBarBehavior.floating,
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    elevation: 4,
+                  ),
+                );
+
+                // Background sync: refresh from backend to ensure consistency
+                Future.delayed(const Duration(milliseconds: 1200), () {
+                  if (mounted) {
+                    _refreshExtracurriculars();
+                  }
+                });
+
+                // Remove highlight after 8 seconds
+                Future.delayed(const Duration(seconds: 8), () {
                   if (mounted) {
                     setState(() {
                       _restoredExtracurricularId = null;

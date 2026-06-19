@@ -1,4 +1,4 @@
-﻿// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -172,24 +172,27 @@ class Utils {
     required BuildContext context,
     TextStyle? messageTextStyle,
   }) async {
-    Get.snackbar(
-      "",
-      "",
-      // duration: snackBarDuration,
-      duration: const Duration(seconds: 3),
-      titleText: const SizedBox(),
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      messageText: CustomTextContainer(
-        textKey: message,
-        style: messageTextStyle ??
-            const TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 18,
-              color: Colors.white,
-            ),
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        margin: const EdgeInsets.all(12),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        content: CustomTextContainer(
+          textKey: message,
+          style: messageTextStyle ??
+              const TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
+                color: Colors.white,
+              ),
+        ),
+        duration: const Duration(seconds: 3),
       ),
-      padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
-      snackPosition: SnackPosition.BOTTOM,
     );
   }
 

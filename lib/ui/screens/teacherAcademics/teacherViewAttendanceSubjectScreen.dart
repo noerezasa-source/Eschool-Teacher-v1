@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
 import 'package:eschool_saas_staff/cubits/student/studentsByClassSectionCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/attendence/attendanceSubjectCubit.dart';
@@ -26,7 +26,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
 import 'package:eschool_saas_staff/utils/system/errorMessageUtils.dart';
+import 'package:eschool_saas_staff/data/models/academic/studyMaterial.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 
 class TeacherViewAttendanceSubjectScreen extends StatefulWidget {
   static Widget getRouteInstance() {
@@ -1769,15 +1771,13 @@ class _TeacherViewAttendanceSubjectScreenState
                             icon: const Icon(Icons.download_rounded,
                                 color: Colors.white),
                             onPressed: () {
-                              // Add download functionality if needed
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: const Text(
-                                      'Fitur download belum tersedia'),
-                                  backgroundColor: _maroonPrimary,
-                                ),
+                              Utils.viewOrDownloadStudyMaterial(
+                                context: context,
+                                storeInExternalStorage: true,
+                                studyMaterial: StudyMaterial.fromURL(imageUrl),
                               );
                             },
+
                           ),
                           IconButton(
                             icon: const Icon(Icons.close_rounded,

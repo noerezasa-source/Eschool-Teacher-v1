@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/data/models/academic/studyMaterial.dart';
+import 'package:eschool_saas_staff/data/models/academic/studyMaterial.dart';
 import 'package:eschool_saas_staff/data/models/academic/subject.dart';
 import 'package:eschool_saas_staff/utils/system/utils.dart';
 import 'package:flutter/material.dart';
@@ -103,20 +103,29 @@ class ReviewAssignment {
   late final int extraDaysForResubmission;
   late final int sessionYearId;
   late final String createdAt;
+  late final String text;
   late final Subject subject;
 
+  static int _toInt(dynamic value) {
+    if (value is int) return value;
+    if (value is bool) return value ? 1 : 0;
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
+  }
+
   ReviewAssignment.fromJson(Map<String, dynamic> json) {
-    id = json['id'] ?? 0;
-    classSectionId = json['class_section_id'] ?? 0;
-    classSubjectId = json['class_subject_id'] ?? 0;
+    id = _toInt(json['id']);
+    classSectionId = _toInt(json['class_section_id']);
+    classSubjectId = _toInt(json['class_subject_id']);
     name = json['name'] ?? "";
     description = json['description'] ?? "";
     dueDate = json['due_date'] ?? "";
-    points = json['points'] ?? 0;
-    resubmission = json['resubmission'] ?? 0;
-    extraDaysForResubmission = json['extra_days_for_resubmission'] ?? 0;
-    sessionYearId = json['session_year_id'] ?? 0;
+    points = _toInt(json['points']);
+    resubmission = _toInt(json['resubmission']);
+    extraDaysForResubmission = _toInt(json['extra_days_for_resubmission']);
+    sessionYearId = _toInt(json['session_year_id']);
     createdAt = json['created_at'] ?? "";
+    text = json['text']?.toString() ?? "0";
     subject = Subject.fromJson(json['class_subject']?['subject'] ?? {});
   }
 }

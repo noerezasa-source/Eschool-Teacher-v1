@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/data/models/exam/exam.dart';
+import 'package:eschool_saas_staff/data/models/exam/exam.dart';
 import 'package:eschool_saas_staff/data/models/student/studentAttendance.dart';
 import 'package:eschool_saas_staff/data/models/student/studentDetails.dart';
 import 'package:eschool_saas_staff/utils/system/api.dart';
@@ -388,25 +388,33 @@ class StudentRepository {
   }
 
   Future<void> addOfflineExamMarks({
-    required int examId,
-    required int classSubjectId,
-    required Map<String, dynamic> marksDataValue,
-  }) async {
-    try {
-      Map<String, dynamic> queryParameters = {
-        "exam_id": examId,
-        "class_subject_id": classSubjectId,
-      };
-      await Api.post(
-        body: marksDataValue,
-        url: Api.submitExamMarks,
-        useAuthToken: true,
-        queryParameters: queryParameters,
-      );
-    } catch (e) {
-      throw ApiException(e.toString());
-    }
+  required int examId,
+  required int classSubjectId,
+  required int classSectionId,
+  required int examTimetableId,
+  required Map<String, dynamic> marksDataValue,
+}) async {
+  try {
+    // Gabungkan marks_data dengan ID agar dikirim bersamaan dalam satu JSON body
+    final Map<String, dynamic> body = {
+      ...marksDataValue, // Menyalin array "marks_data" dari Cubit
+      "exam_id": examId,
+      "class_subject_id": classSubjectId,
+      "class_section_id": classSectionId,
+      "exam_timetable_id": examTimetableId,
+    };
+
+    // Kirim data ke API menggunakan postJson
+    await Api.postJson(
+      body: body,
+      url: Api.submitExamMarks,
+      useAuthToken: true,
+    );
+  } catch (e) {
+    // Memastikan error dilempar dengan benar ke Cubit
+    throw ApiException(e.toString());
   }
+}
 
   Future<List<StudentDetails>> getAllStudents({
     required int classSectionId,

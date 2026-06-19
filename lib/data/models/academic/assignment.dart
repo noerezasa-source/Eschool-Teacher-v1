@@ -49,32 +49,40 @@ class Assignment {
   final String text; // Changed from bool to String to match API
   final List<String> acceptedFile;
 
+  /// Safely convert a dynamic value to int (handles bool, int, String, null)
+  static int _toInt(dynamic value, [int fallback = 0]) {
+    if (value is int) return value;
+    if (value is bool) return value ? 1 : 0;
+    if (value is String) return int.tryParse(value) ?? fallback;
+    return fallback;
+  }
+
   factory Assignment.fromJson(Map<String, dynamic> json) {
     debugPrint("DATA ABIS HIT");
     debugPrint(json.toString());
     return Assignment(
-      id: json['id'] ?? 0,
-      classSectionId: json['class_section_id'] ?? 0,
-      subjectId: json['subject_id'] ?? 0,
+      id: _toInt(json['id']),
+      classSectionId: _toInt(json['class_section_id']),
+      subjectId: _toInt(json['subject_id']),
       name: json['name'] ?? "",
       description: json["instructions"] ?? "",
       dueDate: DateTime.parse(json['due_date'] ?? DateTime.now().toString()),
       startDate:
           DateTime.parse(json['start_date'] ?? DateTime.now().toString()),
       endDate: DateTime.parse(json['end_date'] ?? DateTime.now().toString()),
-      points: json["points"] ?? 0,
-      minPoints: json["min_points"] ?? 0,
-      maxFile: json["max_file"] ?? 0,
-      resubmission: json['resubmission'] ?? 0,
-      extraDaysForResubmission: json["extra_days_for_resubmission"] ?? 0,
-      sessionYearId: json['session_year_id'] ?? 0,
+      points: _toInt(json["points"]),
+      minPoints: _toInt(json["min_points"]),
+      maxFile: _toInt(json["max_file"]),
+      resubmission: _toInt(json['resubmission']),
+      extraDaysForResubmission: _toInt(json["extra_days_for_resubmission"]),
+      sessionYearId: _toInt(json['session_year_id']),
       createdAt: json['created_at'] ?? "",
       classSection: ClassSection.fromJson(json['class_section'] ?? {}),
       studyMaterial: ((json['file'] ?? []) as List)
           .map((e) => StudyMaterial.fromJson(Map.from(e)))
           .toList(),
       subject: Subject.fromJson(json['subject'] ?? {}),
-      text: json['text']?.toString() ?? "0", // Convert to String
+      text: json['text']?.toString() ?? "0",
       acceptedFile: List<String>.from(json['filetypes'] ?? []),
     );
   }

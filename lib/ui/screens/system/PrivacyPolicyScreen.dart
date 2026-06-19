@@ -1,4 +1,4 @@
-﻿import 'dart:math';
+import 'dart:math';
 import 'package:eschool_saas_staff/cubits/settings/settingCubit.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customCircularProgressIndicator.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
@@ -85,6 +85,11 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen>
   }
 
   String parseCustomHtml(String input) {
+    // If input already contains HTML tags, don't use custom parsing
+    if (input.contains('<') && input.contains('>')) {
+      return input.replaceAll("\n", "<br/>");
+    }
+
     String placeholderBold = generateRandomString(10);
     String placeholderItalic = generateRandomString(10);
 

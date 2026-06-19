@@ -1,4 +1,4 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:eschool_saas_staff/data/models/academic/assignment.dart';
 import 'package:eschool_saas_staff/data/models/academic/AssignmentFiletype.dart';
 import 'package:eschool_saas_staff/data/models/academic/studyMaterial.dart';
@@ -140,7 +140,7 @@ class AssignmentRepository {
       //   debugPrint(line.toString());
       // }
 
-      if (response['error'] != false) {
+      if (response['error'] == true) {
         throw ApiException(response['message'] ?? 'Unknown error occurred');
       }
     } catch (e) {

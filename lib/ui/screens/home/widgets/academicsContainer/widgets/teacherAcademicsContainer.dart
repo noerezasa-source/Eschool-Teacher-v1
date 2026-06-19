@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:eschool_saas_staff/app/routes.dart';
 import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
+import 'package:eschool_saas_staff/utils/system/in_appbanner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -228,8 +229,9 @@ class _TeacherAcademicsContainerState extends State<TeacherAcademicsContainer>
                             icon: Icons.question_answer,
                             title: "Bank Soal",
                             index: 9,
-                            onTap: () =>
-                                Get.toNamed(Routes.questionSubjectScreen),
+                            onTap: () => Get.toNamed(
+                                Routes.questionSubjectScreen,
+                                arguments: {'isStaffView': false}),
                           ),
                         ],
                       ),

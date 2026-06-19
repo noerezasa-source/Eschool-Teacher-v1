@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/data/models/student/studentAttendance.dart';
+import 'package:eschool_saas_staff/data/models/student/studentAttendance.dart';
 import 'package:eschool_saas_staff/data/models/student/studentDetails.dart';
 import 'package:eschool_saas_staff/ui/widgets/student/studentAttendanceItemContainer.dart';
 import 'package:eschool_saas_staff/utils/system/constants.dart';
@@ -66,17 +66,21 @@ class _StudentAttendanceContainerState extends State<StudentAttendanceContainer>
   @override
   void initState() {
     if (widget.onStatusChanged != null) {
-      widget.onStatusChanged!(
-        List.generate(
-          widget.studentAttendances.length,
-          (index) => (
-            status: allAttendanceStatuses[index],
-            studentId: widget.studentAttendances[index].studentDetails?.student
-                    ?.userId ??
-                0
-          ),
-        ),
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          widget.onStatusChanged!(
+            List.generate(
+              widget.studentAttendances.length,
+              (index) => (
+                status: allAttendanceStatuses[index],
+                studentId: widget.studentAttendances[index]
+                        .studentDetails?.student?.userId ??
+                    0
+              ),
+            ),
+          );
+        }
+      });
     }
 
     // Initialize animation controller
@@ -90,6 +94,43 @@ class _StudentAttendanceContainerState extends State<StudentAttendanceContainer>
     _updateAttendanceStats();
 
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant StudentAttendanceContainer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.studentAttendances != oldWidget.studentAttendances) {
+      // Re-initialize statuses if student list changed
+      allAttendanceStatuses = (widget.allStudentAttendances ?? widget.studentAttendances).map((e) {
+        if (e.isPresent()) return StudentAttendanceStatus.present;
+        if (e.isAbsent()) return StudentAttendanceStatus.absent;
+        if (e.isSick()) return StudentAttendanceStatus.sick;
+        if (e.isPermission()) return StudentAttendanceStatus.permission;
+        if (e.isAlpa()) return StudentAttendanceStatus.alpa;
+        return StudentAttendanceStatus.absent;
+      }).toList();
+      
+      _updateAttendanceStats();
+      
+      // Report new status list to parent
+      if (widget.onStatusChanged != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            widget.onStatusChanged!(
+              List.generate(
+                widget.studentAttendances.length,
+                (index) => (
+                  status: allAttendanceStatuses[index],
+                  studentId: widget.studentAttendances[index]
+                          .studentDetails?.student?.userId ??
+                      0
+                ),
+              ),
+            );
+          }
+        });
+      }
+    }
   }
 
   @override

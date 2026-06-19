@@ -1,4 +1,5 @@
-﻿import 'package:eschool_saas_staff/data/models/exam/offlineExam.dart';
+import 'dart:convert';
+import 'package:eschool_saas_staff/data/models/exam/offlineExam.dart';
 import 'package:eschool_saas_staff/data/models/exam/studentResult.dart';
 import 'package:eschool_saas_staff/utils/system/api.dart';
 import 'package:flutter/foundation.dart';
@@ -62,7 +63,8 @@ class ExamRepository {
           useAuthToken: true,
           queryParameters: {"exam_id": examId, "student_id": studentId});
 
-      return result['pdf'] ?? "";
+      final bytes = await Api.fetchDocumentBytes(result);
+      return base64Encode(bytes);
     } catch (e) {
       if (kDebugMode) {
         debugPrint(e.toString());

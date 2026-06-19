@@ -1,13 +1,15 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eschool_saas_staff/cubits/onlineExam/onlineExamCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/classSectionsAndSubjects.dart';
-import 'package:eschool_saas_staff/data/models/academic/subjectDetail.dart';
+import 'package:eschool_saas_staff/data/models/academic/teacherSubject.dart';
 import 'package:intl/intl.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
+import 'package:eschool_saas_staff/cubits/academics/sessionYearsAndMediumsCubit.dart';
+import 'package:collection/collection.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
 
 class CreateOnlineExam extends StatefulWidget {
@@ -21,7 +23,7 @@ class _CreateOnlineExamState extends State<CreateOnlineExam>
     with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
 
-  SubjectDetail? selectedSubject;
+  TeacherSubject? selectedSubject;
   String? selectedTingkatan;
   String? selectedKelas;
   String? selectedMapel;
@@ -76,28 +78,52 @@ class _CreateOnlineExamState extends State<CreateOnlineExam>
         lightColor: const Color(0xFFB84D4D),
         onBackPressed: () => Navigator.of(context).pop(),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 10),
-                FadeInDown(
-                  duration: const Duration(milliseconds: 500),
-                  child: _buildBasicInfoSection(),
-                ),
-                const SizedBox(height: 20),
-                FadeInDown(
-                  duration: const Duration(milliseconds: 600),
-                  delay: const Duration(milliseconds: 100),
-                  child: _buildExamDetailsSection(),
-                ),
-                const SizedBox(height: 20),
-                _buildSubmitButton(),
-              ],
+      body: BlocListener<OnlineExamCubit, OnlineExamState>(
+        listener: (context, state) {
+          if (state is CreateOnlineExamSuccess) {
+            // Close loading dialog if it's open
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            }
+            _showSuccessDialog();
+          } else if (state is CreateOnlineExamFailure) {
+            // Close loading dialog if it's open
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            }
+            // Show error message
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          }
+        },
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 10),
+                  FadeInDown(
+                    duration: const Duration(milliseconds: 500),
+                    child: _buildBasicInfoSection(),
+                  ),
+                  const SizedBox(height: 20),
+                  FadeInDown(
+                    duration: const Duration(milliseconds: 600),
+                    delay: const Duration(milliseconds: 100),
+                    child: _buildExamDetailsSection(),
+                  ),
+                  const SizedBox(height: 20),
+                  _buildSubmitButton(),
+                ],
+              ),
             ),
           ),
         ),
@@ -449,143 +475,127 @@ class _CreateOnlineExamState extends State<CreateOnlineExam>
   }
 
   Widget _buildSubjectDropdown() {
-    return BlocBuilder<OnlineExamCubit, OnlineExamState>(
+    return BlocBuilder<ClassSectionsAndSubjectsCubit, ClassSectionsAndSubjectsState>(
       builder: (context, state) {
-        List<SubjectDetail> subjects = [];
-        if (state is OnlineExamSuccess) {
-          subjects = state.subjectDetails
-              .where((e) => e != null)
-              .map((e) {
-                try {
-                  return SubjectDetail.fromJson(e);
-                } catch (err) {
-                  return null;
-                }
-              })
-              .whereType<SubjectDetail>()
-              .toList();
-        }
+        if (state is ClassSectionsAndSubjectsFetchSuccess) {
+          final classSections = state.classSections;
+          
+          tingkatanList = classSections
+              .map((e) => (e.name ?? "").split(RegExp(r"\s+")).first.trim())
+              .where((t) => t.isNotEmpty)
+              .toSet()
+              .toList()
+            ..sort();
 
-        tingkatanList = subjects
-            .map((e) => e.classSection.name.split(RegExp(r"\s+")).first.trim())
-            .where((t) => t.isNotEmpty)
-            .toSet()
-            .toList()
-          ..sort();
+          kelasList = selectedTingkatan == null
+              ? []
+              : classSections
+                  .where((e) => (e.name ?? "").split(RegExp(r"\s+")).first.trim() == selectedTingkatan)
+                  .map((e) => e.name ?? "")
+                  .toSet()
+                  .toList()
+            ..sort();
 
-        kelasList = selectedTingkatan == null
-            ? []
-            : subjects
-                .where((e) =>
-                    e.classSection.name.split(RegExp(r"\s+")).first.trim() ==
-                    selectedTingkatan)
-                .map((e) => e.classSection.name)
-                .toSet()
-                .toList()
-          ..sort();
+          mapelList = selectedKelas == null
+              ? []
+              : state.subjects.map((e) => e.subject.name ?? "").toSet().toList()
+            ..sort();
 
-        mapelList = selectedKelas == null
-            ? []
-            : subjects
-                .where((e) => e.classSection.name == selectedKelas)
-                .map((e) => e.subject.name)
-                .toSet()
-                .toList()
-          ..sort();
-
-        return Column(
-          children: [
-            DropdownButtonFormField<String>(
-              initialValue: selectedTingkatan,
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.layers, color: Color(0xFF8B0000)),
-                labelText: 'Pilih Tingkatan',
-                filled: true,
-                fillColor: Colors.grey.shade50,
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              items: tingkatanList
-                  .map((t) => DropdownMenuItem(value: t, child: Text(t)))
-                  .toList(),
-              onChanged: (v) {
-                setState(() {
-                  selectedTingkatan = v;
-                  selectedKelas = null;
-                  selectedMapel = null;
-                  selectedSubject = null;
-                });
-              },
-              isExpanded: true,
-              hint: const Text('Pilih Tingkatan'),
-            ),
-            if (selectedTingkatan != null) ...[
-              const SizedBox(height: 12),
+          return Column(
+            children: [
               DropdownButtonFormField<String>(
-                initialValue: selectedKelas,
+                value: selectedTingkatan,
                 decoration: InputDecoration(
-                  prefixIcon:
-                      const Icon(Icons.class_, color: Color(0xFF8B0000)),
-                  labelText: 'Pilih Kelas',
+                  prefixIcon: const Icon(Icons.layers, color: Color(0xFF8B0000)),
+                  labelText: 'Pilih Tingkatan',
                   filled: true,
                   fillColor: Colors.grey.shade50,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                items: kelasList
-                    .map((k) => DropdownMenuItem(value: k, child: Text(k)))
+                items: tingkatanList
+                    .map((t) => DropdownMenuItem(value: t, child: Text(t)))
                     .toList(),
                 onChanged: (v) {
                   setState(() {
-                    selectedKelas = v;
+                    selectedTingkatan = v;
+                    selectedKelas = null;
                     selectedMapel = null;
                     selectedSubject = null;
                   });
                 },
                 isExpanded: true,
-                hint: const Text('Pilih Kelas'),
+                hint: const Text('Pilih Tingkatan'),
               ),
-            ],
-            if (selectedKelas != null) ...[
-              const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                initialValue: selectedMapel,
-                decoration: InputDecoration(
-                  prefixIcon:
-                      const Icon(Icons.menu_book, color: Color(0xFF8B0000)),
-                  labelText: 'Pilih Mata Pelajaran',
-                  filled: true,
-                  fillColor: Colors.grey.shade50,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                ),
-                items: mapelList
-                    .map((m) => DropdownMenuItem(value: m, child: Text(m)))
-                    .toList(),
-                onChanged: (v) {
-                  setState(() {
-                    selectedMapel = v;
-                  });
-
-                  final matches = subjects
-                      .where((e) =>
-                          e.classSection.name == selectedKelas &&
-                          e.subject.name == v)
-                      .toList();
-                  if (matches.isNotEmpty) {
+              if (selectedTingkatan != null) ...[
+                const SizedBox(height: 12),
+                DropdownButtonFormField<String>(
+                  value: selectedKelas,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.class_, color: Color(0xFF8B0000)),
+                    labelText: 'Pilih Kelas',
+                    filled: true,
+                    fillColor: Colors.grey.shade50,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  items: kelasList
+                      .map((k) => DropdownMenuItem(value: k, child: Text(k)))
+                      .toList(),
+                  onChanged: (v) {
                     setState(() {
-                      selectedSubject = matches.first;
+                      selectedKelas = v;
+                      selectedMapel = null;
+                      selectedSubject = null;
                     });
-                  }
-                },
-                isExpanded: true,
-                hint: const Text('Pilih Mata Pelajaran'),
-                validator: (value) =>
-                    value == null ? 'Pilih mata pelajaran' : null,
-              ),
+                    if (v != null) {
+                      try {
+                        final selectedClass = classSections.firstWhere((e) => (e.name ?? "") == v);
+                        if (selectedClass.id != null) {
+                          context.read<ClassSectionsAndSubjectsCubit>().getNewSubjectsFromSelectedClassSectionIndex(newClassSectionId: selectedClass.id!);
+                        }
+                      } catch (e) {}
+                    }
+                  },
+                  isExpanded: true,
+                  hint: const Text('Pilih Kelas'),
+                ),
+              ],
+              if (selectedKelas != null) ...[
+                const SizedBox(height: 12),
+                DropdownButtonFormField<String>(
+                  value: selectedMapel,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.menu_book, color: Color(0xFF8B0000)),
+                    labelText: 'Pilih Mata Pelajaran',
+                    filled: true,
+                    fillColor: Colors.grey.shade50,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  items: mapelList
+                      .map((m) => DropdownMenuItem(value: m, child: Text(m)))
+                      .toList(),
+                  onChanged: (v) {
+                    setState(() {
+                      selectedMapel = v;
+                    });
+
+                    final matches = state.subjects
+                        .where((e) => e.subject.name == v)
+                        .toList();
+                    if (matches.isNotEmpty) {
+                      setState(() {
+                        selectedSubject = matches.first;
+                      });
+                    }
+                  },
+                  isExpanded: true,
+                  hint: const Text('Pilih Mata Pelajaran'),
+                  validator: (value) => value == null ? 'Pilih mata pelajaran' : null,
+                ),
+              ],
             ],
-          ],
-        );
+          );
+        }
+        return const Center(child: CircularProgressIndicator());
       },
     );
   }
@@ -657,10 +667,16 @@ class _CreateOnlineExamState extends State<CreateOnlineExam>
         },
       );
 
-      context
-          .read<OnlineExamCubit>()
-          .createOnlineExam(
-            classSectionId: selectedSubject!.classSection.id,
+      int? sessionYearId;
+      final sessionState = context.read<SessionYearsAndMediumsCubit>().state;
+      if (sessionState is SessionYearsAndMediumsFetchSuccess) {
+        sessionYearId = sessionState.sessionYears
+            .firstWhereOrNull((s) => s.defaultYear == 1)
+            ?.id;
+      }
+
+      context.read<OnlineExamCubit>().createOnlineExam(
+            classSectionId: selectedSubject!.classSectionId,
             classSubjectId: selectedSubject!.classSubjectId,
             title: _titleController.text,
             examKey: _examKeyController.text,
@@ -672,151 +688,114 @@ class _CreateOnlineExamState extends State<CreateOnlineExam>
               startTime!.hour,
               startTime!.minute,
             ),
-          )
-          .then((_) {
-        if (!mounted) return;
-        // Close loading dialog
-        Navigator.pop(context);
+            sessionYearId: sessionYearId,
+          );
+    }
+  }
 
-        // Show success dialog with proper navigation
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return Dialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
-              ),
-              child: Container(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.center,
                   children: [
-                    Stack(
-                      clipBehavior: Clip.none,
-                      alignment: Alignment.center,
-                      children: [
-                        Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            color:
-                                const Color(0xFF4CAF50).withValues(alpha: 0.1),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.check_circle_outline,
-                            color: Color(0xFF4CAF50),
-                            size: 45,
-                          ),
-                        ),
-                        Positioned(
-                          top: -8,
-                          right: -8,
-                          child: Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF4CAF50),
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.white,
-                                width: 2,
-                              ),
-                            ),
-                            child: const Icon(
-                              Icons.check,
-                              color: Colors.white,
-                              size: 16,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-                    const Text(
-                      'Berhasil!',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF2E7D32),
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF4CAF50).withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.check_circle_outline,
+                        color: Color(0xFF4CAF50),
+                        size: 45,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Ujian berhasil dibuat dan siap digunakan',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF2E7D32),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                    Positioned(
+                      top: -8,
+                      right: -8,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF4CAF50),
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 2,
                           ),
                         ),
-                        onPressed: () {
-                          _animationController.stop();
-
-                          // Pop dialog first
-                          Navigator.pop(context);
-                          // Pop create exam screen and refresh exam list
-                          Navigator.pop(context, true);
-                        },
-                        child: const Text(
-                          'Lihat Daftar Ujian',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.5,
-                          ),
+                        child: const Icon(
+                          Icons.check,
+                          color: Colors.white,
+                          size: 16,
                         ),
                       ),
                     ),
                   ],
                 ),
-              ),
-            );
-          },
-        );
-      }).catchError((error) {
-        if (!mounted) return;
-        // Close loading dialog
-        Navigator.pop(context);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Container(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Row(
-                children: [
-                  const Icon(Icons.error_outline, color: Colors.white),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'Gagal membuat ujian: ${error.toString()}',
-                      style: const TextStyle(color: Colors.white),
+                const SizedBox(height: 24),
+                const Text(
+                  'Berhasil!',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF2E7D32),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Ujian berhasil dibuat dan siap digunakan',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2E7D32),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () {
+                      _animationController.stop();
+                      Navigator.pop(dialogContext);
+                      Navigator.pop(context, true);
+                    },
+                    child: const Text(
+                      'Lihat Daftar Ujian',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.5,
+                      ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            backgroundColor: Colors.red[700],
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            duration: const Duration(seconds: 4),
           ),
         );
-      });
-    }
+      },
+    );
   }
 }

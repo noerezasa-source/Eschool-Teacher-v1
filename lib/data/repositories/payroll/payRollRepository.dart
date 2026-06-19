@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 
 import 'package:eschool_saas_staff/data/models/payroll/payRoll.dart';
 import 'package:eschool_saas_staff/data/models/payroll/staffPayRoll.dart';
@@ -24,68 +24,19 @@ class PayRollRepository {
 
   Future<String> downloadPayRollSlip({required int payRollId}) async {
     try {
-      // Print request details
-      debugPrint("=== DOWNLOAD PAYROLL PDF REQUEST ===");
-      debugPrint("URL: ${Api.downloadPayRollSlip}");
-      debugPrint("Parameters: slip_id=$payRollId");
-
       final result = await Api.get(
           url: Api.downloadPayRollSlip,
           queryParameters: {"slip_id": payRollId});
 
-      // Print response info (not the full PDF content as it would be too large)
-      debugPrint("=== DOWNLOAD PAYROLL PDF RESPONSE ===");
-      debugPrint("Response keys: ${result.keys.toList()}");
-
-      final pdfContent = (result['pdf'] ?? "").toString();
-      debugPrint("PDF content length: ${pdfContent.length}");
-
-      // Log first and last few characters to help debug format issues
-      if (pdfContent.isNotEmpty) {
-        const previewLength = 50;
-        debugPrint(
-            "PDF content start: ${pdfContent.substring(0, pdfContent.length < previewLength ? pdfContent.length : previewLength)}");
-        if (pdfContent.length > previewLength * 2) {
-          debugPrint(
-              "PDF content end: ${pdfContent.substring(pdfContent.length - previewLength)}");
-        }
+      // Server mengembalikan JSON: {"success":true,"data":{"pdf":"JVBERi0..."}}
+      // Kita langsung ambil string base64 PDF dari field 'data.pdf'
+      final data = result['data'];
+      if (data is Map && data['pdf'] != null && data['pdf'].toString().isNotEmpty) {
+        return data['pdf'].toString();
       }
 
-      // Validate that we actually received PDF content
-      if (pdfContent.isEmpty) {
-        throw ApiException("Server returned empty PDF content");
-      }
-
-      // The PDF content appears to be base64 encoded JSON, let's decode it
-      try {
-        debugPrint("Attempting to decode nested JSON structure...");
-        final decodedJson = base64Decode(pdfContent);
-        final jsonString = utf8.decode(decodedJson);
-        debugPrint(
-            "Decoded JSON: ${jsonString.substring(0, jsonString.length > 100 ? 100 : jsonString.length)}...");
-
-        final nestedResponse = json.decode(jsonString);
-        if (nestedResponse is Map && nestedResponse.containsKey('pdf')) {
-          final actualPdfContent = nestedResponse['pdf'].toString();
-          debugPrint(
-              "Found nested PDF content, length: ${actualPdfContent.length}");
-
-          if (actualPdfContent.isEmpty) {
-            throw ApiException("Nested PDF content is empty");
-          }
-
-          return actualPdfContent;
-        } else {
-          throw ApiException("Invalid nested JSON structure");
-        }
-      } catch (e) {
-        debugPrint("Failed to decode nested JSON: $e");
-        debugPrint("Falling back to original content...");
-        return pdfContent;
-      }
+      throw ApiException("Konten PDF slip gaji tidak ditemukan dalam respons server.");
     } catch (e) {
-      debugPrint("=== DOWNLOAD PAYROLL PDF ERROR ===");
-      debugPrint("Error: ${e.toString()}");
       throw ApiException(e.toString());
     }
   }

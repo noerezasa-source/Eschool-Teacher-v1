@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/data/repositories/system/settingsRepository.dart';
+import 'package:eschool_saas_staff/data/repositories/system/settingsRepository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 abstract class SettingsState{}

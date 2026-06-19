@@ -70,6 +70,7 @@ class ExamTimeTable {
   String? endingTime;
   String? subjectName;
   int? subjectId;
+  int? classSubjectId;
 
   ExamTimeTable({
     this.id,
@@ -79,6 +80,8 @@ class ExamTimeTable {
     this.startingTime,
     this.endingTime,
     this.subjectName,
+    this.subjectId,
+    this.classSubjectId,
   });
 
   ExamTimeTable.fromJson(Map<String, dynamic> json) {
@@ -89,7 +92,8 @@ class ExamTimeTable {
     startingTime = json['starting_time'] ?? '';
     endingTime = json['ending_time'] ?? '';
     subjectName = json['subject_name'] ?? '';
-    subjectId = json['class_subject']?['subject_id'] ?? 0;
+    subjectId = json['class_subject']?['subject_id'] ?? json['subject_id'] ?? 0;
+    classSubjectId = json['class_subject_id'] ?? json['class_subject']?['id'] ?? 0;
   }
 
   @override

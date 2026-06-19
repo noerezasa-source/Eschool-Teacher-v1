@@ -1,4 +1,3 @@
-
 pluginManagement {
     def flutterSdkPath = {
         def properties = new Properties()
@@ -25,3 +24,16 @@ plugins {
 }
 
 include ":app"
+
+// ==============================================================================
+// CARA PAMUNGKAS: Memaksa compiler Android (AGP) global untuk menaikkan compileSdk
+// pada setiap sub-project/plugin saat dievaluasi oleh sistem Gradle.
+// ==============================================================================
+gradle.lifecycle.beforeProject { project ->
+    project.plugins.withType(com.android.build.gradle.BasePlugin) {
+        project.android {
+            compileSdk = 34
+            buildToolsVersion = "34.0.0"
+        }
+    }
+}

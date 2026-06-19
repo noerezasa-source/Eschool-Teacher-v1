@@ -1,4 +1,4 @@
-﻿import 'dart:ui';
+import 'dart:ui';
 import 'package:eschool_saas_staff/cubits/leave/applyLeaveCubit.dart';
 import 'package:eschool_saas_staff/cubits/leave/leaveSettingsCubit.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customCircularProgressIndicator.dart';
@@ -205,6 +205,23 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen>
       _showDateSelection = true;
     });
 
+    // 1. Ambil data string endDate dari Cubit
+    final sessionEndDateStr = context
+        .read<LeaveSettingsAndSessionYearsCubit>()
+        .getCurrentSessionYear()
+        .endDate;
+
+    // 2. Parse ke DateTime. Jika null, berikan fallback tanggal hari ini
+    DateTime parsedLastDate = sessionEndDateStr != null 
+        ? DateTime.parse(sessionEndDateStr) 
+        : DateTime.now();
+
+    // 3. Validasi: Jika lastDate ternyata sebelum hari ini, paksa maju ke depan (misal +30 hari)
+    // agar syarat 'lastDate >= firstDate' dari Flutter tidak memicu crash/freeze
+    if (parsedLastDate.isBefore(DateTime.now())) {
+      parsedLastDate = DateTime.now().add(const Duration(days: 30));
+    }
+
     final selectedDate = await showDatePicker(
         context: context,
         firstDate: DateTime.now(),
@@ -231,10 +248,8 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen>
             ),
           );
         },
-        lastDate: DateTime.parse(context
-            .read<LeaveSettingsAndSessionYearsCubit>()
-            .getCurrentSessionYear()
-            .endDate!));
+        lastDate: parsedLastDate, // Gunakan variabel yang sudah aman divalidasi di sini
+    );
 
     setState(() {
       _showDateSelection = false;
@@ -257,7 +272,6 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen>
       }
     }
   }
-
   void onTapToDate() async {
     if (_selectedFromDate == null) {
       _showValidationSnackBar(message: pleaseSelectFromDateKey);
@@ -269,9 +283,26 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen>
       _showDateSelection = true;
     });
 
+    // 1. Ambil data string endDate dari Cubit
+    final sessionEndDateStr = context
+        .read<LeaveSettingsAndSessionYearsCubit>()
+        .getCurrentSessionYear()
+        .endDate;
+
+    // 2. Parse ke DateTime. Jika null, gunakan tanggal hari ini
+    DateTime parsedLastDate = sessionEndDateStr != null 
+        ? DateTime.parse(sessionEndDateStr) 
+        : DateTime.now();
+
+    // 3. VALIDASI: Pastikan lastDate TIDAK BOLEH sebelum firstDate (_selectedFromDate)
+    // Jika terlanjur lewat, kita paksa lastDate mengikuti _selectedFromDate ditambah 30 hari agar aman
+    if (parsedLastDate.isBefore(_selectedFromDate!)) {
+      parsedLastDate = _selectedFromDate!.add(const Duration(days: 30));
+    }
+
     final selectedDate = await showDatePicker(
         context: context,
-        firstDate: _selectedFromDate!,
+        firstDate: _selectedFromDate!, // Menggunakan tanggal dari dari pilihan pertama
         initialEntryMode: DatePickerEntryMode.calendarOnly,
         builder: (context, child) {
           return Theme(
@@ -295,10 +326,8 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen>
             ),
           );
         },
-        lastDate: DateTime.parse(context
-            .read<LeaveSettingsAndSessionYearsCubit>()
-            .getCurrentSessionYear()
-            .endDate!));
+        lastDate: parsedLastDate, // Gunakan variabel yang sudah divalidasi
+    );
 
     setState(() {
       _showDateSelection = false;
@@ -361,105 +390,106 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen>
                     width: 1.5,
                   ),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 16), // Additional space at top
-                    // Enhanced header with gradient and glow effect
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 32),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Colors.red.shade50,
-                            Colors.red.shade100,
-                            Colors.red.shade200.withValues(alpha: 0.3),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(height: 16), // Additional space at top
+                      // Enhanced header with gradient and glow effect
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 32),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.red.shade50,
+                              Colors.red.shade100,
+                              Colors.red.shade200.withValues(alpha: 0.3),
+                            ],
+                            stops: const [0.0, 0.6, 1.0],
+                          ),
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(32),
+                            topRight: Radius.circular(32),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.red.shade200.withValues(alpha: 0.2),
+                              blurRadius: 15,
+                              offset: const Offset(0, 5),
+                            ),
                           ],
-                          stops: const [0.0, 0.6, 1.0],
                         ),
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(32),
-                          topRight: Radius.circular(32),
+                        child: Column(
+                          children: [
+                            // Enhanced animated error icon with glow
+                            TweenAnimationBuilder<double>(
+                              tween: Tween<double>(begin: 0.0, end: 1.0),
+                              duration: const Duration(milliseconds: 800),
+                              builder: (context, value, child) {
+                                return Transform.scale(
+                                  scale: 0.8 + (value * 0.2),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(20),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.red.shade300
+                                              .withValues(alpha: 0.4 * value),
+                                          blurRadius: 20 + (value * 10),
+                                          offset: const Offset(0, 8),
+                                          spreadRadius: value * 2,
+                                        ),
+                                        BoxShadow(
+                                          color: Colors.red.shade200
+                                              .withValues(alpha: 0.2 * value),
+                                          blurRadius: 30 + (value * 15),
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Icon(
+                                      Icons.error_outline_rounded,
+                                      color: Colors.red.shade600,
+                                      size: 56,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                              'Pengajuan Gagal',
+                              style: GoogleFonts.poppins(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red.shade800,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.red.shade200
+                                        .withValues(alpha: 0.3),
+                                    offset: const Offset(0, 2),
+                                    blurRadius: 4,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Container(
+                              width: 40,
+                              height: 3,
+                              decoration: BoxDecoration(
+                                color: Colors.red.shade300.withValues(alpha: 0.5),
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                          ],
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.red.shade200.withValues(alpha: 0.2),
-                            blurRadius: 15,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
                       ),
-                      child: Column(
-                        children: [
-                          // Enhanced animated error icon with glow
-                          TweenAnimationBuilder<double>(
-                            tween: Tween<double>(begin: 0.0, end: 1.0),
-                            duration: const Duration(milliseconds: 800),
-                            builder: (context, value, child) {
-                              return Transform.scale(
-                                scale: 0.8 + (value * 0.2),
-                                child: Container(
-                                  padding: const EdgeInsets.all(20),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.red.shade300
-                                            .withValues(alpha: 0.4 * value),
-                                        blurRadius: 20 + (value * 10),
-                                        offset: const Offset(0, 8),
-                                        spreadRadius: value * 2,
-                                      ),
-                                      BoxShadow(
-                                        color: Colors.red.shade200
-                                            .withValues(alpha: 0.2 * value),
-                                        blurRadius: 30 + (value * 15),
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Icon(
-                                    Icons.error_outline_rounded,
-                                    color: Colors.red.shade600,
-                                    size: 56,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            'Pengajuan Gagal',
-                            style: GoogleFonts.poppins(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red.shade800,
-                              shadows: [
-                                Shadow(
-                                  color: Colors.red.shade200
-                                      .withValues(alpha: 0.3),
-                                  offset: const Offset(0, 2),
-                                  blurRadius: 4,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Container(
-                            width: 40,
-                            height: 3,
-                            decoration: BoxDecoration(
-                              color: Colors.red.shade300.withValues(alpha: 0.5),
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
 
                     // Enhanced content area
                     Container(
@@ -600,6 +630,7 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen>
               ),
             ),
           ),
+        ),
         );
       },
     );
@@ -626,7 +657,7 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen>
             builder: (context, value, child) {
               return Transform.scale(
                 scale: 0.85 + (value * 0.15),
-                child: Opacity(
+                child:  Opacity(
                   opacity: value,
                   child: Transform.translate(
                     offset: Offset(0, 40 * (1 - value)),

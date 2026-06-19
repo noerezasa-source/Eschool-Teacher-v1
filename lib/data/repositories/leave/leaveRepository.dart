@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:eschool_saas_staff/data/models/leave/leaveDetails.dart';
@@ -175,11 +175,22 @@ class LeaveRepository {
         attachments.add(await MultipartFile.fromFile(attachmentPath));
       }
 
-      await Api.post(url: Api.applyLeave, body: {
+      // Build body with indexed keys so FormData encodes correctly
+      // e.g. leave_details[0][type], leave_details[0][date], etc.
+      final Map<String, dynamic> body = {
         "reason": reason,
-        "leave_details": leaves,
-        "files": attachments,
-      });
+      };
+
+      for (int i = 0; i < leaves.length; i++) {
+        body["leave_details[$i][type]"] = leaves[i]["type"];
+        body["leave_details[$i][date]"] = leaves[i]["date"];
+      }
+
+      if (attachments.isNotEmpty) {
+        body["files"] = attachments;
+      }
+
+      await Api.post(url: Api.applyLeave, body: body);
     } catch (e) {
       throw ApiException(e.toString());
     }

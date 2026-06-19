@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/models/contact.dart';
+import 'package:eschool_saas_staff/models/contact.dart';
 import 'package:eschool_saas_staff/utils/system/logger.dart';
 import 'package:eschool_saas_staff/utils/system/api.dart';
 
@@ -12,7 +12,8 @@ class ContactRepository {
         useAuthToken: false, // Public API
       );
 
-      if (response['error'] == false && response['data'] != null) {
+      // 🔴 UBAH DISINI: Sesuaikan dengan key 'success' dari Laravel
+      if (response['success'] == true && response['data'] != null) {
         return Contact.fromJson(response['data']);
       } else {
         throw Exception(response['message'] ?? 'Failed to submit contact');
@@ -49,7 +50,8 @@ class ContactRepository {
         useAuthToken: true,
       );
 
-      if (response['error'] == false && response['data'] != null) {
+      // 🔴 UBAH DISINI: Ini biang kerok eror log baris 69 kamu kemarin!
+      if (response['success'] == true && response['data'] != null) {
         final data = response['data'];
 
         // Parse contacts list
@@ -83,7 +85,8 @@ class ContactRepository {
         useAuthToken: true,
       );
 
-      if (response['error'] == false && response['data'] != null) {
+      // 🔴 UBAH DISINI
+      if (response['success'] == true && response['data'] != null) {
         return Contact.fromJson(response['data']);
       } else {
         throw Exception(
@@ -103,7 +106,8 @@ class ContactRepository {
         useAuthToken: true,
       );
 
-      if (response['error'] == false && response['data'] != null) {
+      // 🔴 UBAH DISINI
+      if (response['success'] == true && response['data'] != null) {
         return Contact.fromJson(response['data']);
       } else {
         throw Exception(response['message'] ?? 'Failed to send reply');
@@ -121,7 +125,8 @@ class ContactRepository {
         useAuthToken: true,
       );
 
-      if (response['error'] == false && response['data'] != null) {
+      // 🔴 UBAH DISINI
+      if (response['success'] == true && response['data'] != null) {
         return ContactStats.fromJson(response['data']);
       } else {
         throw Exception(response['message'] ?? 'Failed to fetch contact stats');
@@ -142,7 +147,8 @@ class ContactRepository {
         useAuthToken: true,
       );
 
-      if (response['error'] == false && response['data'] != null) {
+      // 🔴 UBAH DISINI
+      if (response['success'] == true && response['data'] != null) {
         return Contact.fromJson(response['data']);
       } else {
         throw Exception(
@@ -162,7 +168,8 @@ class ContactRepository {
         useAuthToken: true,
       );
 
-      if (response['error'] != false) {
+      // 🔴 UBAH DISINI: Jika sukses mengembalikan 'success': true, maka lempar error jika false
+      if (response['success'] == false) {
         throw Exception(response['message'] ?? 'Failed to delete contact');
       }
     } catch (e) {

@@ -1,4 +1,4 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:eschool_saas_staff/data/models/academic/studyMaterial.dart';
 import 'package:eschool_saas_staff/utils/system/api.dart';
 import 'package:eschool_saas_staff/utils/system/constants.dart';
@@ -48,16 +48,25 @@ class StudyMaterialRepository {
     required Function updateDownloadedPercentage,
   }) async {
     try {
-
-      final regex = RegExp(r'https?:\/\/[^\/]+\/storage\/\/storage\/');
-      if (regex.hasMatch(url)) {
-        url = storageUrl + url.replaceFirst(regex, '');
+      // Jika URL sudah lengkap (dimulai dengan http), gunakan langsung.
+      // Jika belum, baru tambahkan storageUrl.
+      String finalUrl = url;
+      if (!url.startsWith('http')) {
+        finalUrl = storageUrl + url;
+      } else {
+        // Kasus spesial: Kadang URL yang datang sudah absolut tapi entah kenapa
+        // terbungkus lagi oleh storageUrl di level pemanggil (seperti di log user).
+        // Kita bersihkan jika ada pola 'storage//http'
+        if (url.contains('/storage//http')) {
+          finalUrl = url.split('/storage//').last;
+        } else if (url.contains('/storage/http')) {
+          finalUrl = url.split('/storage/').last;
+        }
       }
-
 
       await Api.download(
         cancelToken: cancelToken,
-        url: url,
+        url: finalUrl,
         savePath: savePath,
         updateDownloadedPercentage: updateDownloadedPercentage,
       );

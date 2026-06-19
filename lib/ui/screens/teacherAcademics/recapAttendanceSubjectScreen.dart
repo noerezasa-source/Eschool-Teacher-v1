@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/ui/widgets/student/recapAttendanceContainer.dart';
+import 'package:eschool_saas_staff/ui/widgets/student/recapAttendanceContainer.dart';
 import 'package:eschool_saas_staff/utils/system/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +14,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customErrorWidget.dart';
 import 'package:eschool_saas_staff/utils/system/errorMessageUtils.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
+import 'package:eschool_saas_staff/app/routes.dart';
+import 'package:eschool_saas_staff/data/repositories/auth/authRepository.dart';
+import 'package:get/get.dart' as getx;
 
 class RecapAttendanceSubjectScreen extends StatefulWidget {
   static Widget getRouteInstance() {
@@ -187,30 +190,23 @@ class _RecapAttendanceSubjectScreenState
   }
 
   void downloadRecap(int classId, int classSectionId, int month) async {
-    if (schoolId == null || email == null) {
+    if (schoolId == null) {
       return;
     }
 
-    final encodedEmail = Uri.encodeComponent(email!);
+    final token = AuthRepository.getAuthToken();
 
-    final url = Uri.parse('https://eschool.ac.id/recap-download'
-        '?school_id=$schoolId'
-        '&class_id=$classId'
-        '&class_section_id=$classSectionId'
-        '&month=$month'
-        '&year=$_selectedYear'
-        '&email=$encodedEmail'
-        '&gm=naowndoianwodinaiwondaoiwnd');
-
-    try {
-      if (await canLaunchUrl(url)) {
-        await launchUrl(url);
-      } else {
-        throw 'Could not launch $url';
-      }
-    } catch (e) {
-      debugPrint('Error launching URL: $e');
-    }
+    getx.Get.toNamed(
+      Routes.attendanceRecapScreen,
+      arguments: {
+        'schoolId': schoolId,
+        'token': token,
+        'month': month,
+        'year': _selectedYear,
+        'classId': classId,
+        'classSectionId': classSectionId,
+      },
+    );
   }
 
   void filterClassSections(List<ClassSection> classSections, int teacherId) {

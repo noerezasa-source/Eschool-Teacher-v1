@@ -1,4 +1,4 @@
-﻿import 'dart:math' as math;
+import 'dart:math' as math;
 import 'package:eschool_saas_staff/ui/widgets/system/errorContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -640,15 +640,28 @@ class _QuestionBankListScreenState extends State<QuestionBankListScreen>
                               _cardHoverController.reverse();
                             });
 
-                            await Get.toNamed(
-                              Routes.bankQuestionScreen,
-                              arguments: {
-                                'bankSoal': bank,
-                                'subjectId': widget.subject.subject.id,
-                                'subject': widget.subject,
-                              },
-                            );
-                            _reloadData();
+                            try {
+                              await Get.toNamed(
+                                Routes.bankQuestionScreen,
+                                arguments: {
+                                  'bankSoal': bank,
+                                  'subjectId': widget.subject.subject.id,
+                                  'subject': widget.subject,
+                                },
+                              );
+                              _reloadData();
+                            } catch (e, stacktrace) {
+                              debugPrint("Navigation error: $e");
+                              debugPrint(stacktrace.toString());
+                              Get.snackbar(
+                                'Error Navigasi',
+                                e.toString(),
+                                backgroundColor: Colors.red,
+                                colorText: Colors.white,
+                                snackPosition: SnackPosition.BOTTOM,
+                                duration: const Duration(seconds: 5),
+                              );
+                            }
                           },
                           onTapDown: (_) {
                             setState(() {

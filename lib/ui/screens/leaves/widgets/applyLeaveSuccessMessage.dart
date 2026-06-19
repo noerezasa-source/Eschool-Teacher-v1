@@ -29,11 +29,11 @@ class CustomSuccessMessage {
             curve: Curves.elasticOut,
             builder: (context, value, child) {
               return Transform.scale(
-                scale: 0.8 + (value * 0.2),
+                scale: 0.8 + (value.clamp(0.0, 1.0) * 0.2),
                 child: Opacity(
-                  opacity: value,
+                  opacity: value.clamp(0.0, 1.0),
                   child: Transform.translate(
-                    offset: Offset(0, 50 * (1 - value)),
+                    offset: Offset(0, 50 * (1 - value.clamp(0.0, 1.0))),
                     child: child,
                   ),
                 ),
@@ -131,9 +131,9 @@ class CustomSuccessMessage {
                             duration: const Duration(milliseconds: 800),
                             builder: (context, value, child) {
                               return Opacity(
-                                opacity: value,
+                                opacity: value.clamp(0.0, 1.0),
                                 child: Transform.translate(
-                                  offset: Offset(0, 10 * (1 - value)),
+                                  offset: Offset(0, 10 * (1 - value.clamp(0.0, 1.0))),
                                   child: child,
                                 ),
                               );
@@ -161,9 +161,9 @@ class CustomSuccessMessage {
                             duration: const Duration(milliseconds: 1000),
                             builder: (context, value, child) {
                               return Opacity(
-                                opacity: value,
+                                opacity: value.clamp(0.0, 1.0),
                                 child: Transform.translate(
-                                  offset: Offset(0, 15 * (1 - value)),
+                                  offset: Offset(0, 15 * (1 - value.clamp(0.0, 1.0))),
                                   child: child,
                                 ),
                               );

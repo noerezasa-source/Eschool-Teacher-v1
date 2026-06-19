@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eschool_saas_staff/cubits/onlineExam/onlineExamCubit.dart';
@@ -8,6 +8,7 @@ import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
 import 'package:eschool_saas_staff/data/models/exam/onlineExam.dart' as exam;
 import 'package:eschool_saas_staff/data/models/academic/subjectDetail.dart';
 import '../../../app/routes.dart';
+import 'package:eschool_saas_staff/cubits/academics/sessionYearsAndMediumsCubit.dart';
 import 'package:get/get.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -31,6 +32,9 @@ class OnlineExamScreen extends StatefulWidget {
         ),
         BlocProvider<ClassSectionsAndSubjectsCubit>(
           create: (context) => ClassSectionsAndSubjectsCubit(),
+        ),
+        BlocProvider<SessionYearsAndMediumsCubit>(
+          create: (context) => SessionYearsAndMediumsCubit(),
         ),
       ],
       child: const OnlineExamScreen(),
@@ -79,12 +83,11 @@ class _OnlineExamScreenState extends State<OnlineExamScreen>
     initializeDateFormatting('id_ID', null);
     _refreshExams();
 
-    // Initialize class sections data untuk filter
+    // Initialize class sections and session years
     Future.delayed(Duration.zero, () {
       if (mounted) {
-        context
-            .read<ClassSectionsAndSubjectsCubit>()
-            .getClassSectionsAndSubjects();
+        context.read<ClassSectionsAndSubjectsCubit>().getClassSectionsAndSubjects();
+        context.read<SessionYearsAndMediumsCubit>().getSessionYearsAndMediums();
       }
     });
 
@@ -133,40 +136,35 @@ class _OnlineExamScreenState extends State<OnlineExamScreen>
     super.dispose();
   }
 
-  void _refreshExams() {
+  void _refreshExams({bool resetFilters = false}) {
+    debugPrint('=== OnlineExamScreen: Triggering Refresh (ResetFilters: $resetFilters) ===');
+    
+    if (resetFilters) {
+      setState(() {
+        selectedMapel = null;
+        selectedKelas = null;
+        selectedTingkatan = null;
+        searchQuery = "";
+      });
+    }
+
     // Cancel any existing subscriptions
     if (mounted) {
-      context.read<OnlineExamCubit>().getOnlineExams();
+      int? sessionYearId;
+      final sessionState = context.read<SessionYearsAndMediumsCubit>().state;
+      if (sessionState is SessionYearsAndMediumsFetchSuccess) {
+        sessionYearId = sessionState.sessionYears
+            .firstWhereOrNull((s) => s.defaultYear == 1)
+            ?.id;
+      }
+
+      context.read<OnlineExamCubit>().getOnlineExams(
+            sessionYearId: sessionYearId,
+          );
     }
   }
 
-  void _forceRefreshAfterRestore() {
-    // Force refresh with multiple attempts to ensure the restored exam appears
-    if (mounted) {
-      debugPrint('DEBUG: Force refresh attempt 1');
-      // Clear any existing state first
-      setState(() {});
 
-      // Trigger refresh
-      context.read<OnlineExamCubit>().getOnlineExams();
-
-      // Try again after a short delay in case the first attempt doesn't catch the new data
-      Future.delayed(const Duration(milliseconds: 1000), () {
-        if (mounted) {
-          debugPrint('DEBUG: Force refresh attempt 2');
-          context.read<OnlineExamCubit>().getOnlineExams();
-        }
-      });
-
-      // One more attempt after an even longer delay
-      Future.delayed(const Duration(milliseconds: 2500), () {
-        if (mounted) {
-          debugPrint('DEBUG: Force refresh attempt 3');
-          context.read<OnlineExamCubit>().getOnlineExams();
-        }
-      });
-    }
-  }
 
   @override
   void didChangeDependencies() {
@@ -205,26 +203,66 @@ class _OnlineExamScreenState extends State<OnlineExamScreen>
           onAddPressed: () async {
             // Navigate ke create exam screen dan tunggu hasil
             final result = await Get.toNamed(Routes.createOnlineExam);
-            // Jika kembali dengan result true, refresh data
+            // Jika kembali dengan result true, refresh data dan reset filter agar ujian baru kelihatan
             if (result == true) {
-              _refreshExams();
+              // Berikan jeda sangat singkat untuk sinkronisasi server
+              await Future.delayed(const Duration(milliseconds: 500));
+              _refreshExams(resetFilters: true);
             }
           },
           showArchiveButton: true,
           onArchivePressed: () async {
             // Navigate to archived exams page and wait for result
             final result = await Get.toNamed(Routes.archiveOnlineExam);
+            if (!context.mounted) return;
             // If an exam was restored, refresh data and show the restored exam
             if (result != null && result is Map<String, dynamic>) {
               if (result['action'] == 'restored') {
                 // Store the restored exam ID for highlighting
                 _restoredExamId = result['examId'].toString();
 
-                // Wait longer to ensure the backend has processed the restore
+                // Immediately inject restored exam into active list
+                if (result['exam'] != null && result['exam'] is exam.OnlineExam) {
+                  final restoredExam = (result['exam'] as exam.OnlineExam).copyWith(status: 1);
+                  context.read<OnlineExamCubit>().addExam(restoredExam);
+                }
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.check_circle, color: Colors.white),
+                          SizedBox(width: 12),
+                          Text(
+                            'Ujian berhasil dipulihkan!',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    backgroundColor: Colors.green.shade400,
+                    duration: const Duration(seconds: 2),
+                    behavior: SnackBarBehavior.floating,
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    elevation: 4,
+                  ),
+                );
+
+                // Background sync: refresh from backend to ensure consistency
                 Future.delayed(const Duration(milliseconds: 1200), () {
                   if (mounted) {
-                    debugPrint('DEBUG: Starting force refresh after restore');
-                    _forceRefreshAfterRestore();
+                    _refreshExams();
                   }
                 });
 
@@ -601,13 +639,23 @@ class _OnlineExamScreenState extends State<OnlineExamScreen>
   }
 
   Widget _buildExamGrid(OnlineExamSuccess state) {
-    // Filter ujian berdasarkan kata kunci pencarian
-    var filteredExams = searchQuery.isEmpty
-        ? state.exams
-        : state.exams
-            .where((exam) =>
-                exam.title.toLowerCase().contains(searchQuery.toLowerCase()))
-            .toList();
+    // 1. Filter berdasarkan kata kunci pencarian
+    var filteredExams = state.exams.where((exam) {
+      final matchesSearch = searchQuery.isEmpty || 
+          exam.title.toLowerCase().contains(searchQuery.toLowerCase());
+      
+      // 2. Filter berdasarkan Tingkatan (diambil dari token pertama nama kelas, misal "X" dari "X IPA 1")
+      bool matchesTingkatan = true;
+      if (selectedTingkatan != null) {
+        final examTingkatan = exam.classSectionName.split(RegExp(r"\s+")).first.trim();
+        matchesTingkatan = examTingkatan == selectedTingkatan;
+      }
+
+      // CATATAN: Filter Kelas dan Mapel tidak perlu dicek lagi di sini karena sudah 
+      // dilakukan oleh server (filtering by ID) saat pemilihan di dropdown.
+      
+      return matchesSearch && matchesTingkatan;
+    }).toList();
 
     // Sort to prioritize restored exam if exists
     if (_restoredExamId != null) {
@@ -646,22 +694,31 @@ class _OnlineExamScreenState extends State<OnlineExamScreen>
       // Default sorting by ID (newest first) when no restored exam
       filteredExams.sort((a, b) => b.id.compareTo(a.id));
     } // Jika tidak ada ujian yang sesuai dengan pencarian, tampilkan NoSearchResultsWidget
-    if (filteredExams.isEmpty && searchQuery.isNotEmpty) {
+    // 5. Handle empty state after filtering
+    final bool hasActiveFilters = searchQuery.isNotEmpty || 
+                                 selectedTingkatan != null || 
+                                 selectedKelas != null || 
+                                 selectedMapel != null;
+
+    if (filteredExams.isEmpty && hasActiveFilters) {
       return SliverFillRemaining(
         child: NoSearchResultsWidget(
           searchQuery: searchQuery,
           onClearSearch: () {
             setState(() {
               searchQuery = "";
+              selectedTingkatan = null;
+              selectedKelas = null;
+              selectedMapel = null;
             });
+            _refreshExams();
           },
           primaryColor: _primaryColor,
           accentColor: _highlightColor,
-          title: 'Tidak Ada Ujian',
-          description:
-              'Tidak ditemukan ujian yang sesuai dengan pencarian Anda. Coba gunakan kata kunci yang berbeda.',
-          clearButtonText: 'Hapus Pencarian',
-          icon: Icons.assignment_outlined,
+          title: 'Ujian Tidak Ditemukan',
+          description: 'Tidak ada ujian yang sesuai dengan kriteria filter atau pencarian Anda.',
+          clearButtonText: 'Reset Semua Filter',
+          icon: Icons.filter_list_off,
         ),
       );
     }

@@ -31,15 +31,14 @@ class LessonsCubit extends Cubit<LessonsState> {
   }) async {
     emit(LessonsFetchInProgress());
     try {
-      emit(
-        LessonsFetchSuccess(
-          await _lessonRepository.getLessons(
-            classSectionId: classSectionId,
-            classSubjectId: classSubjectId,
-          ),
-        ),
+      final lessons = await _lessonRepository.getLessons(
+        classSectionId: classSectionId,
+        classSubjectId: classSubjectId,
       );
+      if (isClosed) return;
+      emit(LessonsFetchSuccess(lessons));
     } catch (e) {
+      if (isClosed) return;
       emit(LessonsFetchFailure(e.toString()));
     }
   }

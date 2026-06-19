@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/app/routes.dart';
+import 'package:eschool_saas_staff/app/routes.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/classSectionsAndSubjects.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/gradeLevelCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/lesson/deleteLessonCubit.dart';
@@ -1025,8 +1025,13 @@ class _TeacherManageLessonScreenState extends State<TeacherManageLessonScreen>
                                               child: InkWell(
                                                 onTap: () {
                                                   HapticFeedback.lightImpact();
-                                                  // Download functionality here
+                                                  Utils.viewOrDownloadStudyMaterial(
+                                                    context: context,
+                                                    storeInExternalStorage: true,
+                                                    studyMaterial: material,
+                                                  );
                                                 },
+
                                                 borderRadius:
                                                     BorderRadius.circular(14),
                                                 child: Container(
@@ -1095,7 +1100,13 @@ class _TeacherManageLessonScreenState extends State<TeacherManageLessonScreen>
                                         selectedSubject: _selectedSubject),
                               )?.then((value) {
                                 if (value != null && value is bool && value) {
-                                  getLessons();
+                                  // Delay to let pop animation finish
+                                  Future.delayed(
+                                      const Duration(milliseconds: 300), () {
+                                    if (mounted) {
+                                      getLessons();
+                                    }
+                                  });
                                 }
                               });
                             },

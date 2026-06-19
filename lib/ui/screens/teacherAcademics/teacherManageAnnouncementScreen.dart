@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/app/routes.dart';
+import 'package:eschool_saas_staff/app/routes.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/announcement/teacherAnnouncementsCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/announcement/teacherDeleteAnnouncementCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/classSectionsAndSubjects.dart';
@@ -7,6 +7,9 @@ import 'package:eschool_saas_staff/data/models/academic/classSection.dart';
 import 'package:eschool_saas_staff/data/models/announcement/teacherAnnouncement.dart';
 import 'package:eschool_saas_staff/data/models/academic/teacherSubject.dart';
 import 'package:eschool_saas_staff/data/models/academic/gradeLevel.dart';
+import 'package:eschool_saas_staff/data/models/academic/studyMaterial.dart';
+
+
 import 'package:eschool_saas_staff/ui/screens/teacherAcademics/teacherAddEditAnnouncementScreen.dart';
 import 'package:eschool_saas_staff/ui/screens/teacherAcademics/widgets/confirmDeleteDialog.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customFilterModernAppbar.dart';
@@ -1249,6 +1252,42 @@ class _TeacherManageAnnouncementScreenState
                                             ),
 
                                             // Enhanced download button with animation
+                                            Material(
+                                              color: Colors.transparent,
+                                              borderRadius:
+                                                  BorderRadius.circular(14),
+                                              child: InkWell(
+                                                onTap: () {
+                                                  HapticFeedback.lightImpact();
+                                                  Utils.viewOrDownloadStudyMaterial(
+                                                    context: context,
+                                                    storeInExternalStorage: true,
+                                                    studyMaterial: StudyMaterial.fromURL(file.fileUrl),
+                                                  );
+                                                },
+                                                borderRadius:
+                                                    BorderRadius.circular(14),
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.all(10),
+                                                  decoration: BoxDecoration(
+                                                    color: maroonPrimary
+                                                        .withValues(
+                                                            alpha: 0.07),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            14),
+                                                  ),
+                                                  child: const Icon(
+                                                    Icons.download_rounded,
+                                                    color: maroonPrimary,
+                                                    size: 20,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+
+
                                           ],
                                         ),
                                       );

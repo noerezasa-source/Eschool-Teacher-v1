@@ -1,4 +1,4 @@
-﻿import 'dart:math' as math;
+import 'dart:math' as math;
 import 'package:eschool_saas_staff/ui/widgets/system/customErrorWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -563,13 +563,8 @@ class _BankSoalSelectionScreenState extends State<BankSoalSelectionScreen>
     debugPrint('Class Section ID: ${bank.classSectionId}');
     debugPrint('Class Subject ID: ${bank.classSubjectId}');
 
-    if (bank.classSectionId == 0 || bank.classSubjectId == 0) {
-      getx.Get.snackbar('Error', 'Data kelas atau mata pelajaran tidak valid',
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-          snackPosition: getx.SnackPosition.BOTTOM);
-      return;
-    }
+    // Removed the strict check for classSectionId and classSubjectId because 
+    // global bank soals might not be tied to a specific class section.
 
     getx.Get.toNamed(Routes.previewQuestionBank, arguments: {
       'bank': bank,

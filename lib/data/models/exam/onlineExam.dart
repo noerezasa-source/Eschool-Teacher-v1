@@ -9,6 +9,7 @@ class OnlineExam {
   final DateTime startDate;
   final DateTime endDate;
   final String subjectName;
+  final String classSectionName;
 
   OnlineExam({
     required this.id,
@@ -16,25 +17,61 @@ class OnlineExam {
     required this.classSubjectId,
     required this.title,
     required this.examKey,
-    required this.duration, // Add to constructor
+    required this.duration,
     required this.startDate,
     required this.endDate,
     required this.status,
     required this.subjectName,
+    required this.classSectionName,
   });
 
   factory OnlineExam.fromJson(Map<String, dynamic> json) {
+    // Handle nested class_section safely
+    int classSectionId = 0;
+    String classSectionName = '';
+    if (json['class_section'] != null && json['class_section'] is Map) {
+      classSectionId = json['class_section']['id'] ?? 0;
+      classSectionName = json['class_section']['full_name'] ?? json['class_section']['name'] ?? '';
+    } else if (json['class_section_id'] != null) {
+      classSectionId = int.tryParse(json['class_section_id'].toString()) ?? 0;
+      classSectionName = json['class_section_name']?.toString() ?? '';
+    }
+
+    // Handle nested class_subject safely
+    int classSubjectId = 0;
+    String subjectName = '';
+    if (json['class_subject'] != null && json['class_subject'] is Map) {
+      classSubjectId = json['class_subject']['id'] ?? 0;
+      subjectName = json['class_subject']['subject']?['name'] ?? json['class_subject']['name'] ?? '';
+    } else if (json['class_subject_id'] != null) {
+      classSubjectId = int.tryParse(json['class_subject_id'].toString()) ?? 0;
+      subjectName = json['subject_name']?.toString() ?? '';
+    }
+
+    // Safe date parsing
+    DateTime parseDate(dynamic dateStr) {
+      if (dateStr == null || dateStr.toString().isEmpty) {
+        return DateTime.now();
+      }
+      try {
+        return DateTime.parse(dateStr.toString());
+      } catch (e) {
+        return DateTime.now();
+      }
+    }
+
     return OnlineExam(
       id: json['id'] ?? 0,
-      classSectionId: json['class_section']['id'] ?? 0,
-      classSubjectId: json['class_subject']['id'] ?? 0,
+      classSectionId: classSectionId,
+      classSubjectId: classSubjectId,
       title: json['title'] ?? '',
       examKey: json['exam_key']?.toString() ?? '',
-      duration: json['duration'] ?? 0, // Parse from JSON
-      startDate: DateTime.parse(json['start_date'] ?? ''),
-      endDate: DateTime.parse(json['end_date'] ?? ''),
-      status: json['status'] ?? 0,
-      subjectName: json['subject_name'] ?? '',
+      duration: json['duration'] ?? 0,
+      startDate: parseDate(json['start_date']),
+      endDate: parseDate(json['end_date']),
+      status: int.tryParse(json['status']?.toString() ?? '0') ?? 0,
+      subjectName: subjectName,
+      classSectionName: classSectionName,
     );
   }
 
@@ -48,6 +85,34 @@ class OnlineExam {
       'start_date': startDate.toIso8601String(),
       'end_date': endDate.toIso8601String(),
     };
+  }
+
+  OnlineExam copyWith({
+    int? id,
+    int? classSectionId,
+    int? classSubjectId,
+    int? status,
+    String? title,
+    String? examKey,
+    int? duration,
+    DateTime? startDate,
+    DateTime? endDate,
+    String? subjectName,
+    String? classSectionName,
+  }) {
+    return OnlineExam(
+      id: id ?? this.id,
+      classSectionId: classSectionId ?? this.classSectionId,
+      classSubjectId: classSubjectId ?? this.classSubjectId,
+      status: status ?? this.status,
+      title: title ?? this.title,
+      examKey: examKey ?? this.examKey,
+      duration: duration ?? this.duration,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      subjectName: subjectName ?? this.subjectName,
+      classSectionName: classSectionName ?? this.classSectionName,
+    );
   }
 }
 

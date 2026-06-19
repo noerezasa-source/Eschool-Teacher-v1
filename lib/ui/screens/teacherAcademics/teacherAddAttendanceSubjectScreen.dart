@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
+import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
 import 'package:eschool_saas_staff/cubits/student/studentsByClassSectionCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/attendence/attendanceSubjectCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/attendence/submitAttendanceSubjectCubit.dart';
@@ -229,10 +229,10 @@ class _TeacherAddAttendanceScreenSubjectState
     }
 
     context.read<StudentsByClassSectionCubit>().fetchStudents(
-          status:
-              StudentListStatus.all, // Tampilkan semua siswa termasuk non-aktif
-          classSectionId: _selectedClassSection!.id!,
-        );
+      status: StudentListStatus.all,
+      classSectionId: _selectedClassSection!.id!,
+      classSubjectId: _selectedTimeTableSlot?.subjectTeacherId,
+    );
   }
 
   void changeClassSectionSelection(ClassSection? newSelectedClassSection) {
@@ -349,7 +349,15 @@ class _TeacherAddAttendanceScreenSubjectState
       builder: (BuildContext context, StudentsByClassSectionState state) {
         if (state is StudentsByClassSectionFetchSuccess) {
           if (state.studentDetailsList.isEmpty) {
-            return const SizedBox.shrink();
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  "Tidak ada siswa ditemukan di kelas ini",
+                  style: GoogleFonts.poppins(color: Colors.grey),
+                ),
+              ),
+            );
           }
 
           final allStudents = state.studentDetailsList;
@@ -393,6 +401,7 @@ class _TeacherAddAttendanceScreenSubjectState
                 (List<({StudentAttendanceStatus status, int studentId})>
                     attendanceStatuses) {
               attendanceReport = attendanceStatuses;
+              setState(() {});
             },
           );
         } else if (state is StudentsByClassSectionFetchFailure) {

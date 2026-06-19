@@ -1,4 +1,4 @@
-﻿
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eschool_saas_staff/data/models/exam/question.dart';
 import 'package:eschool_saas_staff/data/models/exam/questionBank.dart';
@@ -47,6 +47,9 @@ class BankSoalFetchSuccess extends QuestionBankState {
 class QuestionBankCubit extends Cubit<QuestionBankState> {
   final QuestionBankRepository _repository;
 
+  // Static cache to persist question counts across screens and cubit instances
+  static final Map<int, int> _bankQuestionCountsCache = {};
+
   QuestionBankCubit({required QuestionBankRepository repository})
       : _repository = repository,
         super(QuestionBankInitial());
@@ -89,6 +92,9 @@ class QuestionBankCubit extends Cubit<QuestionBankState> {
         onlineExamId: examId,
       );
 
+      // Update the local cache with the actual count of fetched questions
+      _bankQuestionCountsCache[bankId] = questions.length;
+
       emit(BankQuestionsFetchSuccess(questions));
     } catch (e) {
       final userFriendlyMessage = ErrorMessageUtils.getReadableErrorMessage(e);
@@ -102,7 +108,22 @@ class QuestionBankCubit extends Cubit<QuestionBankState> {
     try {
       emit(QuestionBankLoading());
       final bankSoal = await _repository.getBankSoal(subjectId);
-      emit(BankSoalFetchSuccess(bankSoal));
+
+      // Verify and update soalCount from local cache if we have a more recent/accurate count
+      final updatedBankSoal = bankSoal.map((bank) {
+        if (_bankQuestionCountsCache.containsKey(bank.id)) {
+          final cachedCount = _bankQuestionCountsCache[bank.id]!;
+          // Use the cached count if the API returns 0 or if we have a more recent count
+          if (bank.soalCount != cachedCount) {
+            debugPrint(
+                '[QUESTION BANK CUBIT] Syncing count for bank ${bank.id} (${bank.name}): API=${bank.soalCount}, Cache=$cachedCount');
+            return bank.copyWith(soalCount: cachedCount);
+          }
+        }
+        return bank;
+      }).toList();
+
+      emit(BankSoalFetchSuccess(updatedBankSoal));
     } catch (e) {
       final userFriendlyMessage = ErrorMessageUtils.getReadableErrorMessage(e);
       emit(QuestionBankError(userFriendlyMessage));
@@ -210,6 +231,10 @@ class QuestionBankCubit extends Cubit<QuestionBankState> {
 
       final questions = await _repository.getBankQuestions(
           subjectId: subjectId, bankId: banksoalId);
+
+      // Update cache after adding a new question
+      _bankQuestionCountsCache[banksoalId] = questions.length;
+
       emit(BankQuestionsFetchSuccess(questions));
     } catch (e) {
       debugPrint('\n=== ERROR IN CUBIT ===');
@@ -338,6 +363,9 @@ class QuestionBankCubit extends Cubit<QuestionBankState> {
         subjectId: subjectId,
         bankId: banksoalId,
       );
+
+      // Update cache after deleting a question
+      _bankQuestionCountsCache[banksoalId] = updatedQuestions.length;
 
       emit(BankQuestionsFetchSuccess(updatedQuestions));
       debugPrint('✅ Delete question process completed successfully');

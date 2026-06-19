@@ -1,4 +1,4 @@
-﻿
+
 import 'package:eschool_saas_staff/data/models/academic/classSection.dart';
 import 'package:eschool_saas_staff/data/models/academic/teacherSubject.dart';
 import 'package:eschool_saas_staff/data/repositories/academics/academicRepository.dart';
@@ -59,13 +59,16 @@ class ClassSectionsAndSubjectsCubit
       debugPrint(
           "ClassSectionsAndSubjectsCubit: Combined total classes: ${classSections.length}");
 
+      final subjects = await _academicRepository.getClassSectionSubjects(
+          classSectionId: classSectionId ?? classSections.first.id ?? 0);
+      if (isClosed) return;
       emit(ClassSectionsAndSubjectsFetchSuccess(
           classSections: classSections,
-          subjects: await _academicRepository.getClassSectionSubjects(
-              classSectionId: classSectionId ?? classSections.first.id ?? 0)));
+          subjects: subjects));
     } catch (e) {
       debugPrint("ClassSectionsAndSubjectsCubit: Error occurred - $e");
       final userFriendlyMessage = ErrorMessageUtils.getReadableErrorMessage(e);
+      if (isClosed) return;
       emit(ClassSectionsAndSubjectsFetchFailure(userFriendlyMessage));
       debugPrint(
           'Technical error: ${ErrorMessageUtils.getTechnicalErrorMessage(e)}');
@@ -76,10 +79,12 @@ class ClassSectionsAndSubjectsCubit
       {required int newClassSectionId}) async {
     if (state is ClassSectionsAndSubjectsFetchSuccess) {
       final successState = (state as ClassSectionsAndSubjectsFetchSuccess);
+      final subjects = await _academicRepository.getClassSectionSubjects(
+          classSectionId: newClassSectionId);
+      if (isClosed) return;
       emit(ClassSectionsAndSubjectsFetchSuccess(
           classSections: successState.classSections,
-          subjects: await _academicRepository.getClassSectionSubjects(
-              classSectionId: newClassSectionId)));
+          subjects: subjects));
     }
   }
 }

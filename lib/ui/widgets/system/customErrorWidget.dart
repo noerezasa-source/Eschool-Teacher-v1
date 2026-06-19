@@ -55,7 +55,9 @@ class CustomErrorWidget extends StatelessWidget {
               delay: const Duration(milliseconds: 200),
               child: Text(
                 title ??
-                    'Tidak dapat terhubung ke server, mohon periksa koneksi internet anda dan coba lagi',
+                    (message.isNotEmpty
+                        ? message
+                        : 'Tidak dapat terhubung ke server, mohon periksa koneksi internet anda dan coba lagi'),
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
                   fontSize: 16,

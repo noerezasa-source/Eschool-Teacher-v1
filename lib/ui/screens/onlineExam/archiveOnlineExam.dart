@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eschool_saas_staff/cubits/onlineExam/onlineExamCubit.dart';
 import 'package:eschool_saas_staff/data/models/exam/onlineExam.dart';
@@ -772,7 +772,9 @@ class _ArchiveOnlineExamState extends State<ArchiveOnlineExam>
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () async {
+                        // 1. Tutup dialog pertanyaan awal terlebih dahulu
                         Get.back();
+                        
                         try {
                           // Show modern loading dialog
                           Get.dialog(
@@ -795,15 +797,13 @@ class _ArchiveOnlineExamState extends State<ArchiveOnlineExam>
                                     borderRadius: BorderRadius.circular(32),
                                     boxShadow: [
                                       BoxShadow(
-                                        color:
-                                            Colors.blue.withValues(alpha: 0.3),
+                                        color: Colors.blue.withValues(alpha: 0.3),
                                         blurRadius: 30,
                                         spreadRadius: 0,
                                         offset: const Offset(0, 15),
                                       ),
                                       BoxShadow(
-                                        color:
-                                            Colors.white.withValues(alpha: 0.8),
+                                        color: Colors.white.withValues(alpha: 0.8),
                                         blurRadius: 10,
                                         spreadRadius: -5,
                                         offset: const Offset(0, -5),
@@ -813,7 +813,6 @@ class _ArchiveOnlineExamState extends State<ArchiveOnlineExam>
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      // Animated Icon Container
                                       Container(
                                         width: 100,
                                         height: 100,
@@ -829,8 +828,7 @@ class _ArchiveOnlineExamState extends State<ArchiveOnlineExam>
                                           shape: BoxShape.circle,
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Colors.blue
-                                                  .withValues(alpha: 0.4),
+                                              color: Colors.blue.withValues(alpha: 0.4),
                                               blurRadius: 20,
                                               spreadRadius: 0,
                                               offset: const Offset(0, 8),
@@ -840,21 +838,16 @@ class _ArchiveOnlineExamState extends State<ArchiveOnlineExam>
                                         child: Stack(
                                           alignment: Alignment.center,
                                           children: [
-                                            // Rotating outer ring
                                             SizedBox(
                                               width: 80,
                                               height: 80,
                                               child: CircularProgressIndicator(
                                                 strokeWidth: 3,
-                                                valueColor:
-                                                    AlwaysStoppedAnimation<
-                                                        Color>(
-                                                  Colors.white
-                                                      .withValues(alpha: 0.8),
+                                                valueColor: AlwaysStoppedAnimation<Color>(
+                                                  Colors.white.withValues(alpha: 0.8),
                                                 ),
                                               ),
                                             ),
-                                            // Static icon
                                             const Icon(
                                               Icons.restore_rounded,
                                               color: Colors.white,
@@ -864,11 +857,8 @@ class _ArchiveOnlineExamState extends State<ArchiveOnlineExam>
                                         ),
                                       ),
                                       const SizedBox(height: 32),
-
-                                      // Title with gradient text effect
                                       ShaderMask(
-                                        shaderCallback: (bounds) =>
-                                            LinearGradient(
+                                        shaderCallback: (bounds) => LinearGradient(
                                           colors: [
                                             Colors.blue[700]!,
                                             Colors.blue[500]!
@@ -884,8 +874,6 @@ class _ArchiveOnlineExamState extends State<ArchiveOnlineExam>
                                         ),
                                       ),
                                       const SizedBox(height: 16),
-
-                                      // Subtitle with better styling
                                       Text(
                                         'Sedang memproses pemulihan data ujian',
                                         style: TextStyle(
@@ -905,16 +893,12 @@ class _ArchiveOnlineExamState extends State<ArchiveOnlineExam>
                                         textAlign: TextAlign.center,
                                       ),
                                       const SizedBox(height: 24),
-
-                                      // Progress dots animation
                                       Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: List.generate(
                                           3,
                                           (index) => Container(
-                                            margin: const EdgeInsets.symmetric(
-                                                horizontal: 4),
+                                            margin: const EdgeInsets.symmetric(horizontal: 4),
                                             child: AnimatedBuilder(
                                               animation: _pulseAnimation,
                                               builder: (context, child) {
@@ -923,13 +907,8 @@ class _ArchiveOnlineExamState extends State<ArchiveOnlineExam>
                                                   height: 8,
                                                   decoration: BoxDecoration(
                                                     color: Colors.blue[400]!.withValues(
-                                                        alpha: 0.3 +
-                                                            0.7 *
-                                                                (((_pulseAnimation
-                                                                            .value +
-                                                                        (index *
-                                                                            0.3)) %
-                                                                    1.0))),
+                                                      alpha: 0.3 + 0.7 * (((_pulseAnimation.value + (index * 0.3)) % 1.0)),
+                                                    ),
                                                     shape: BoxShape.circle,
                                                   ),
                                                 );
@@ -946,70 +925,50 @@ class _ArchiveOnlineExamState extends State<ArchiveOnlineExam>
                             barrierDismissible: false,
                           );
 
+                          // Trigger API restore ke server
                           await context
                               .read<OnlineExamCubit>()
                               .restoreOnlineExam(exam.id);
 
-                          if (!mounted) {
-                            Get.back();
-                            return;
+                          if (!mounted) return;
+
+                          // 2. Tutup dialog loading jika masih terbuka
+                          if (Get.isDialogOpen ?? false) {
+                            Get.back(); 
                           }
 
-                          Get.back(); // Close loading
-
-                          // Show auto-dismissing success snackbar
+                          // 3. Tampilkan Snack sukses menggunakan ScaffoldMessenger (Lebih Aman dari Crash Overlay)
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Container(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8),
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.check_circle,
-                                        color: Colors.white),
-                                    SizedBox(width: 12),
-                                    Text(
-                                      'Ujian berhasil dipulihkan!',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              backgroundColor: Colors.green.shade400,
-                              duration: const Duration(seconds: 2),
+                            const SnackBar(
+                              content: Text('Ujian berhasil dipulihkan!'),
+                              backgroundColor: Colors.green,
+                              duration: Duration(seconds: 2),
                               behavior: SnackBarBehavior.floating,
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              elevation: 4,
                             ),
                           );
 
-                          await Future.delayed(
-                              const Duration(milliseconds: 500));
-
-                          // Navigate back to OnlineExamScreen with restored exam info
+                          // 4. Baru kembalikan rute ke halaman utama dengan membawa data result
                           Get.back(result: {
                             'action': 'restored',
                             'examId': exam.id,
                             'examTitle': exam.title,
+                            'exam': exam,
                           });
+
                         } catch (e) {
-                          Get.back(); // Close loading
-                          Get.snackbar(
-                            'Gagal',
-                            'Gagal memulihkan ujian: ${e.toString()}',
-                            backgroundColor: Colors.red,
-                            colorText: Colors.white,
-                            snackPosition: SnackPosition.TOP,
-                            duration: const Duration(seconds: 3),
+                          if (Get.isDialogOpen ?? false) {
+                            Get.back(); // Tutup loading jika gagal
+                          }
+
+                          if (!mounted) return;
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Gagal memulihkan ujian: ${e.toString()}'),
+                              backgroundColor: Colors.red,
+                              duration: const Duration(seconds: 3),
+                              behavior: SnackBarBehavior.floating,
+                            ),
                           );
                         }
                       },
@@ -1291,8 +1250,8 @@ class _ArchiveOnlineExamState extends State<ArchiveOnlineExam>
                           // Tutup loading
                           Get.back();
 
-                          // Refresh exam list
-                          _loadArchivedExams();
+                          // Refresh exam list is removed to preserve optimistic update
+                          // _loadArchivedExams();
 
                           // Show auto-dismissing success snackbar
                           ScaffoldMessenger.of(context).showSnackBar(

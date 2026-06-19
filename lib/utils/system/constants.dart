@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/data/models/academic/assignmentSubmission.dart';
+import 'package:eschool_saas_staff/data/models/academic/assignmentSubmission.dart';
 import 'package:eschool_saas_staff/data/models/academic/studyMaterial.dart';
 import 'package:eschool_saas_staff/utils/system/app_config.dart';
 import 'package:eschool_saas_staff/utils/system/labelKeys.dart';
@@ -107,12 +107,12 @@ const List<String> weekDays = [
 
 String getLeaveTypeValueFromKey({required String leaveTypeKey}) {
   if (leaveTypeKey == firstHalfKey) {
-    return "Paruh Pertama";
+    return "First Half";
   }
   if (leaveTypeKey == secondHalfKey) {
-    return "Paruh Kedua";
+    return "Second Half";
   }
-  return "Sehari Penuh";
+  return "Full";
 }
 
 ///[ 0 -> Pending, 1 -> Approved, 2 -> Rejected ]
@@ -165,7 +165,8 @@ StudentAttendanceStatus getStudentAttendanceStatusFromValue(int status) {
     result = StudentAttendanceStatus.absent;
   }
 
-  debugPrint('Attendance status resolved to: ${result.toString().split('.').last}');
+  debugPrint(
+      'Attendance status resolved to: ${result.toString().split('.').last}');
   return result;
 }
 

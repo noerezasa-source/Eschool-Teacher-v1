@@ -1,4 +1,4 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eschool_saas_staff/data/models/extracurricular/extracurricular.dart';
 import 'package:eschool_saas_staff/data/repositories/extracurricular/extracurricularRepository.dart';
 import 'package:eschool_saas_staff/data/models/auth/user.dart';
@@ -43,8 +43,29 @@ class ExtracurricularFailure extends ExtracurricularState {
 class ExtracurricularCubit extends Cubit<ExtracurricularState> {
   final ExtracurricularRepository _extracurricularRepository;
 
+  static final Set<int> _optimisticRestoredIds = {};
+  static final Map<int, Extracurricular> _optimisticRestoredExtracurriculars = {};
+
   ExtracurricularCubit(this._extracurricularRepository)
       : super(ExtracurricularInitial());
+
+  void addExtracurricular(Extracurricular extracurricular) {
+    _optimisticRestoredIds.add(extracurricular.id);
+    _optimisticRestoredExtracurriculars[extracurricular.id] = extracurricular;
+
+    final currentState = state;
+    if (currentState is ExtracurricularSuccess) {
+      if (currentState.extracurriculars.any((e) => e.id == extracurricular.id)) {
+        return;
+      }
+      final updatedExtracurriculars = List<Extracurricular>.from(currentState.extracurriculars);
+      updatedExtracurriculars.insert(0, extracurricular);
+      emit(ExtracurricularSuccess(
+        extracurriculars: updatedExtracurriculars,
+        archivedExtracurriculars: currentState.archivedExtracurriculars,
+      ));
+    }
+  }
 
   // Get active extracurriculars
   Future<void> getExtracurriculars() async {
@@ -53,15 +74,31 @@ class ExtracurricularCubit extends Cubit<ExtracurricularState> {
     try {
       final extracurriculars =
           await _extracurricularRepository.getExtracurriculars();
+
+      for (var ec in extracurriculars) {
+        _optimisticRestoredIds.remove(ec.id);
+        _optimisticRestoredExtracurriculars.remove(ec.id);
+      }
+
+      final List<Extracurricular> activeList = List<Extracurricular>.from(extracurriculars);
+      for (var id in _optimisticRestoredIds) {
+        if (_optimisticRestoredExtracurriculars.containsKey(id)) {
+          final ec = _optimisticRestoredExtracurriculars[id]!;
+          if (!activeList.any((e) => e.id == ec.id)) {
+            activeList.insert(0, ec);
+          }
+        }
+      }
+
       final currentState = state;
       final archivedExtracurriculars = currentState is ExtracurricularSuccess
           ? currentState.archivedExtracurriculars
           : <Extracurricular>[];
 
       debugPrint(
-          '✅ [EXTRACURRICULAR CUBIT] Success: ${extracurriculars.length} active extracurriculars');
+          '✅ [EXTRACURRICULAR CUBIT] Success: ${activeList.length} active extracurriculars');
       emit(ExtracurricularSuccess(
-        extracurriculars: extracurriculars,
+        extracurriculars: activeList,
         archivedExtracurriculars: archivedExtracurriculars,
       ));
     } catch (e) {
@@ -220,11 +257,27 @@ class ExtracurricularCubit extends Cubit<ExtracurricularState> {
     try {
       final extracurriculars =
           await _extracurricularRepository.getExtracurriculars();
+
+      for (var ec in extracurriculars) {
+        _optimisticRestoredIds.remove(ec.id);
+        _optimisticRestoredExtracurriculars.remove(ec.id);
+      }
+
+      final List<Extracurricular> activeList = List<Extracurricular>.from(extracurriculars);
+      for (var id in _optimisticRestoredIds) {
+        if (_optimisticRestoredExtracurriculars.containsKey(id)) {
+          final ec = _optimisticRestoredExtracurriculars[id]!;
+          if (!activeList.any((e) => e.id == ec.id)) {
+            activeList.insert(0, ec);
+          }
+        }
+      }
+
       final archivedExtracurriculars =
           await _extracurricularRepository.getArchivedExtracurriculars();
 
       emit(ExtracurricularSuccess(
-        extracurriculars: extracurriculars,
+        extracurriculars: activeList,
         archivedExtracurriculars: archivedExtracurriculars,
       ));
     } catch (e) {

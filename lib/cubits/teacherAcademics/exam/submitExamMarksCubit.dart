@@ -1,4 +1,4 @@
-﻿// ignore: depend_on_referenced_packages
+// ignore: depend_on_referenced_packages
 import 'package:bloc/bloc.dart';
 import 'package:eschool_saas_staff/data/repositories/student/studentRepository.dart';
 import 'package:eschool_saas_staff/utils/system/errorMessageUtils.dart';
@@ -24,33 +24,32 @@ class SubmitExamMarksCubit extends Cubit<SubmitExamMarksState> {
 
   Future<void> submitOfflineExamMarks({
     required int classSubjectId,
+    required int classSectionId,
     required int examId,
-    required List<({int obtainedMarks, int studentId})> marksDetails,
+    required int examTimetableId,
+    required Map<String, dynamic> marksDataValue,
   }) async {
     emit(SubmitExamMarksSubmitInProgress());
     try {
-      var parameter = {
-        "marks_data": List.generate(
-            marksDetails.length,
-            (index) => {
-                  "student_id": marksDetails[index].studentId,
-                  "obtained_marks": marksDetails[index].obtainedMarks,
-                })
-      };
       await studentRepository.addOfflineExamMarks(
         examId: examId,
-        marksDataValue: parameter,
+        marksDataValue: marksDataValue,
         classSubjectId: classSubjectId,
+        classSectionId: classSectionId,
+        examTimetableId: examTimetableId,
       );
+      if (isClosed) return;
       emit(SubmitExamMarksSubmitSuccess());
     } catch (e) {
+      if (isClosed) return;
       // Gunakan ErrorMessageUtils untuk mengkonversi error teknis menjadi pesan yang ramah
       // Check if error is numeric (integer or string number)
       final errorString = e.toString();
       final isNumericError = int.tryParse(errorString) != null;
-      
+
       if (isNumericError) {
-        final userFriendlyMessage = ErrorMessageUtils.getReadableErrorMessage(e);
+        final userFriendlyMessage =
+            ErrorMessageUtils.getReadableErrorMessage(e);
         emit(SubmitExamMarksSubmitFailure(errorMessage: userFriendlyMessage));
       } else {
         emit(SubmitExamMarksSubmitFailure(errorMessage: errorString));

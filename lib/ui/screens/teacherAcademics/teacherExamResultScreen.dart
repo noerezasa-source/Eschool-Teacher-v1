@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/cubits/teacherAcademics/gradeLevelCubit.dart';
+import 'package:eschool_saas_staff/cubits/teacherAcademics/gradeLevelCubit.dart';
 import 'package:eschool_saas_staff/data/models/academic/gradeLevel.dart';
 import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
 import 'package:eschool_saas_staff/cubits/student/studentsByClassSectionCubit.dart';
@@ -215,7 +215,7 @@ class _TeacherExamResultScreenState extends State<TeacherExamResultScreen>
           status: StudentListStatus.active,
           classSectionId: _selectedClassSection?.id ?? 0,
           examId: _selectedExam?.examID ?? 0,
-          classSubjectId: _selectedExamTimetableSubject?.subjectId ?? 0);
+          classSubjectId: _selectedExamTimetableSubject?.classSubjectId ?? 0);
     } else {
       context.read<StudentsByClassSectionCubit>().updateState(
           StudentsByClassSectionFetchFailure(
@@ -229,13 +229,10 @@ class _TeacherExamResultScreenState extends State<TeacherExamResultScreen>
     }
     marksControllers.clear();
     for (int i = 0; i < students.length; i++) {
+      final existingMark = students[i].examMarks?.firstWhereOrNull((element) =>
+          element.examTimetableId == _selectedExamTimetableSubject?.id);
       marksControllers.add(TextEditingController(
-          text: students[i]
-              .examMarks
-              ?.firstWhereOrNull((element) =>
-                  element.examTimetableId == _selectedExamTimetableSubject?.id)
-              ?.obtainedMarks
-              .toString()));
+          text: existingMark != null ? existingMark.obtainedMarks.toString() : ""));
     }
   }
 
@@ -838,10 +835,7 @@ class _TeacherExamResultScreenState extends State<TeacherExamResultScreen>
                 splashColor: _primaryColor.withValues(alpha: 0.05),
                 highlightColor: Colors.transparent,
                 onTap: () {
-                  // Optional: Add focus to the text field when tapped
-                  FocusScope.of(context).requestFocus(FocusNode());
-                  controller.selection = TextSelection(
-                      baseOffset: 0, extentOffset: controller.text.length);
+                  // Let the user tap the text field directly to edit
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -1042,13 +1036,13 @@ class _TeacherExamResultScreenState extends State<TeacherExamResultScreen>
               ],
             ),
             child: BlocConsumer<SubmitExamMarksCubit, SubmitExamMarksState>(
-              listener: (context, state) {
+              listener: (submitListenerContext, state) {
                 if (state is SubmitExamMarksSubmitSuccess) {
                   // Show custom success toast
                   OverlayEntry? overlayEntry;
 
                   overlayEntry = OverlayEntry(
-                    builder: (context) => Positioned(
+                    builder: (overlayContext) => Positioned(
                       bottom: 70,
                       left: 20,
                       right: 20,
@@ -1126,14 +1120,14 @@ class _TeacherExamResultScreenState extends State<TeacherExamResultScreen>
                   });
                 } else if (state is SubmitExamMarksSubmitFailure) {
                   Utils.showSnackBar(
-                      message: "Anda harus mengisi penilaian",
+                      message: state.errorMessage,
                       context: context);
                 }
               },
-              builder: (context, state) {
+              builder: (submitBuilderContext, state) {
                 return AnimatedBuilder(
                   animation: _pulseAnimation,
-                  builder: (context, child) {
+                  builder: (animBuilderContext, child) {
                     return Container(
                       height: 60,
                       decoration: BoxDecoration(
@@ -1198,22 +1192,32 @@ class _TeacherExamResultScreenState extends State<TeacherExamResultScreen>
                               context
                                   .read<SubmitExamMarksCubit>()
                                   .submitOfflineExamMarks(
+                                    examTimetableId:
+                                        _selectedExamTimetableSubject?.id ?? 0,
                                     classSubjectId:
                                         _selectedExamTimetableSubject
-                                                ?.subjectId ??
+                                                ?.classSubjectId ??
                                             0,
+                                    classSectionId:
+                                        _selectedClassSection?.id ?? 0,
                                     examId: _selectedExam?.examID ?? 0,
-                                    marksDetails: List.generate(
-                                      marksControllers.length,
-                                      (index) => (
-                                        obtainedMarks: int.tryParse(
-                                                marksControllers[index].text) ??
-                                            0,
-                                        studentId: studentState
-                                                .studentDetailsList[index].id ??
-                                            0
+                                    marksDataValue: {
+                                      "exam_id": _selectedExam?.examID ?? 0,
+                                      "class_subject_id": _selectedExamTimetableSubject?.classSubjectId ?? 0,
+                                      "class_section_id": _selectedClassSection?.id ?? 0,
+                                      "exam_timetable_id": _selectedExamTimetableSubject?.id ?? 0,
+                                      "marks_data": List.generate(
+                                        marksControllers.length,
+                                        (index) => {
+                                          "student_id": studentState
+                                              .studentDetailsList[index]
+                                              .id ?? 0,
+                                          "obtained_marks": int.tryParse(
+                                                  marksControllers[index]
+                                                      .text) ?? 0
+                                        },
                                       ),
-                                    ),
+                                    },
                                   );
                             }
                           },

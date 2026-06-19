@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/cubits/teacherAcademics/classSectionsAndSubjects.dart';
+import 'package:eschool_saas_staff/cubits/teacherAcademics/classSectionsAndSubjects.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/lesson/lessonsCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/topic/createTopicCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/topic/editTopicCubit.dart';
@@ -96,7 +96,7 @@ class _TeacherAddEditTopicScreenState extends State<TeacherAddEditTopicScreen>
 
   // Theme colors - Softer Maroon palette
   static const Color _primaryColor = Color(0xFF7A1E23); // Softer deep maroon
-  static const Color _accentColor = Color(0xFF9D3C3C); // Softer medium
+  static const Color _accentColor = Color(0xFF9D3C3C); // Softer medium maroon
 
   //This will determine if need to refresh the previous page
   //topics data. If teacher remove the the any study material
@@ -160,6 +160,13 @@ class _TeacherAddEditTopicScreenState extends State<TeacherAddEditTopicScreen>
     );
     _animationController.forward();
 
+    // Initialize _pulseController
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    );
+    _pulseController.repeat(reverse: true);
+  
     // Initialize fabAnimationController for CustomModernAppBar
     _fabAnimationController = AnimationController(
       vsync: this,
@@ -1490,4 +1497,3 @@ class _TeacherAddEditTopicScreenState extends State<TeacherAddEditTopicScreen>
     );
   }
 }
-

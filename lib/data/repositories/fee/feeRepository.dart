@@ -1,4 +1,5 @@
-﻿import 'package:eschool_saas_staff/data/models/fee/fee.dart';
+import 'dart:convert';
+import 'package:eschool_saas_staff/data/models/fee/fee.dart';
 import 'package:eschool_saas_staff/data/models/student/studentDetails.dart';
 import 'package:eschool_saas_staff/utils/system/api.dart';
 import 'package:flutter/foundation.dart';
@@ -234,28 +235,9 @@ class FeeRepository {
         queryParameters: params,
       );
 
-      debugPrint("Full Response Data: $result");
-
-      // Validate response format
-      if (result['error'] == true) {
-        debugPrint("API returned error: ${result['message']}");
-        throw ApiException(result['message'] ?? "Unknown error occurred");
-      }
-
-      if (!result.containsKey('pdf')) {
-        debugPrint(
-            "PDF key not found in response. Available keys: ${result.keys.toList()}");
-        throw ApiException("Could not generate receipt. Please try again.");
-      }
-
-      final pdfData = (result['pdf'] ?? "").toString();
-      if (pdfData.isEmpty) {
-        debugPrint("Error: Generated PDF data is empty");
-        throw ApiException("Generated receipt is empty");
-      }
-
-      debugPrint("PDF data length: ${pdfData.length}");
-      return pdfData;
+      // Use centralized helper for PDF (Support pdf_url)
+      final bytes = await Api.fetchDocumentBytes(result);
+      return base64Encode(bytes);
     } catch (e) {
       debugPrint("Error in downloadStudentFeeReceipt: $e");
       if (e is ApiException) {

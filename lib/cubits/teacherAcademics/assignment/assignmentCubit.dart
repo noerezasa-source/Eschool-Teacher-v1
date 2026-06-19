@@ -76,7 +76,7 @@ class AssignmentCubit extends Cubit<AssignmentState> {
         page: page,
       );
 
-  
+      if (isClosed) return;
 
       emit(AssignmentsFetchSuccess(
         assignment: result.assignments,
@@ -86,7 +86,8 @@ class AssignmentCubit extends Cubit<AssignmentState> {
         fetchMoreAssignmentsInProgress: false,
       ));
     } catch (e) {
-      return emit(
+      if (isClosed) return;
+      emit(
         AssignmentFetchFailure(e.toString()),
       );
     }
@@ -120,7 +121,7 @@ class AssignmentCubit extends Cubit<AssignmentState> {
         page: (state as AssignmentsFetchSuccess).currentPage + 1,
       );
 
-  
+      if (isClosed) return;
 
       final currentState = state as AssignmentsFetchSuccess;
 
@@ -138,6 +139,7 @@ class AssignmentCubit extends Cubit<AssignmentState> {
         ),
       );
     } catch (e) {
+      if (isClosed) return;
       emit(
         (state as AssignmentsFetchSuccess).copyWith(
           newMoreAssignmentsFetchError: true,

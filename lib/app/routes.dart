@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 
 import 'package:eschool_saas_staff/ui/screens/system/AboutUsScreen.dart';
 import 'package:eschool_saas_staff/ui/screens/system/PrivacyPolicyScreen.dart';
@@ -73,6 +73,7 @@ import 'package:eschool_saas_staff/ui/screens/teacherAcademics/teacherViewAttend
 import 'package:eschool_saas_staff/ui/screens/staff/teacherProfileScreen.dart';
 import 'package:eschool_saas_staff/ui/screens/academics/teacherTimeTableDetailsScreen.dart';
 import 'package:eschool_saas_staff/ui/screens/staff/teachersScreen.dart';
+import 'package:eschool_saas_staff/ui/screens/teacherAcademics/attendanceRecapScreen.dart';
 import 'package:get/get.dart';
 import 'package:eschool_saas_staff/ui/screens/teacherAcademics/questionBankListScreen.dart';
 import 'package:eschool_saas_staff/ui/screens/teacherAcademics/questionSubjectScreen.dart';
@@ -97,6 +98,7 @@ import 'package:eschool_saas_staff/ui/screens/onlineExam/previewQuestionBankSoal
 import 'package:eschool_saas_staff/data/models/exam/BankOnlineQuestion.dart';
 import 'package:eschool_saas_staff/ui/screens/onlineExam/examStatuScreen.dart';
 import 'package:eschool_saas_staff/cubits/examStatus/examStatusCubit.dart';
+import 'package:eschool_saas_staff/cubits/academics/sessionYearsAndMediumsCubit.dart';
 import 'package:eschool_saas_staff/data/repositories/exam/examStatusRepository.dart';
 import 'package:eschool_saas_staff/ui/screens/assignmentMonitoring/assignmentMonitoringScreen.dart';
 import 'package:eschool_saas_staff/ui/screens/assignmentMonitoring/assignmentDetailMonitoringScreen.dart';
@@ -184,6 +186,7 @@ class Routes {
   static String teacherViewAttendanceSubjectScreen =
       "/teacherViewAttendanceSubject";
   static String recapAttendanceSubjectScreen = "/recapAttendanceSubject";
+  static String attendanceRecapScreen = "/attendanceRecap";
   static String attendanceRankingScreen = "/attendanceRanking";
   static String teacherManageLessonScreen = "/teacherManageLesson";
   static String teacherManageTopicScreen = "/teacherManageTopic";
@@ -310,13 +313,18 @@ class Routes {
         page: () => ChangePasswordScreen.getRouteInstance()),
     GetPage(
       name: questionSubjectScreen,
-      page: () => BlocProvider(
-        create: (context) => QuestionBankCubit(
-          repository: QuestionBankRepository(),
-        )..fetchTeacherSubjects(
-            isStaffView: true), // Set isStaffView to true for staff
-        child: const QuestionSubjectScreen(isStaffView: true),
-      ),
+      page: () {
+        // Safe check for arguments
+        final args = Get.arguments;
+        final bool isStaffView = (args != null && args is Map && args['isStaffView'] == true);
+        
+        return BlocProvider(
+          create: (context) => QuestionBankCubit(
+            repository: QuestionBankRepository(),
+          )..fetchTeacherSubjects(isStaffView: isStaffView),
+          child: QuestionSubjectScreen(isStaffView: isStaffView),
+        );
+      },
     ),
     GetPage(name: aboutUsScreen, page: () => AboutUsScreen.getRouteInstance()),
     GetPage(
@@ -369,6 +377,10 @@ class Routes {
     GetPage(
       name: recapAttendanceSubjectScreen,
       page: () => RecapAttendanceSubjectScreen.getRouteInstance(),
+    ),
+    GetPage(
+      name: attendanceRecapScreen,
+      page: () => AttendanceRecapScreen.getRouteInstance(),
     ),
     GetPage(
       name: attendanceRankingScreen,
@@ -440,14 +452,7 @@ class Routes {
       name: chatContacts,
       page: () => ChatContainer.getRouteInstance(),
     ),
-    GetPage(
-      name: questionSubjectScreen,
-      page: () => BlocProvider(
-        create: (context) =>
-            QuestionBankCubit(repository: QuestionBankRepository()),
-        child: const QuestionSubjectScreen(),
-      ),
-    ),
+
     GetPage(
       name: questionBankScreen,
       page: () => BlocProvider(
@@ -569,18 +574,7 @@ class Routes {
     //   ),
     // ),
 
-    GetPage(
-      name: bankQuestionScreen,
-      page: () => BlocProvider(
-        create: (context) =>
-            QuestionBankCubit(repository: QuestionBankRepository()),
-        child: BankQuestionScreen(
-          bankSoal: Get.arguments['bankSoal'] as BankSoal,
-          subjectId: Get.arguments['subjectId'] as int,
-          subject: Get.arguments['subject'] as SubjectQuestion,
-        ),
-      ),
-    ),
+
     GetPage(
       name: addQuestionScreen,
       page: () {
@@ -622,6 +616,9 @@ class Routes {
           ),
           BlocProvider<ClassSectionsAndSubjectsCubit>(
             create: (context) => ClassSectionsAndSubjectsCubit(),
+          ),
+          BlocProvider<SessionYearsAndMediumsCubit>(
+            create: (context) => SessionYearsAndMediumsCubit(),
           ),
         ],
         child: const CreateOnlineExam(),
@@ -666,6 +663,9 @@ class Routes {
           BlocProvider<ClassSectionsAndSubjectsCubit>(
             create: (context) => ClassSectionsAndSubjectsCubit(),
           ),
+          BlocProvider<SessionYearsAndMediumsCubit>(
+            create: (context) => SessionYearsAndMediumsCubit(),
+          ),
         ],
         child: EditOnlineExam(
           exam: Get.arguments,
@@ -682,6 +682,9 @@ class Routes {
           ),
           BlocProvider<ClassSectionsAndSubjectsCubit>(
             create: (context) => ClassSectionsAndSubjectsCubit(),
+          ),
+          BlocProvider<SessionYearsAndMediumsCubit>(
+            create: (context) => SessionYearsAndMediumsCubit(),
           ),
         ],
         child:

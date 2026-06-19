@@ -1,7 +1,8 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eschool_saas_staff/cubits/onlineExam/onlineExamCubit.dart';
-import 'package:eschool_saas_staff/data/models/academic/subjectDetail.dart';
+import 'package:eschool_saas_staff/cubits/teacherAcademics/classSectionsAndSubjects.dart';
+import 'package:eschool_saas_staff/data/models/academic/teacherSubject.dart';
 import 'package:eschool_saas_staff/data/models/exam/onlineExam.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -59,7 +60,7 @@ class _EditOnlineExamState extends State<EditOnlineExam>
 
   late AnimationController _animationController;
 
-  SubjectDetail? selectedSubject;
+  TeacherSubject? selectedSubject;
   String? selectedTingkatan;
   String? selectedKelas;
   String? selectedMapel;
@@ -109,51 +110,8 @@ class _EditOnlineExamState extends State<EditOnlineExam>
 
     _animationController.forward();
 
-    // Load subjects and set selected subject
-    context.read<OnlineExamCubit>().getOnlineExams().then((_) {
-      if (mounted) {
-        final state = context.read<OnlineExamCubit>().state;
-        if (state is OnlineExamSuccess) {
-          try {
-            final List<dynamic> subjectList = state.subjectDetails;
-            final subjects = subjectList
-                .where((e) => e != null)
-                .map((e) => SubjectDetail.fromJson(e))
-                .toList();
-
-            // Build tingkatan list
-            tingkatanList = subjects
-                .map((e) =>
-                    e.classSection.name.split(RegExp(r"\s+")).first.trim())
-                .where((t) => t.isNotEmpty)
-                .toSet()
-                .toList()
-              ..sort();
-
-            // find the matching subject for existing exam
-            final matches = subjects
-                .where((subject) =>
-                    subject.classSubjectId == widget.exam.classSubjectId &&
-                    subject.classSection.id == widget.exam.classSectionId)
-                .toList();
-
-            final match = matches.isNotEmpty ? matches.first : null;
-
-            setState(() {
-              selectedSubject = match;
-              if (match != null) {
-                selectedTingkatan =
-                    match.classSection.name.split(RegExp(r"\s+")).first.trim();
-                selectedKelas = match.classSection.name;
-                selectedMapel = match.subject.name;
-              }
-            });
-          } catch (err) {
-            // Handle error parsing subjects
-          }
-        }
-      }
-    });
+    // Load class sections for the teacher
+    context.read<ClassSectionsAndSubjectsCubit>().getClassSectionsAndSubjects(classSectionId: widget.exam.classSectionId);
   }
 
   @override
@@ -225,7 +183,7 @@ class _EditOnlineExamState extends State<EditOnlineExam>
           .read<OnlineExamCubit>()
           .updateOnlineExam(
             id: widget.exam.id,
-            classSectionId: selectedSubject!.classSection.id,
+            classSectionId: selectedSubject!.classSectionId,
             classSubjectId: selectedSubject!.classSubjectId,
             title: _titleController.text,
             examKey: _examKeyController.text,
@@ -424,143 +382,155 @@ class _EditOnlineExamState extends State<EditOnlineExam>
   }
 
   Widget _buildSubjectDropdown() {
-    return BlocBuilder<OnlineExamCubit, OnlineExamState>(
+    return BlocBuilder<ClassSectionsAndSubjectsCubit, ClassSectionsAndSubjectsState>(
       builder: (context, state) {
-        List<SubjectDetail> subjects = [];
-        if (state is OnlineExamSuccess) {
-          subjects = state.subjectDetails
-              .where((e) => e != null)
-              .map((e) {
-                try {
-                  return SubjectDetail.fromJson(e);
-                } catch (err) {
-                  return null;
-                }
-              })
-              .whereType<SubjectDetail>()
-              .toList();
-        }
-
-        tingkatanList = subjects
-            .map((e) => e.classSection.name.split(RegExp(r"\s+")).first.trim())
-            .where((t) => t.isNotEmpty)
-            .toSet()
-            .toList()
-          ..sort();
-
-        kelasList = selectedTingkatan == null
-            ? []
-            : subjects
-                .where((e) =>
-                    e.classSection.name.split(RegExp(r"\s+")).first.trim() ==
-                    selectedTingkatan)
-                .map((e) => e.classSection.name)
-                .toSet()
-                .toList()
-          ..sort();
-
-        mapelList = selectedKelas == null
-            ? []
-            : subjects
-                .where((e) => e.classSection.name == selectedKelas)
-                .map((e) => e.subject.name)
-                .toSet()
-                .toList()
-          ..sort();
-
-        return Column(
-          children: [
-            DropdownButtonFormField<String>(
-              initialValue: selectedTingkatan,
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.layers, color: Color(0xFF8B0000)),
-                labelText: 'Pilih Tingkatan',
-                filled: true,
-                fillColor: Colors.grey.shade50,
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              items: tingkatanList
-                  .map((t) => DropdownMenuItem(value: t, child: Text(t)))
-                  .toList(),
-              onChanged: (v) {
+        if (state is ClassSectionsAndSubjectsFetchSuccess) {
+          final classSections = state.classSections;
+          
+          if (selectedTingkatan == null && selectedKelas == null && selectedMapel == null) {
+            // First load initialization
+            try {
+              final initialClassSection = classSections.firstWhere((e) => e.id == widget.exam.classSectionId);
+              
+              // Use Future.microtask to avoid calling setState during build
+              Future.microtask(() {
+                if (!mounted) return;
                 setState(() {
-                  selectedTingkatan = v;
-                  selectedKelas = null;
-                  selectedMapel = null;
-                  selectedSubject = null;
+                  selectedTingkatan = (initialClassSection.name ?? "").split(RegExp(r"\s+")).first.trim();
+                  selectedKelas = initialClassSection.name;
+                  
+                  try {
+                    final initialSubject = state.subjects.firstWhere((e) => e.classSubjectId == widget.exam.classSubjectId);
+                    selectedMapel = initialSubject.subject.name;
+                    selectedSubject = initialSubject;
+                  } catch (e) {
+                    debugPrint("Error finding initial subject: $e");
+                  }
                 });
-              },
-              isExpanded: true,
-              hint: const Text('Pilih Tingkatan'),
-            ),
-            if (selectedTingkatan != null) ...[
-              const SizedBox(height: 12),
+              });
+            } catch (e) {
+              debugPrint("Error finding initial class section: $e");
+            }
+          }
+
+          tingkatanList = classSections
+              .map((e) => (e.name ?? "").split(RegExp(r"\s+")).first.trim())
+              .where((t) => t.isNotEmpty)
+              .toSet()
+              .toList()
+            ..sort();
+
+          kelasList = selectedTingkatan == null
+              ? []
+              : classSections
+                  .where((e) => (e.name ?? "").split(RegExp(r"\s+")).first.trim() == selectedTingkatan)
+                  .map((e) => e.name ?? "")
+                  .toSet()
+                  .toList()
+            ..sort();
+
+          mapelList = selectedKelas == null
+              ? []
+              : state.subjects.map((e) => e.subject.name ?? "").toSet().toList()
+            ..sort();
+
+          return Column(
+            children: [
               DropdownButtonFormField<String>(
-                initialValue: selectedKelas,
+                initialValue: selectedTingkatan,
                 decoration: InputDecoration(
-                  prefixIcon:
-                      const Icon(Icons.class_, color: Color(0xFF8B0000)),
-                  labelText: 'Pilih Kelas',
+                  prefixIcon: const Icon(Icons.layers, color: Color(0xFF8B0000)),
+                  labelText: 'Pilih Tingkatan',
                   filled: true,
                   fillColor: Colors.grey.shade50,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                items: kelasList
-                    .map((k) => DropdownMenuItem(value: k, child: Text(k)))
+                items: tingkatanList
+                    .map((t) => DropdownMenuItem(value: t, child: Text(t)))
                     .toList(),
                 onChanged: (v) {
                   setState(() {
-                    selectedKelas = v;
+                    selectedTingkatan = v;
+                    selectedKelas = null;
                     selectedMapel = null;
                     selectedSubject = null;
                   });
                 },
                 isExpanded: true,
-                hint: const Text('Pilih Kelas'),
+                hint: const Text('Pilih Tingkatan'),
               ),
-            ],
-            if (selectedKelas != null) ...[
-              const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                initialValue: selectedMapel,
-                decoration: InputDecoration(
-                  prefixIcon:
-                      const Icon(Icons.menu_book, color: Color(0xFF8B0000)),
-                  labelText: 'Pilih Mata Pelajaran',
-                  filled: true,
-                  fillColor: Colors.grey.shade50,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                ),
-                items: mapelList
-                    .map((m) => DropdownMenuItem(value: m, child: Text(m)))
-                    .toList(),
-                onChanged: (v) {
-                  setState(() {
-                    selectedMapel = v;
-                  });
-
-                  final matches = subjects
-                      .where((e) =>
-                          e.classSection.name == selectedKelas &&
-                          e.subject.name == v)
-                      .toList();
-                  if (matches.isNotEmpty) {
+              if (selectedTingkatan != null) ...[
+                const SizedBox(height: 12),
+                DropdownButtonFormField<String>(
+                  initialValue: selectedKelas,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.class_, color: Color(0xFF8B0000)),
+                    labelText: 'Pilih Kelas',
+                    filled: true,
+                    fillColor: Colors.grey.shade50,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  items: kelasList
+                      .map((k) => DropdownMenuItem(value: k, child: Text(k)))
+                      .toList(),
+                  onChanged: (v) {
                     setState(() {
-                      selectedSubject = matches.first;
+                      selectedKelas = v;
+                      selectedMapel = null;
+                      selectedSubject = null;
                     });
-                  }
-                },
-                isExpanded: true,
-                hint: const Text('Pilih Mata Pelajaran'),
-                validator: (value) =>
-                    value == null ? 'Pilih mata pelajaran' : null,
-              ),
+                    if (v != null) {
+                      try {
+                        final selectedClass = classSections.firstWhere((e) => (e.name ?? "") == v);
+                        if (selectedClass.id != null) {
+                          context.read<ClassSectionsAndSubjectsCubit>().getNewSubjectsFromSelectedClassSectionIndex(newClassSectionId: selectedClass.id!);
+                        }
+                      } catch (e) {
+                        debugPrint("Error fetching new subjects: $e");
+                      }
+                    }
+                  },
+                  isExpanded: true,
+                  hint: const Text('Pilih Kelas'),
+                ),
+              ],
+              if (selectedKelas != null) ...[
+                const SizedBox(height: 12),
+                DropdownButtonFormField<String>(
+                  initialValue: selectedMapel,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.menu_book, color: Color(0xFF8B0000)),
+                    labelText: 'Pilih Mata Pelajaran',
+                    filled: true,
+                    fillColor: Colors.grey.shade50,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  items: mapelList
+                      .map((m) => DropdownMenuItem(value: m, child: Text(m)))
+                      .toList(),
+                  onChanged: (v) {
+                    setState(() {
+                      selectedMapel = v;
+                    });
+
+                    final matches = state.subjects
+                        .where((e) => e.subject.name == v)
+                        .toList();
+                    if (matches.isNotEmpty) {
+                      setState(() {
+                        selectedSubject = matches.first;
+                      });
+                    }
+                  },
+                  isExpanded: true,
+                  hint: const Text('Pilih Mata Pelajaran'),
+                  validator: (value) => value == null ? 'Pilih mata pelajaran' : null,
+                ),
+              ],
             ],
-          ],
-        );
+          );
+        }
+        return const Center(child: CircularProgressIndicator());
       },
     );
   }

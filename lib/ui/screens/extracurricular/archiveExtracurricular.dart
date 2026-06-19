@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eschool_saas_staff/cubits/extracurricular/extracurricularCubit.dart';
 import 'package:eschool_saas_staff/data/models/extracurricular/extracurricular.dart';
@@ -880,6 +880,7 @@ class _ArchiveExtracurricularState extends State<ArchiveExtracurricular>
                             'action': 'restored',
                             'extracurricularId': extracurricular.id,
                             'extracurricularName': extracurricular.name,
+                            'extracurricular': extracurricular,
                           });
                         } catch (e) {
                           Get.back(); // Close loading

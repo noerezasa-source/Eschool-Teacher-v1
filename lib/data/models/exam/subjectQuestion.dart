@@ -26,16 +26,25 @@ class SubjectQuestion {
 
   factory SubjectQuestion.fromJson(Map<String, dynamic> json) {
     try {
-      final subject = json['subject'] ?? {};
+      final subject = json['subject'] ?? json; // Fallback to root json if no nested subject
+
+      // Robust parsing helper
+      int parseCount(dynamic value) {
+        if (value == null) return 0;
+        if (value is int) return value;
+        if (value is String) return int.tryParse(value) ?? 0;
+        return 0;
+      }
 
       return SubjectQuestion(
-        id: json['id'] ?? subject['id'],
+        id: json['id'] ?? subject['id'] ?? json['subject_id'],
         teacherId: json['teacher_id'] ?? 0,
-        subjectId: subject['id'] ?? 0,
+        subjectId: subject['id'] ?? json['subject_id'] ?? 0,
         name: subject['name'] ?? '',
-        soalCount: json['bank_soal_count'] ?? 0,
+        // Use soal_count as primary for total questions, fallback to bank_soal_count if needed
+        soalCount: parseCount(json['soal_count'] ?? json['bank_soal_count'] ?? 0),
         banks: [],
-        bankSoalCount: json['bank_soal_count'] ?? 0,
+        bankSoalCount: parseCount(json['bank_soal_count'] ?? 0),
         subjectWithName: json['subject_with_name'] ??
             "${subject['name']} (${subject['type'] ?? 'Theory'})",
         subject: Subject.fromJson(subject),
@@ -91,7 +100,7 @@ class Subject {
   factory Subject.fromJson(Map<String, dynamic> json) {
     try {
       return Subject(
-        id: json['id'] ?? 0,
+        id: json['id'] ?? json['subject_id'] ?? 0,
         name: json['name'] ?? '',
         type: json['type'] ?? 'Theory',
         nameWithType: json['name_with_type'] ??

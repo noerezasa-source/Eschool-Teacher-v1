@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'dart:math' as math;
 import 'package:eschool_saas_staff/cubits/onlineExam/onlineExamCubit.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customErrorWidget.dart';
@@ -385,13 +385,22 @@ class _OnlineExamResultScreenState extends State<OnlineExamResultScreen>
             });
           }
 
+          final now = DateTime.now();
           final filteredExams = state.exams.where((exam) {
             if (_selectedFilter == "Semua") return true;
-            if (_selectedFilter == "Belum Dimulai") return exam.status == 0;
-            if (_selectedFilter == "Sedang Berlangsung") {
-              return exam.status == 1;
+
+            int effectiveStatus = exam.status;
+            if (exam.status == 0 &&
+                now.isAfter(exam.startDate) &&
+                now.isBefore(exam.endDate)) {
+              effectiveStatus = 1;
             }
-            if (_selectedFilter == "Selesai") return exam.status == 2;
+
+            if (_selectedFilter == "Belum Dimulai") return effectiveStatus == 0;
+            if (_selectedFilter == "Sedang Berlangsung") {
+              return effectiveStatus == 1;
+            }
+            if (_selectedFilter == "Selesai") return effectiveStatus == 2;
             return false;
           }).toList()
             ..sort((a, b) => b.startDate.compareTo(a.startDate));
@@ -593,58 +602,72 @@ class _OnlineExamResultScreenState extends State<OnlineExamResultScreen>
                             Positioned(
                               top: 20,
                               right: 24,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 8),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(30),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color:
-                                          Colors.black.withValues(alpha: 0.1),
-                                      blurRadius: 10,
-                                      spreadRadius: -5,
-                                    ),
-                                  ],
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      exam.status == 0
-                                          ? Icons.schedule_outlined
-                                          : exam.status == 1
-                                              ? Icons.play_circle_outline
-                                              : Icons.check_circle_outline,
-                                      size: 16,
-                                      color: exam.status == 0
-                                          ? Colors.orange
-                                          : exam.status == 1
-                                              ? Colors.blue
-                                              : Colors.green,
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      exam.status == 0
-                                          ? 'Belum Dimulai'
-                                          : exam.status == 1
-                                              ? 'Berlangsung'
-                                              : 'Selesai',
-                                      style: TextStyle(
-                                        color: exam.status == 0
+                              child: Builder(builder: (context) {
+                                final now = DateTime.now();
+                                int effectiveStatus = exam.status;
+
+                                // Logika Status Dinamis:
+                                // Jika status di DB masih 0 (Belum Dimulai) tapi waktu sekarang sudah masuk jadwal,
+                                // maka tampilkan sebagai Berlangsung (1).
+                                if (exam.status == 0 &&
+                                    now.isAfter(exam.startDate) &&
+                                    now.isBefore(exam.endDate)) {
+                                  effectiveStatus = 1;
+                                }
+
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(30),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color:
+                                            Colors.black.withValues(alpha: 0.1),
+                                        blurRadius: 10,
+                                        spreadRadius: -5,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        effectiveStatus == 0
+                                            ? Icons.schedule_outlined
+                                            : effectiveStatus == 1
+                                                ? Icons.play_circle_outline
+                                                : Icons.check_circle_outline,
+                                        size: 16,
+                                        color: effectiveStatus == 0
                                             ? Colors.orange
-                                            : exam.status == 1
+                                            : effectiveStatus == 1
                                                 ? Colors.blue
                                                 : Colors.green,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        letterSpacing: 0.3,
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        effectiveStatus == 0
+                                            ? 'Belum Dimulai'
+                                            : effectiveStatus == 1
+                                                ? 'Berlangsung'
+                                                : 'Selesai',
+                                        style: TextStyle(
+                                          color: effectiveStatus == 0
+                                              ? Colors.orange
+                                              : effectiveStatus == 1
+                                                  ? Colors.blue
+                                                  : Colors.green,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0.3,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }),
                             ),
 
                             // Exam Title

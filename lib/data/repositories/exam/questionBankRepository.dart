@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 import 'package:eschool_saas_staff/data/models/exam/question.dart';
 import 'package:eschool_saas_staff/data/models/exam/questionBank.dart';
 import 'package:eschool_saas_staff/data/models/exam/subjectQuestion.dart';
@@ -95,10 +95,16 @@ class QuestionBankRepository {
 
   Future<List<BankSoal>> getBankSoal(int subjectId) async {
     try {
+      debugPrint("=== FETCH BANK SOAL ===");
+      debugPrint("Subject ID: $subjectId");
+      debugPrint("URL: ${Api.getBankSoal}?subject_id=$subjectId");
+
       final response = await Api.get(
         url: Api.getBankSoal,
         queryParameters: {'subject_id': subjectId},
       );
+
+      debugPrint("Response: $response");
 
       if (response['data'] == null) {
         throw ApiException("Data is null");
@@ -108,8 +114,13 @@ class QuestionBankRepository {
           .map((json) => BankSoal.fromJson(json))
           .toList();
 
+      debugPrint("Parsed ${bankSoal.length} bank soal");
       return bankSoal;
     } catch (e) {
+      debugPrint("=== BANK SOAL ERROR ===");
+      debugPrint("Subject ID: $subjectId");
+      debugPrint("Error: $e");
+      debugPrint("Error type: ${e.runtimeType}");
       throw ApiException(e.toString());
     }
   }

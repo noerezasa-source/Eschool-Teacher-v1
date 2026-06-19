@@ -1,4 +1,4 @@
-﻿import 'dart:ui';
+import 'dart:ui';
 import 'package:eschool_saas_staff/app/routes.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/assignment/assignmentCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/assignment/deleteAssignmentCubit.dart';
@@ -1214,8 +1214,13 @@ class _TeacherManageAssignmentScreenState
                                               child: InkWell(
                                                 onTap: () {
                                                   HapticFeedback.lightImpact();
-                                                  // Add download functionality here
+                                                  Utils.viewOrDownloadStudyMaterial(
+                                                    context: context,
+                                                    storeInExternalStorage: true,
+                                                    studyMaterial: material,
+                                                  );
                                                 },
+
                                                 borderRadius:
                                                     BorderRadius.circular(14),
                                                 child: Container(
@@ -1474,6 +1479,7 @@ class _TeacherManageAssignmentScreenState
                   padding: EdgeInsets.only(
                       top: topPaddingOfErrorAndLoadingContainer),
                   child: CustomErrorWidget(
+                    title: "Gagal memuat tugas:\n${state.errorMessage}",
                     message: "Gagal mendapatkan tugas, mohon coba lagi",
                     onRetry: () {
                       getAssignments();

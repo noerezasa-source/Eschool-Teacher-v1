@@ -29,8 +29,10 @@ class GradeLevelCubit extends Cubit<GradeLevelState> {
     emit(GradeLevelFetchInProgress());
     try {
       final gradeLevelsResult = await _teacherRepository.getGradeLevels();
+      if (isClosed) return;
       emit(GradeLevelFetchSuccess(gradeLevels: gradeLevelsResult));
     } catch (e) {
+      if (isClosed) return;
       emit(GradeLevelFetchFailure(e.toString()));
     }
   }

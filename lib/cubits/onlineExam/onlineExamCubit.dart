@@ -1,16 +1,13 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eschool_saas_staff/data/repositories/exam/onlineExamRepository.dart';
 import 'package:eschool_saas_staff/data/models/exam/onlineExam.dart';
-import 'package:eschool_saas_staff/data/models/academic/subject.dart'
-    as subject_model; // Add SubjectDetail model
-import 'package:eschool_saas_staff/utils/system/api.dart'; // Add this import
+import 'package:eschool_saas_staff/utils/system/api.dart';
 // Add this import
 import 'package:eschool_saas_staff/utils/system/errorMessageUtils.dart';
 
 import 'package:eschool_saas_staff/data/models/academic/subjectDetail.dart';
-
 
 abstract class OnlineExamState {}
 
@@ -110,7 +107,32 @@ class QuestionsStored extends OnlineExamState {}
 class OnlineExamCubit extends Cubit<OnlineExamState> {
   final OnlineExamRepository _repository;
 
+  // Static tracking for optimistic updates - shared across all cubit instances
+  // because OnlineExamScreen and ArchiveOnlineExam create separate cubit instances
+  static final Set<int> _optimisticArchivedIds = {};
+  static final Map<int, OnlineExam> _optimisticArchivedExams = {};
+  static final Set<int> _optimisticRestoredIds = {};
+  static final Map<int, OnlineExam> _optimisticRestoredExams = {};
+
   OnlineExamCubit(this._repository) : super(OnlineExamInitial());
+
+  void addExam(OnlineExam exam) {
+    _optimisticRestoredIds.add(exam.id);
+    _optimisticRestoredExams[exam.id] = exam;
+    if (state is OnlineExamSuccess) {
+      final currentState = state as OnlineExamSuccess;
+      if (currentState.exams.any((e) => e.id == exam.id)) {
+        return;
+      }
+      final updatedExams = List<OnlineExam>.from(currentState.exams);
+      updatedExams.insert(0, exam);
+      emit(OnlineExamSuccess(
+        exams: updatedExams,
+        archivedExams: currentState.archivedExams,
+        subjectDetails: currentState.subjectDetails,
+      ));
+    }
+  }
 
   // Method untuk mendapatkan ujian aktif
   Future<void> getOnlineExams(
@@ -122,6 +144,7 @@ class OnlineExamCubit extends Cubit<OnlineExamState> {
       DateTime? startDate,
       DateTime? endDate}) async {
     try {
+      if (isClosed) return;
       emit(OnlineExamLoading());
 
       final result = await _repository.getOnlineExams(
@@ -131,8 +154,9 @@ class OnlineExamCubit extends Cubit<OnlineExamState> {
           sessionYearId: sessionYearId,
           startDate: startDate,
           endDate: endDate,
-          status: 'active',
-          archive: getFull);
+          // status: 'active', // Dikomentari agar mengambil semua status lalu difilter di cubit
+          archive: getFull ?? false,
+          modeAll: true);
 
       final List<OnlineExam> activeExams = [];
       final List<OnlineExam> archivedExams = [];
@@ -141,15 +165,36 @@ class OnlineExamCubit extends Cubit<OnlineExamState> {
         for (var examData in result['exams']) {
           try {
             final exam = OnlineExam.fromJson(examData);
-            // Status 1 = active, Status 2 = archived
-            // if (getFull == true) {
+            // In this specific system, it seems status 2 is widely used for exams.
+            // We will show both status 1 and 2 in the active list if status 2 is not meant to be hidden.
+            // If the user wants to see them, they must be in activeExams.
             activeExams.add(exam);
-            // }
+            _optimisticRestoredIds.remove(exam.id);
+            _optimisticRestoredExams.remove(exam.id);
+
+            // If we still want to track archived for the archive button, 
+            // we'd need to know which status TRULY means archived (e.g. status 3 or 0)
+            if (exam.status == 2) {
+              archivedExams.add(exam);
+            }
           } catch (e) {
-            debugPrint('Error parsing active exam: $e');
+            debugPrint('Error parsing exam (ID: ${examData['id']}): $e');
           }
         }
       }
+
+      // Inject any remaining optimistic restored ones
+      for (var id in _optimisticRestoredIds) {
+        if (_optimisticRestoredExams.containsKey(id)) {
+          final exam = _optimisticRestoredExams[id]!;
+          if (!activeExams.any((e) => e.id == exam.id)) {
+            activeExams.insert(0, exam);
+          }
+        }
+      }
+
+      if (isClosed) return;
+      debugPrint('Cubit SUCCESS: Total Active Exams: ${activeExams.length}');
       emit(OnlineExamSuccess(
         exams: activeExams,
         archivedExams: archivedExams,
@@ -157,6 +202,8 @@ class OnlineExamCubit extends Cubit<OnlineExamState> {
       ));
     } catch (e) {
       debugPrint("Cubit Error: $e");
+      
+      if (isClosed) return;
       // Gunakan ErrorMessageUtils untuk mengkonversi error teknis menjadi pesan yang ramah
       final userFriendlyMessage = ErrorMessageUtils.getReadableErrorMessage(e);
       emit(OnlineExamFailure(userFriendlyMessage));
@@ -173,6 +220,7 @@ class OnlineExamCubit extends Cubit<OnlineExamState> {
     String? search,
   }) async {
     try {
+      if (isClosed) return;
       emit(OnlineExamLoading());
 
       final result = await _repository.getOnlineExamResultAnswer(
@@ -181,6 +229,7 @@ class OnlineExamCubit extends Cubit<OnlineExamState> {
         search: search,
       );
 
+      if (isClosed) return;
       emit(OnlineExamAnswersSuccess(
         answers: (result['answers'] as List<dynamic>)
             .map((answer) => OnlineExamAnswer(
@@ -195,6 +244,7 @@ class OnlineExamCubit extends Cubit<OnlineExamState> {
             .toList(),
       ));
     } catch (e) {
+      if (isClosed) return;
       // Gunakan ErrorMessageUtils untuk mengkonversi error teknis menjadi pesan yang ramah
       final userFriendlyMessage = ErrorMessageUtils.getReadableErrorMessage(e);
       emit(OnlineExamFailure(userFriendlyMessage));
@@ -211,72 +261,45 @@ class OnlineExamCubit extends Cubit<OnlineExamState> {
     required int classSubjectId,
     required String title,
     required String examKey,
-    required int duration, // Add duration parameter
+    required int duration,
     required DateTime startDate,
+    int? sessionYearId,
   }) async {
     try {
+      if (isClosed) return;
       emit(CreateOnlineExamLoading());
 
-      await _repository.createOnlineExam(
+      final response = await _repository.createOnlineExam(
         classSectionId: classSectionId,
         classSubjectId: classSubjectId,
         title: title,
         examKey: examKey,
-        duration: duration, // Pass duration to repository
+        duration: duration,
         startDate: startDate,
+        sessionYearId: sessionYearId,
       );
 
-      // After successful creation, immediately fetch updated exam list
-      final result = await _repository.getOnlineExams();
-
-      final List<OnlineExam> exams = [];
-      if (result['exams'] is List) {
-        for (var examData in result['exams']) {
-          try {
-            final exam = OnlineExam.fromJson(examData);
-            exams.add(exam);
-          } catch (e) {
-            debugPrint('Error parsing exam: $e');
-          }
-        }
-      } // Emit success state with updated exam list
-      emit(OnlineExamSuccess(
-        exams: exams,
-        subjectDetails: result['subjectDetails'] ?? [],
-      ));
+      if (isClosed) return;
+      // Emit success state with the created exam data
+      emit(CreateOnlineExamSuccess(OnlineExam.fromJson(response)));
     } catch (e) {
-      // Gunakan ErrorMessageUtils untuk mengkonversi error teknis menjadi pesan yang ramah
-      final userFriendlyMessage = ErrorMessageUtils.getReadableErrorMessage(e);
-      emit(CreateOnlineExamFailure(userFriendlyMessage));
+      if (isClosed) return;
+      
+      String message = e.toString();
+      // Remove "Exception: " prefix if present
+      if (message.startsWith('Exception: ')) {
+        message = message.replaceFirst('Exception: ', '');
+      }
+      
+      // If it's a technical Dio error, use ErrorMessageUtils for a user-friendly translation
+      if (message.contains('DioException') || message.contains('SocketException')) {
+        message = ErrorMessageUtils.getReadableErrorMessage(e);
+      }
+      
+      emit(CreateOnlineExamFailure(message));
 
-      // Log technical error untuk debugging (hanya untuk development)
-      debugPrint(
-          'Technical error in createOnlineExam: ${ErrorMessageUtils.getTechnicalErrorMessage(e)}');
-    }
-  }
-
-  // Add this method to the existing OnlineExamCubit class
-
-  // Tambahkan method baru di dalam class OnlineExamCubit
-  Future<void> getSubjectsForClass(int classSectionId) async {
-    try {
-      emit(SubjectsLoading());
-      final result = await _repository.getOnlineExams(
-        classSectionId: classSectionId,
-      );
-
-      final subjects = (result['subjectDetails'] as List)
-          .map((subject) => subject_model.Subject.fromJson(subject))
-          .toList();
-      emit(SubjectsLoaded(subjects));
-    } catch (e) {
-      // Gunakan ErrorMessageUtils untuk mengkonversi error teknis menjadi pesan yang ramah
-      final userFriendlyMessage = ErrorMessageUtils.getReadableErrorMessage(e);
-      emit(SubjectsError(userFriendlyMessage));
-
-      // Log technical error untuk debugging (hanya untuk development)
-      debugPrint(
-          'Technical error in getSubjectsForClass: ${ErrorMessageUtils.getTechnicalErrorMessage(e)}');
+      // Log technical error for debugging
+      debugPrint('Technical error in createOnlineExam: $e');
     }
   }
 
@@ -329,7 +352,7 @@ class OnlineExamCubit extends Cubit<OnlineExamState> {
 
       // Fetch updated exam list immediately
 
-      final result = await _repository.getOnlineExams();
+      final result = await _repository.getOnlineExams(status: 'active', modeAll: true);
 
       final List<OnlineExam> exams = [];
       if (result['exams'] is List) {
@@ -365,25 +388,55 @@ class OnlineExamCubit extends Cubit<OnlineExamState> {
     required String mode,
   }) async {
     try {
-      emit(OnlineExamLoading());
+      // Optimistic update
+      if (state is OnlineExamSuccess) {
+        final currentState = state as OnlineExamSuccess;
+        if (mode == 'archive') {
+          final updatedActive = currentState.exams.where((e) => e.id != examId).toList();
+          
+          OnlineExam? examToArchive;
+          try {
+            examToArchive = currentState.exams.firstWhere((e) => e.id == examId);
+            _optimisticArchivedIds.add(examId);
+            _optimisticArchivedExams[examId] = examToArchive;
+          } catch (_) {}
+
+          final updatedArchived = List<OnlineExam>.from(currentState.archivedExams);
+          if (examToArchive != null) {
+            updatedArchived.insert(0, examToArchive);
+          }
+
+          emit(OnlineExamSuccess(
+            exams: updatedActive,
+            archivedExams: updatedArchived,
+            subjectDetails: currentState.subjectDetails,
+          ));
+        } else if (mode == 'permanent') {
+          final updatedArchived = currentState.archivedExams.where((e) => e.id != examId).toList();
+          emit(OnlineExamSuccess(
+            exams: currentState.exams,
+            archivedExams: updatedArchived,
+            subjectDetails: currentState.subjectDetails,
+          ));
+        }
+      } else {
+        emit(OnlineExamLoading());
+      }
 
       await _repository.deleteOnlineExam(examId, mode: mode);
-
-      // Tunggu sebentar sebelum refresh data
-      await Future.delayed(const Duration(milliseconds: 1000));
-
-      // Refresh data berdasarkan mode
-      if (mode == 'permanent') {
-        await getArchivedExams(); // Refresh archived list untuk mode permanent
-      } else {
-        await getOnlineExams(); // Refresh active list untuk mode archive
-      }
     } catch (e) {
       debugPrint('Delete Error in Cubit: $e');
       String errorMessage = 'Gagal menghapus ujian';
 
       if (e is ApiException) {
         errorMessage = e.errorMessage;
+      }
+
+      // Rollback optimistic update by refreshing from backend
+      if (mode == 'permanent') {
+        await getArchivedExams();
+      } else {
+        await getOnlineExams();
       }
 
       emit(OnlineExamFailure(errorMessage));
@@ -408,14 +461,32 @@ class OnlineExamCubit extends Cubit<OnlineExamState> {
             final exam = OnlineExam.fromJson(examData);
             // Jangan filter berdasarkan status, tambahkan semua hasil dari parameter archive:true
             archivedExams.add(exam);
+            _optimisticArchivedIds.remove(exam.id); // Remove from optimistic if backend returns it
+            _optimisticArchivedExams.remove(exam.id);
           } catch (e) {
             debugPrint('Error parsing archived exam: $e');
           }
         }
       }
 
+      // Inject any remaining optimistic ones
+      for (var id in _optimisticArchivedIds) {
+        if (_optimisticArchivedExams.containsKey(id)) {
+          // Insert at the beginning so it shows at the top
+          archivedExams.insert(0, _optimisticArchivedExams[id]!);
+        }
+      }
+      
+      // Remove any that were optimistically restored
+      archivedExams.removeWhere((e) => _optimisticRestoredIds.contains(e.id));
+
+      List<OnlineExam> currentActive = [];
+      if (state is OnlineExamSuccess) {
+        currentActive = (state as OnlineExamSuccess).exams;
+      }
+
       emit(OnlineExamSuccess(
-        exams: [], // Keep active exams empty for archive view
+        exams: currentActive, // Keep existing active exams instead of clearing them
         archivedExams: archivedExams,
         subjectDetails: result['subjectDetails'] ?? [],
       ));
@@ -433,55 +504,45 @@ class OnlineExamCubit extends Cubit<OnlineExamState> {
 
   Future<void> restoreOnlineExam(int examId) async {
     try {
-      emit(OnlineExamLoading());
+      // Optimistic update
+      if (state is OnlineExamSuccess) {
+        final currentState = state as OnlineExamSuccess;
+        final updatedArchived = currentState.archivedExams.where((e) => e.id != examId).toList();
+        
+        // We can't perfectly optimistically add to active exams because we don't have the full exam object 
+        // to move, unless we find it in archivedExams.
+        OnlineExam? examToRestore;
+        try {
+          examToRestore = currentState.archivedExams.firstWhere((e) => e.id == examId);
+          _optimisticRestoredIds.add(examId);
+          _optimisticArchivedIds.remove(examId);
+          _optimisticArchivedExams.remove(examId);
+        } catch (_) {}
+
+        final updatedActive = List<OnlineExam>.from(currentState.exams);
+        if (examToRestore != null) {
+          updatedActive.insert(0, examToRestore);
+        }
+
+        emit(OnlineExamSuccess(
+          exams: updatedActive,
+          archivedExams: updatedArchived,
+          subjectDetails: currentState.subjectDetails,
+        ));
+      } else {
+        emit(OnlineExamLoading());
+      }
 
       await _repository.restoreOnlineExam(examId);
 
-      // Refresh both active and archived exam lists
-      final result = await _repository.getOnlineExams();
-      final archivedResult = await _repository.getOnlineExams(archive: true);
-
-      final List<OnlineExam> activeExams = [];
-      final List<OnlineExam> archivedExams = [];
-
-      // Process active exams
-      if (result['exams'] is List) {
-        for (var examData in result['exams']) {
-          try {
-            final exam = OnlineExam.fromJson(examData);
-            activeExams.add(exam);
-          } catch (e) {
-            debugPrint('Error parsing active exam: $e');
-          }
-        }
-      }
-
-      // Process archived exams
-      if (archivedResult['exams'] is List) {
-        for (var examData in archivedResult['exams']) {
-          try {
-            final exam = OnlineExam.fromJson(examData);
-            if (exam.status == 2) {
-              archivedExams.add(exam);
-            }
-          } catch (e) {
-            debugPrint('Error parsing archived exam: $e');
-          }
-        }
-      }
-
-      emit(OnlineExamSuccess(
-        exams: activeExams,
-        archivedExams: archivedExams,
-        subjectDetails: result['subjectDetails'] ?? [],
-      ));
     } catch (e) {
       debugPrint('Restore Error: $e');
-      // Gunakan ErrorMessageUtils untuk mengkonversi error teknis menjadi pesan yang ramah
       final userFriendlyMessage = ErrorMessageUtils.getReadableErrorMessage(e);
+      
+      // Rollback optimistic update
+      await getArchivedExams();
+      
       emit(OnlineExamFailure(userFriendlyMessage));
-
-      // Log technical error untuk debugging (hanya untuk development)
       debugPrint(
           'Technical error in restoreOnlineExam: ${ErrorMessageUtils.getTechnicalErrorMessage(e)}');
       rethrow;
