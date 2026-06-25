@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -9,6 +9,7 @@ import 'dart:io';
 import '../../../cubits/teacherAcademics/assignment/questionBankCubit.dart';
 import 'package:eschool_saas_staff/data/models/exam/question.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 
 class AddQuestionScreen extends StatefulWidget {
   final int bankSoalId;
@@ -49,12 +50,12 @@ class _AddQuestionScreenState extends State<AddQuestionScreen>
   late AnimationController _animationController;
 
   // Define the theme colors
-  static const Color _primaryColor = Color(0xFF7A1E23); // Softer deep maroon
-  static const Color _accentColor = Color(0xFF9D3C3C); // Softer medium maroon
-  static const Color _highlightColor =
-      Color(0xFFB84D4D); // Softer bright maroon
-  static const Color _energyColor = Color(0xFFCE6D6D); // Softer light maroon
-  static const Color _glowColor = Color(0xFFAF4F4F); // Softer rich maroon
+  static Color get _primaryColor => AppColorPalette.primaryMaroon; // Softer deep maroon
+  static Color get _accentColor => AppColorPalette.secondaryMaroon; // Softer medium maroon
+  static Color get _highlightColor =>
+      AppColorPalette.secondaryMaroon; // Softer bright maroon
+  static Color get _energyColor => AppColorPalette.lightMaroon; // Softer light maroon
+  static Color get _glowColor => AppColorPalette.secondaryMaroon; // Softer rich maroon
 
   @override
   void initState() {
@@ -475,13 +476,13 @@ class _AddQuestionScreenState extends State<AddQuestionScreen>
           // Header with gradient
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [_primaryColor, _accentColor],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
               ),
@@ -601,13 +602,13 @@ class _AddQuestionScreenState extends State<AddQuestionScreen>
             // Styled header
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [_highlightColor, _energyColor],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
                 ),
@@ -871,7 +872,7 @@ class _AddQuestionScreenState extends State<AddQuestionScreen>
                     minLines: 2,
                     decoration: InputDecoration(
                       labelText: 'Teks Jawaban',
-                      prefixIcon: const Icon(
+                      prefixIcon: Icon(
                         Icons.text_fields_rounded,
                         color: _primaryColor,
                       ),
@@ -941,7 +942,7 @@ class _AddQuestionScreenState extends State<AddQuestionScreen>
                     controller: _feedbackControllers[index],
                     decoration: InputDecoration(
                       labelText: 'Umpan Balik untuk jawaban ini',
-                      prefixIcon: const Icon(
+                      prefixIcon: Icon(
                         Icons.comment_outlined,
                         color: _primaryColor,
                       ),
@@ -1112,7 +1113,7 @@ class _AddQuestionScreenState extends State<AddQuestionScreen>
                     controller: _feedbackControllers[index],
                     decoration: InputDecoration(
                       labelText: 'Umpan Balik',
-                      prefixIcon: const Icon(
+                      prefixIcon: Icon(
                         Icons.comment_outlined,
                         color: _primaryColor,
                       ),
@@ -1208,7 +1209,7 @@ class _AddQuestionScreenState extends State<AddQuestionScreen>
                                   : selectedType == 'short_answer'
                                       ? 'Jawaban Singkat'
                                       : 'Jawaban Numerik',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 15,
                                 color: _primaryColor,
@@ -1282,7 +1283,7 @@ class _AddQuestionScreenState extends State<AddQuestionScreen>
                           decoration: InputDecoration(
                             labelText: 'Persentase Nilai',
                             prefixIcon:
-                                const Icon(Icons.percent, color: _primaryColor),
+                                Icon(Icons.percent, color: _primaryColor),
                             suffixText: '%',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -1305,7 +1306,7 @@ class _AddQuestionScreenState extends State<AddQuestionScreen>
                           controller: _feedbackControllers[index],
                           decoration: InputDecoration(
                             labelText: 'Umpan Balik',
-                            prefixIcon: const Icon(Icons.comment_outlined,
+                            prefixIcon: Icon(Icons.comment_outlined,
                                 color: _primaryColor),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -1351,7 +1352,7 @@ class _AddQuestionScreenState extends State<AddQuestionScreen>
               border: Border.all(color: _primaryColor.withValues(alpha: 0.5)),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
@@ -1359,7 +1360,7 @@ class _AddQuestionScreenState extends State<AddQuestionScreen>
                   color: _primaryColor,
                   size: 18,
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
                   'Tambah Pilihan Jawaban',
                   style: TextStyle(
@@ -1390,7 +1391,7 @@ class _AddQuestionScreenState extends State<AddQuestionScreen>
               border: Border.all(color: _primaryColor.withValues(alpha: 0.5)),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
@@ -1398,7 +1399,7 @@ class _AddQuestionScreenState extends State<AddQuestionScreen>
                   color: _primaryColor,
                   size: 18,
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
                   'Tambah Jawaban',
                   style: TextStyle(
@@ -1440,7 +1441,7 @@ class _AddQuestionScreenState extends State<AddQuestionScreen>
               const SizedBox(width: 8),
               Text(
                 label,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
                   color: _primaryColor,
@@ -1466,7 +1467,7 @@ class _AddQuestionScreenState extends State<AddQuestionScreen>
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: _primaryColor, width: 2),
+                borderSide: BorderSide(color: _primaryColor, width: 2),
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -1799,7 +1800,7 @@ class _AddQuestionScreenState extends State<AddQuestionScreen>
       child: DropdownButtonFormField<String>(
         initialValue: selectedType,
         icon:
-            const Icon(Icons.keyboard_arrow_down_rounded, color: _primaryColor),
+            Icon(Icons.keyboard_arrow_down_rounded, color: _primaryColor),
         decoration: const InputDecoration(
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -1859,13 +1860,13 @@ class _AddQuestionScreenState extends State<AddQuestionScreen>
             // Styled header
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [_accentColor, _highlightColor],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
                 ),

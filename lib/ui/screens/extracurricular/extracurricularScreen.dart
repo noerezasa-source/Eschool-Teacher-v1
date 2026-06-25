@@ -13,7 +13,8 @@ import 'package:flutter/services.dart';
 import 'dart:math' as math;
 import 'package:eschool_saas_staff/ui/widgets/system/customErrorWidget.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/no_search_results_widget.dart';
-import 'package:eschool_saas_staff/ui/widgets/skeleton/skeleton_widgets.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
+import 'package:eschool_saas_staff/ui/widgets/skeleton/skeletonCard.dart';
 
 class ExtracurricularScreen extends StatefulWidget {
   const ExtracurricularScreen({super.key});
@@ -48,9 +49,9 @@ class _ExtracurricularScreenState extends State<ExtracurricularScreen>
   List<String> coachNameList = [];
 
   // Theme colors - Softer Maroon palette (same as onlineExamScreen)
-  static const Color _primaryColor = Color(0xFF7A1E23); // Softer deep maroon
-  static const Color _highlightColor =
-      Color(0xFFB84D4D); // Softer bright maroon
+  static Color get _primaryColor => AppColorPalette.primaryMaroon; // Softer deep maroon
+  static Color get _highlightColor =>
+      AppColorPalette.secondaryMaroon; // Softer bright maroon
 
   @override
   void initState() {
@@ -317,10 +318,10 @@ class _ExtracurricularScreenState extends State<ExtracurricularScreen>
         child: TextField(
           decoration: InputDecoration(
             hintText: 'Cari ekstrakurikuler...',
-            prefixIcon: const Icon(Icons.search, color: _primaryColor),
+            prefixIcon: Icon(Icons.search, color: _primaryColor),
             suffixIcon: searchQuery.isNotEmpty
                 ? IconButton(
-                    icon: const Icon(Icons.clear, color: _primaryColor),
+                    icon: Icon(Icons.clear, color: _primaryColor),
                     onPressed: () {
                       setState(() {
                         searchQuery = "";
@@ -378,10 +379,10 @@ class _ExtracurricularScreenState extends State<ExtracurricularScreen>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Row(
+                    Row(
                       children: [
                         Icon(Icons.filter_list, color: _primaryColor, size: 20),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Text(
                           'Filter',
                           style: TextStyle(
@@ -399,7 +400,7 @@ class _ExtracurricularScreenState extends State<ExtracurricularScreen>
                             selectedCoachName = null;
                           });
                         },
-                        child: const Text(
+                        child: Text(
                           'Reset',
                           style: TextStyle(
                             color: _primaryColor,
@@ -415,11 +416,11 @@ class _ExtracurricularScreenState extends State<ExtracurricularScreen>
                   initialValue: selectedCoachName,
                   decoration: InputDecoration(
                     labelText: 'Pelatih/Coach',
-                    labelStyle: const TextStyle(color: _primaryColor),
-                    prefixIcon: const Icon(Icons.person, color: _primaryColor),
+                    labelStyle: TextStyle(color: _primaryColor),
+                    prefixIcon: Icon(Icons.person, color: _primaryColor),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: _primaryColor),
+                      borderSide: BorderSide(color: _primaryColor),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -428,7 +429,7 @@ class _ExtracurricularScreenState extends State<ExtracurricularScreen>
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide:
-                          const BorderSide(color: _primaryColor, width: 2),
+                          BorderSide(color: _primaryColor, width: 2),
                     ),
                   ),
                   items: coachNameList

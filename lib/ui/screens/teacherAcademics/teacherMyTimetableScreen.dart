@@ -1,5 +1,6 @@
 ﻿import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/teacherMyTimetableCubit.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/data/models/academic/classSection.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customTextContainer.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customErrorWidget.dart';
@@ -43,7 +44,7 @@ class _TeacherMyTimetableScreenState extends State<TeacherMyTimetableScreen>
   final List<GlobalKey> _dayKeys = List.generate(7, (_) => GlobalKey());
 
   // Theme colors
-  final Color _maroonPrimary = const Color(0xFF800020);
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
   bool _focusedOnce = false;
 
   @override

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SkeletonTeacherManageAssignmentSubmissionScreen extends StatelessWidget {
@@ -24,7 +25,7 @@ class SkeletonTeacherManageAssignmentSubmissionScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(22),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF800020).withValues(alpha: 0.05),
+                color: AppColorPalette.primaryMaroon.withValues(alpha: 0.05),
                 blurRadius: 20,
                 spreadRadius: 0,
                 offset: const Offset(0, 4),
@@ -52,13 +53,13 @@ class SkeletonTeacherManageAssignmentSubmissionScreen extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        const Color(0xFF6A1B31).withValues(alpha: 0.12),
-                        const Color(0xFF9A4156).withValues(alpha: 0.06),
+                        AppColorPalette.primaryMaroon.withValues(alpha: 0.12),
+                        AppColorPalette.secondaryMaroon.withValues(alpha: 0.06),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: const Color(0xFF6A1B31).withValues(alpha: 0.18),
+                      color: AppColorPalette.primaryMaroon.withValues(alpha: 0.18),
                       width: 1,
                     ),
                   ),
@@ -70,7 +71,7 @@ class SkeletonTeacherManageAssignmentSubmissionScreen extends StatelessWidget {
                           color: Colors.white.withValues(alpha: 0.7),
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                            color: const Color(0xFF800020).withValues(alpha: 0.15),
+                            color: AppColorPalette.primaryMaroon.withValues(alpha: 0.15),
                             width: 1,
                           ),
                         ),
@@ -120,7 +121,7 @@ class SkeletonTeacherManageAssignmentSubmissionScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF6A1B31).withValues(alpha: 0.08),
+                          color: AppColorPalette.primaryMaroon.withValues(alpha: 0.08),
                           blurRadius: 12,
                           spreadRadius: 0,
                           offset: const Offset(0, 4),
@@ -137,12 +138,12 @@ class SkeletonTeacherManageAssignmentSubmissionScreen extends StatelessWidget {
                         end: Alignment.bottomRight,
                         colors: [
                           Colors.white,
-                          const Color(0xFFF9F5F6).withValues(alpha: 0.5),
+                          AppColorPalette.accentPink.withValues(alpha: 0.5),
                         ],
                         stops: const [0.4, 1.0],
                       ),
                       border: Border.all(
-                        color: const Color(0xFFEADADA),
+                        color: AppColorPalette.lightMaroon,
                         width: 1,
                       ),
                     ),
@@ -164,7 +165,7 @@ class SkeletonTeacherManageAssignmentSubmissionScreen extends StatelessWidget {
                                   boxShadow: [
                                     BoxShadow(
                                       color:
-                                          const Color(0xFF6A1B31).withValues(alpha: 0.15),
+                                          AppColorPalette.primaryMaroon.withValues(alpha: 0.15),
                                       blurRadius: 8,
                                       offset: const Offset(0, 3),
                                     ),
@@ -191,19 +192,19 @@ class SkeletonTeacherManageAssignmentSubmissionScreen extends StatelessWidget {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 6, horizontal: 14),
                                 decoration: BoxDecoration(
-                                  gradient: const LinearGradient(
+                                  gradient: LinearGradient(
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
                                     colors: [
-                                      Color(0xFF6A1B31),
-                                      Color(0xFF57152A),
+                                      AppColorPalette.primaryMaroon,
+                                      AppColorPalette.primaryMaroon,
                                     ],
                                   ),
                                   borderRadius: BorderRadius.circular(20),
                                   boxShadow: [
                                     BoxShadow(
                                       color:
-                                          const Color(0xFF6A1B31).withValues(alpha: 0.25),
+                                          AppColorPalette.primaryMaroon.withValues(alpha: 0.25),
                                       blurRadius: 8,
                                       offset: const Offset(0, 2),
                                     ),
@@ -328,7 +329,7 @@ class SkeletonTeacherManageAssignmentSubmissionScreen extends StatelessWidget {
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(14),
                                     border: Border.all(
-                                      color: const Color(0xFFEADADA),
+                                      color: AppColorPalette.lightMaroon,
                                       width: 1,
                                     ),
                                   ),
@@ -401,7 +402,7 @@ class SkeletonTeacherManageAssignmentSubmissionScreen extends StatelessWidget {
                                 Container(
                                   height: 8,
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFEADADA),
+                                    color: AppColorPalette.lightMaroon,
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                 ),
@@ -444,7 +445,7 @@ class SkeletonTeacherManageAssignmentSubmissionScreen extends StatelessWidget {
                                       Container(
                                         padding: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFFF9F5F6)
+                                          color: AppColorPalette.accentPink
                                               .withValues(alpha: 0.7),
                                           borderRadius:
                                               BorderRadius.circular(10),

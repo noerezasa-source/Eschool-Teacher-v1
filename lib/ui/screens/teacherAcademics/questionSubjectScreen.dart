@@ -12,6 +12,7 @@ import '../../../data/models/exam/subjectQuestion.dart';
 import '../../../ui/widgets/system/customModernAppBar.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/no_search_results_widget.dart';
 import 'package:eschool_saas_staff/ui/widgets/skeleton/skeleton_widgets.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 
 class QuestionSubjectController extends GetxController {
   final BuildContext context;
@@ -112,22 +113,22 @@ class _QuestionSubjectScreenState extends State<QuestionSubjectScreen>
   // final List<ParticleModel> _particles = [];
 
   // Theme colors - Softer Maroon palette
-  static const Color _primaryColor =
-      Color(0xFF7A1E23); // Softer deep maroon (was 0xFF4A0000)
-  static const Color _accentColor =
-      Color(0xFF9D3C3C); // Softer medium maroon (was 0xFF800000)
-  static const Color _highlightColor =
-      Color(0xFFB84D4D); // Softer bright maroon (was 0xFFA52A2A)
-  static const Color _energyColor =
-      Color(0xFFCE6D6D); // Softer light maroon (was 0xFFC13E3E)
-  static const Color _glowColor =
-      Color(0xFFAF4F4F); // Softer rich maroon (was 0xFF9E2A2A)
+  static Color get _primaryColor =>
+      AppColorPalette.primaryMaroon; // Softer deep maroon (was 0xFF4A0000)
+  static Color get _accentColor =>
+      AppColorPalette.secondaryMaroon; // Softer medium maroon (was 0xFF800000)
+  static Color get _highlightColor =>
+      AppColorPalette.secondaryMaroon; // Softer bright maroon (was 0xFFA52A2A)
+  static Color get _energyColor =>
+      AppColorPalette.lightMaroon; // Softer light maroon (was 0xFFC13E3E)
+  static Color get _glowColor =>
+      AppColorPalette.secondaryMaroon; // Softer rich maroon (was 0xFF9E2A2A)
 
   final List<Color> _cardGradients = [
     const Color(0xFF7A2828), // Softer dark maroon (was 0xFF5D0000)
-    const Color(0xFF9D3C3C), // Softer classic maroon (was 0xFF800000)
-    const Color(0xFFAF4F4F), // Softer rich maroon (was 0xFF9E2A2A)
-    const Color(0xFFB84D4D), // Softer brown-maroon (was 0xFFA52A2A)
+    AppColorPalette.secondaryMaroon, // Softer classic maroon (was 0xFF800000)
+    AppColorPalette.secondaryMaroon, // Softer rich maroon (was 0xFF9E2A2A)
+    AppColorPalette.secondaryMaroon, // Softer brown-maroon (was 0xFFA52A2A)
     const Color(0xFFC65454), // Softer firebrick (was 0xFFB22222)
     const Color(0xFFAA3939), // Softer dark red (was 0xFF8B0000)
     const Color(0xFF8F2D2D), // Softer deep maroon (was 0xFF700000)
@@ -191,7 +192,7 @@ class _QuestionSubjectScreenState extends State<QuestionSubjectScreen>
     ]);
 
     // Set system UI style for immersive experience
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
       systemNavigationBarColor: _primaryColor,
@@ -387,7 +388,7 @@ class _QuestionSubjectScreenState extends State<QuestionSubjectScreen>
                 height: 180,
               ),
               const SizedBox(height: 20),
-              const Text(
+              Text(
                 'Belum ada mata pelajaran',
                 style: TextStyle(
                   fontSize: 20,
@@ -470,10 +471,10 @@ class _QuestionSubjectScreenState extends State<QuestionSubjectScreen>
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Cari mata pelajaran...',
-                prefixIcon: const Icon(Icons.search, color: _primaryColor),
+                prefixIcon: Icon(Icons.search, color: _primaryColor),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
-                        icon: const Icon(Icons.clear, color: _primaryColor),
+                        icon: Icon(Icons.clear, color: _primaryColor),
                         onPressed: () {
                           _clearSearch(subjects);
                         },

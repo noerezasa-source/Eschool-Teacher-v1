@@ -1,4 +1,5 @@
 import 'package:eschool_saas_staff/app/routes.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/classSectionsAndSubjects.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/gradeLevelCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/lesson/lessonsCubit.dart';
@@ -25,11 +26,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 // Define our theme colors
-const Color maroonPrimary = Color(0xFF8B1F41);
-const Color maroonLight = Color(0xFFAC3B5C);
+Color get maroonPrimary => AppColorPalette.primaryMaroon;
+Color get maroonLight => AppColorPalette.secondaryMaroon;
 const Color maroonDark = Color(0xFF6A0F2A);
-const Color accentColor = Color(0xFFF5EBE0);
-const Color bgColor = Color(0xFFFAF6F2);
+Color get accentColor => AppColorPalette.lightMaroon;
+Color get bgColor => AppColorPalette.accentPink;
 const Color cardColor = Colors.white;
 const Color textDarkColor = Color(0xFF2D2D2D);
 const Color textMediumColor = Color(0xFF717171);
@@ -498,7 +499,7 @@ class _TeacherManageTopicScreenState extends State<TeacherManageTopicScreen>
                             child: Container(
                               height: 6,
                               decoration: BoxDecoration(
-                                gradient: const LinearGradient(
+                                gradient: LinearGradient(
                                   colors: [maroonPrimary, maroonLight],
                                   begin: Alignment.centerLeft,
                                   end: Alignment.centerRight,
@@ -819,7 +820,7 @@ class _TeacherManageTopicScreenState extends State<TeacherManageTopicScreen>
                                             ),
                                             child: state
                                                     is DeleteTopicInProgress
-                                                ? const Center(
+                                                ? Center(
                                                     child: SizedBox(
                                                       width: 20,
                                                       height: 20,
@@ -830,7 +831,7 @@ class _TeacherManageTopicScreenState extends State<TeacherManageTopicScreen>
                                                       ),
                                                     ),
                                                   )
-                                                : const Icon(
+                                                : Icon(
                                                     Icons.more_vert_rounded,
                                                     color: maroonPrimary,
                                                     size: 22,
@@ -871,7 +872,7 @@ class _TeacherManageTopicScreenState extends State<TeacherManageTopicScreen>
                                         maroonPrimary.withValues(alpha: 0.08),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.description_outlined,
                                     color: maroonPrimary,
                                     size: 18,
@@ -942,7 +943,7 @@ class _TeacherManageTopicScreenState extends State<TeacherManageTopicScreen>
                                           maroonPrimary.withValues(alpha: 0.08),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
-                                    child: const Icon(
+                                    child: Icon(
                                       Icons.attach_file_rounded,
                                       color: maroonPrimary,
                                       size: 18,
@@ -1222,7 +1223,7 @@ class _TeacherManageTopicScreenState extends State<TeacherManageTopicScreen>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.topic_outlined,
                           color: maroonPrimary,
                           size: 56,
@@ -1291,7 +1292,7 @@ class _TeacherManageTopicScreenState extends State<TeacherManageTopicScreen>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.info_outline,
                           color: maroonPrimary,
                           size: 40,
@@ -1389,10 +1390,10 @@ class _TeacherManageTopicScreenState extends State<TeacherManageTopicScreen>
             child: Container(
               height: 56,
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
+                gradient: LinearGradient(
                   colors: [
                     maroonPrimary,
-                    Color(0xFF9A1E3C),
+                    const Color(0xFF9A1E3C),
                     maroonLight,
                   ],
                   begin: Alignment.centerLeft,
@@ -1771,7 +1772,7 @@ class _TeacherManageTopicScreenState extends State<TeacherManageTopicScreen>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.error_outline,
                     color: maroonPrimary,
                     size: 64,

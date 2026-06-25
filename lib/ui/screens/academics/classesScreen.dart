@@ -1,5 +1,6 @@
-﻿import 'dart:ui';
+import 'dart:ui';
 import 'dart:math';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/academics/classesWithTeacherDetailsCubit.dart';
 import 'package:eschool_saas_staff/data/models/academic/subjectTeacher.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
@@ -274,7 +275,7 @@ class _ClassesScreenState extends State<ClassesScreen>
                       ),
                       prefixIcon: Container(
                         padding: const EdgeInsets.all(12),
-                        child: const Icon(
+                        child: Icon(
                           Icons.search_rounded,
                           color: AppColorPalette.primaryMaroon,
                           size: 22,
@@ -354,7 +355,7 @@ class _ClassesScreenState extends State<ClassesScreen>
 
                 // Enhanced no classes text
                 ShaderMask(
-                  shaderCallback: (bounds) => const LinearGradient(
+                  shaderCallback: (bounds) => LinearGradient(
                     colors: [
                       AppColorPalette.primaryMaroon,
                       AppColorPalette.secondaryMaroon,
@@ -492,7 +493,7 @@ class _ClassesScreenState extends State<ClassesScreen>
                             ),
                             child: Row(
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.search_rounded,
                                   color: AppColorPalette.primaryMaroon,
                                   size: 20,
@@ -1416,7 +1417,7 @@ class ClassSubjectsBottomsheet extends StatelessWidget {
                                             color: AppColorPalette.primaryMaroon
                                                 .withValues(alpha: 0.1),
                                           ),
-                                          child: const Center(
+                                          child: Center(
                                             child: Icon(
                                               Icons.person_rounded,
                                               color:
@@ -1570,11 +1571,4 @@ class EnhancedCurvedBottomClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
-class AppColorPalette {
-  static const Color primaryMaroon = Color(0xFF8B1F41);
-  static const Color secondaryMaroon = Color(0xFFA84B5C);
-  static const Color lightMaroon = Color(0xFFE7C8CD);
-  static const Color accentPink = Color(0xFFF4D0D9);
-  static const Color warmBeige = Color(0xFFF5E6E8);
-  static const Color shadowColor = Color(0x298B1F41);
-}
+

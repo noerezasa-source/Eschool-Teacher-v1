@@ -1,7 +1,7 @@
-﻿import 'package:eschool_saas_staff/data/models/student/attendanceRanking.dart';
+import 'package:eschool_saas_staff/data/models/student/attendanceRanking.dart';
 import 'package:eschool_saas_staff/ui/widgets/student/attendenceRankingItemContainer.dart';
 import 'package:flutter/material.dart';
-import 'package:eschool_saas_staff/ui/screens/teacherAcademics/teacherClassSectionScreen.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 
 class AttendanceRankingContainer extends StatefulWidget {
   final AttendanceRanking attendanceRankings;
@@ -134,7 +134,7 @@ class _AttendanceRankingContainerState extends State<AttendanceRankingContainer>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: [
             AppColorPalette.primaryMaroon,
             AppColorPalette.secondaryMaroon,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,7 +21,7 @@ class CustomErrorWidget extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    final Color effectivePrimaryColor = primaryColor ?? const Color(0xFF800020);
+    final Color effectivePrimaryColor = primaryColor ?? AppColorPalette.primaryMaroon;
 
     return Center(
       child: SingleChildScrollView(

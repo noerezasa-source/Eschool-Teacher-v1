@@ -1,5 +1,6 @@
-﻿import 'package:eschool_saas_staff/data/models/academic/classSection.dart';
+import 'package:eschool_saas_staff/data/models/academic/classSection.dart';
 import 'package:eschool_saas_staff/data/models/academic/sessionYear.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/data/models/student/studentDetails.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/profileImageContainer.dart';
 import 'package:eschool_saas_staff/utils/system/labelKeys.dart';
@@ -14,9 +15,9 @@ class StudentListCard extends StatelessWidget {
   final SessionYear? sessionYear;
 
   // Define theme colors
-  static const Color maroonPrimary = Color(0xFF8B1F41);
-  static const Color maroonLight = Color(0xFFAC3B5C);
-  static const Color accentColor = Color(0xFFF5EBE0);
+  static Color get maroonPrimary => AppColorPalette.primaryMaroon;
+  static Color get maroonLight => AppColorPalette.secondaryMaroon;
+  static Color get accentColor => AppColorPalette.lightMaroon;
   final Color cardColor = Colors.white;
   static const Color textDarkColor = Color(0xFF2D2D2D);
   static const Color textMediumColor = Color(0xFF717171);
@@ -115,9 +116,9 @@ class StudentListCard extends StatelessWidget {
                 bottom: 0,
                 child: Container(
                   width: 8,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: maroonPrimary,
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(16),
                       bottomLeft: Radius.circular(16),
                     ),
@@ -403,7 +404,7 @@ class StudentListCard extends StatelessWidget {
                           color: maroonPrimary.withValues(alpha: 0.7),
                         ),
                         const SizedBox(width: 8),
-                        const Text(
+                        Text(
                           "Lihat profil lengkap",
                           style: TextStyle(
                             fontFamily: 'Poppins',
@@ -416,7 +417,7 @@ class StudentListCard extends StatelessWidget {
                         Container(
                           width: 28,
                           height: 28,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             color: maroonPrimary,
                             shape: BoxShape.circle,
                           ),

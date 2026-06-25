@@ -1,5 +1,6 @@
-﻿import 'package:eschool_saas_staff/cubits/authentication/authCubit.dart';
+import 'package:eschool_saas_staff/cubits/authentication/authCubit.dart';
 import 'package:eschool_saas_staff/cubits/settings/homeScreenDataCubit.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/teacherMyTimetableCubit.dart';
 import 'package:eschool_saas_staff/cubits/userDetails/staffAllowedPermissionsAndModulesCubit.dart';
 import 'package:eschool_saas_staff/ui/screens/home/widgets/homeContainer/widgets/homeContainerAppbar.dart';
@@ -107,7 +108,7 @@ class _TeacherHomeContainerState extends State<TeacherHomeContainer> {
                           onRetry: () {
                             getHomeScreenData();
                           },
-                          primaryColor: const Color(0xFF800020),
+                          primaryColor: AppColorPalette.primaryMaroon,
                         ),
                       ),
                     );
@@ -130,7 +131,7 @@ class _TeacherHomeContainerState extends State<TeacherHomeContainer> {
                       .read<StaffAllowedPermissionsAndModulesCubit>()
                       .getPermissionAndAllowedModules();
                 },
-                primaryColor: const Color(0xFF800020),
+                primaryColor: AppColorPalette.primaryMaroon,
               );
             } else {
               // Show skeleton loader for initial permission loading

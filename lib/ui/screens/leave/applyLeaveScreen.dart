@@ -229,7 +229,7 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen>
         builder: (context, child) {
           return Theme(
             data: Theme.of(context).copyWith(
-              colorScheme: const ColorScheme.light(
+              colorScheme: ColorScheme.light(
                 primary: maroonPrimary,
                 onPrimary: Colors.white,
                 onSurface: textDarkColor,
@@ -307,7 +307,7 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen>
         builder: (context, child) {
           return Theme(
             data: Theme.of(context).copyWith(
-              colorScheme: const ColorScheme.light(
+              colorScheme: ColorScheme.light(
                 primary: maroonPrimary,
                 onPrimary: Colors.white,
                 onSurface: textDarkColor,
@@ -1079,7 +1079,7 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen>
                                                       ),
                                                     ],
                                                   ),
-                                                  child: const Icon(
+                                                  child: Icon(
                                                     Icons.send_rounded,
                                                     color: maroonPrimary,
                                                     size: 20,
@@ -1440,7 +1440,7 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen>
                     color: maroonPrimary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.calendar_month_rounded,
                     color: maroonPrimary,
                     size: 20,
@@ -1483,7 +1483,7 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen>
                   ),
                   child: Text(
                     "${dateTimes.length} Hari",
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: maroonPrimary,
                       fontWeight: FontWeight.w600,
                       fontSize: 12,
@@ -1742,14 +1742,14 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen>
                 // For dashed border, consider adding the dotted_border package
                 // and wrapping this Container with a DottedBorder widget
               ),
-              child: const Column(
+              child: Column(
                 children: [
                   Icon(
                     Icons.file_upload_outlined,
                     color: maroonPrimary,
                     size: 36,
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
                     "Tambahkan File",
                     style: TextStyle(
@@ -1759,8 +1759,8 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen>
                       fontFamily: 'Poppins',
                     ),
                   ),
-                  SizedBox(height: 4),
-                  Text(
+                  const SizedBox(height: 4),
+                  const Text(
                     "PDF, JPG, PNG (maks. 5MB)",
                     style: TextStyle(
                       color: textMediumColor,
@@ -1969,7 +1969,7 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen>
               ),
               child: Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.info_outline_rounded,
                     color: maroonPrimary,
                     size: 20,
@@ -1978,7 +1978,7 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen>
                   Expanded(
                     child: Text(
                       "Total durasi cuti: ${_selectedToDate!.difference(_selectedFromDate!).inDays + 1} hari",
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: maroonPrimary,
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
@@ -2186,7 +2186,7 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen>
                       color: cardColor,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Column(
+                    child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         SizedBox(
@@ -2197,8 +2197,8 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen>
                             strokeWidth: 3,
                           ),
                         ),
-                        SizedBox(height: 16),
-                        Text(
+                        const SizedBox(height: 16),
+                        const Text(
                           "Memuat...",
                           style: TextStyle(
                             fontFamily: 'Poppins',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 
 class AppBarPainter extends CustomPainter {
   double x;
@@ -8,11 +9,10 @@ class AppBarPainter extends CustomPainter {
 
   AppBarPainter(
     this.x, {
-    this.circleColor =
-        const Color(0xFF800020), // Updated to match maroon primary
+    Color? circleColor,
     this.navigationBarColor = Colors.white,
     this.selectedIndex = 0, // Default to home (first tab)
-  });
+  }) : circleColor = circleColor ?? AppColorPalette.primaryMaroon;
 
   double height = 100.0; // Meningkatkan dari 90.0 ke 100.0
   double start = 40.0;

@@ -1,5 +1,6 @@
 ﻿import 'dart:async';
 import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/student/studentsByClassSectionCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/attendence/attendanceCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/attendence/submitAttendanceCubit.dart';
@@ -68,8 +69,8 @@ class _TeacherAddAttendanceScreenState extends State<TeacherAddAttendanceScreen>
   bool _isSearchVisible = false;
 
   // Color scheme for maroon theme matching subject screen
-  final Color _maroonPrimary = const Color(0xFF800020);
-  final Color _maroonLight = const Color(0xFFAA6976);
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
+  Color get _maroonLight => AppColorPalette.secondaryMaroon;
 
   // Animation controllers
   late AnimationController _fabAnimationController;

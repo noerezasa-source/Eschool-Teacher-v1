@@ -1,5 +1,6 @@
 ﻿import 'package:eschool_saas_staff/cubits/exam/offlineExamStudentResultsCubit.dart';
 import 'package:eschool_saas_staff/cubits/exam/offlineExamsWithClassesAndSessionYearsCubit.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/data/models/academic/classSection.dart';
 import 'package:eschool_saas_staff/data/models/exam/offlineExam.dart';
 import 'package:eschool_saas_staff/data/models/academic/sessionYear.dart';
@@ -54,11 +55,11 @@ class _OfflineResultScreenState extends State<OfflineResultScreen>
   late AnimationController _animationController;
 
   // Define colors
-  final Color maroonPrimary = const Color(0xFF8B1F41);
-  final Color maroonLight = const Color(0xFFAC3B5C);
+  Color get maroonPrimary => AppColorPalette.primaryMaroon;
+  Color get maroonLight => AppColorPalette.secondaryMaroon;
   final Color maroonDark = const Color(0xFF6A0F2A);
-  final Color accentColor = const Color(0xFFF5EBE0);
-  final Color bgColor = const Color(0xFFFAF6F2);
+  Color get accentColor => AppColorPalette.lightMaroon;
+  Color get bgColor => AppColorPalette.accentPink;
   final Color cardColor = Colors.white;
   final Color textDarkColor = const Color(0xFF2D2D2D);
   final Color textMediumColor = const Color(0xFF717171);
@@ -66,8 +67,8 @@ class _OfflineResultScreenState extends State<OfflineResultScreen>
 
   // Gradient colors for modern design
   final List<Color> gradientColors = [
-    const Color(0xFF8B1F41),
-    const Color(0xFFAC3B5C),
+    AppColorPalette.primaryMaroon,
+    AppColorPalette.secondaryMaroon,
   ];
 
   late final ScrollController _scrollController = ScrollController()

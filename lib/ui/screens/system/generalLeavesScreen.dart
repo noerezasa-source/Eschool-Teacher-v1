@@ -1,5 +1,6 @@
 ﻿import 'package:eschool_saas_staff/cubits/leave/generalLeavesCubit.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customTextContainer.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customErrorWidget.dart';
 import 'package:eschool_saas_staff/ui/widgets/leave/leaveDetailsContainer.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
@@ -29,7 +30,7 @@ class _GeneralLeavesScreenState extends State<GeneralLeavesScreen>
   late String _selectedTabTitleKey = todayKey;
   late AnimationController _fabAnimationController;
   final ScrollController _scrollController = ScrollController();
-  final Color _maroonPrimary = const Color(0xFF800020);
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
 
   @override
   void initState() {
@@ -172,7 +173,7 @@ class _GeneralLeavesScreenState extends State<GeneralLeavesScreen>
         icon: Icons.event_note_rounded,
         fabAnimationController: _fabAnimationController,
         primaryColor: _maroonPrimary,
-        lightColor: const Color(0xFFAA6976),
+        lightColor: AppColorPalette.secondaryMaroon,
         onBackPressed: () => Navigator.of(context).pop(),
         height: 140, // Increased height to accommodate filters
         tabBuilder: (context) => _buildFilterTabs(context),

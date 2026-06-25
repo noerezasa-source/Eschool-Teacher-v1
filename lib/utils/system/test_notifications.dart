@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'notification_examples.dart';
 
@@ -66,7 +67,7 @@ class TestNotificationsScreen extends StatelessWidget {
             _buildTestButton(
               'New Assignment',
               'Teacher receives new assignment',
-              const Color(0xFF8B5CF6),
+              AppColorPalette.secondaryMaroon,
               Icons.assignment_outlined,
               () => NotificationExamples.showNewAssignmentNotification(),
             ),

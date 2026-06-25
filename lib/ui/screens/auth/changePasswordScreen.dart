@@ -1,5 +1,6 @@
 ﻿import 'package:eschool_saas_staff/cubits/authentication/changePasswordCubic.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/utils/system/labelKeys.dart';
 import 'package:eschool_saas_staff/utils/system/utils.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
   final ScrollController _scrollController = ScrollController();
 
   // Enhanced color palette with gradients
-  final Color _maroonPrimary = const Color(0xFF800020);
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
 
   // Gradient definitions
 
@@ -544,7 +545,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
         icon: Icons.password_rounded,
         fabAnimationController: _fabAnimationController,
         primaryColor: _maroonPrimary,
-        lightColor: const Color(0xFFAA6976),
+        lightColor: AppColorPalette.secondaryMaroon,
         onBackPressed: () => Navigator.of(context).pop(),
       ),
       body: SingleChildScrollView(

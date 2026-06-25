@@ -1,7 +1,8 @@
-﻿import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
+import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
 import 'package:eschool_saas_staff/data/models/academic/classSection.dart';
 import 'package:eschool_saas_staff/data/models/leave/leaveDetails.dart';
 import 'package:eschool_saas_staff/utils/system/constants.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -29,12 +30,12 @@ class _LeaveDetailsContainerState extends State<LeaveDetailsContainer>
   bool _isHovering = false;
   OverlayEntry? _overlayEntry;
 
-  // Refined maroon color palette with added accent colors
-  final Color _maroonPrimary = const Color(0xFF7D2027);
-  final Color _maroonLight = const Color(0xFFBF8A8D);
-  final Color _maroonDark = const Color(0xFF5A171C);
-  final Color _maroonAccent = const Color(0xFFE5C6C8);
-  final Color _goldAccent = const Color(0xFFE6D2AA);
+  // Refined color palette - now dynamic based on theme
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
+  Color get _maroonLight => AppColorPalette.secondaryMaroon;
+  Color get _maroonDark => _maroonPrimary.withValues(alpha: 0.85);
+  Color get _maroonAccent => _maroonPrimary.withValues(alpha: 0.15);
+  Color get _goldAccent => const Color(0xFFE6D2AA);
 
   @override
   void initState() {

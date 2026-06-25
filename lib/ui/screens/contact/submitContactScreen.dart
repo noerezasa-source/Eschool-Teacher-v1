@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/contact/submitContactCubit.dart';
 import 'package:eschool_saas_staff/cubits/authentication/authCubit.dart';
 import 'package:eschool_saas_staff/models/contact.dart';
@@ -25,8 +26,8 @@ class _SubmitContactScreenState extends State<SubmitContactScreen>
   final _formKey = GlobalKey<FormState>();
   String _selectedType = 'inquiry';
 
-  final Color _primaryColor = const Color(0xFF800020);
-  final Color _lightColor = const Color(0xFFAA6976);
+  Color get _primaryColor => AppColorPalette.primaryMaroon;
+  Color get _lightColor => AppColorPalette.secondaryMaroon;
 
   @override
   void initState() {

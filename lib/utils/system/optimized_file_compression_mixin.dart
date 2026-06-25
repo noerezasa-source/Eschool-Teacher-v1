@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -356,15 +357,15 @@ class _CompressionDialogState extends State<_CompressionDialog> {
                 width: 60,
                 height: 60,
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFFAA6976), Color(0xFF800020)],
+                  gradient: LinearGradient(
+                    colors: [AppColorPalette.secondaryMaroon, AppColorPalette.primaryMaroon],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(30),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF800020).withValues(alpha: 0.3),
+                      color: AppColorPalette.primaryMaroon.withValues(alpha: 0.3),
                       blurRadius: 15,
                       spreadRadius: 2,
                     ),
@@ -402,8 +403,8 @@ class _CompressionDialogState extends State<_CompressionDialog> {
                   widthFactor: progress,
                   child: Container(
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFFAA6976), Color(0xFF800020)],
+                      gradient: LinearGradient(
+                        colors: [AppColorPalette.secondaryMaroon, AppColorPalette.primaryMaroon],
                       ),
                       borderRadius: BorderRadius.circular(4),
                     ),
@@ -442,10 +443,10 @@ class _CompressionDialogState extends State<_CompressionDialog> {
               // Percentage
               Text(
                 '${(progress * 100).toInt()}%',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF800020),
+                  color: AppColorPalette.primaryMaroon,
                 ),
               ),
             ],

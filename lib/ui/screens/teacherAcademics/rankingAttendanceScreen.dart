@@ -1,5 +1,6 @@
 ﻿import 'package:eschool_saas_staff/cubits/teacherAcademics/attendence/attendanceRankingCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/classSectionsAndSubjects.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/gradeLevelCubit.dart';
 import 'package:eschool_saas_staff/data/models/student/attendanceRanking.dart';
 import 'package:eschool_saas_staff/data/models/academic/classSection.dart';
@@ -53,8 +54,8 @@ class _RankingAttendanceScreenState extends State<RankingAttendanceScreen>
   GradeLevel? _selectedGradeLevel;
 
   // Color scheme for maroon theme matching recapAttendanceSubjectScreen
-  final Color _maroonPrimary = const Color(0xFF800020);
-  final Color _maroonLight = const Color(0xFFAA6976);
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
+  Color get _maroonLight => AppColorPalette.secondaryMaroon;
 
   // Animation controllers
   late AnimationController _fabAnimationController;

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
@@ -6,7 +8,7 @@ import 'dart:ui';
 class CustomModernAppBarWithTabs extends StatefulWidget
     implements PreferredSizeWidget {
   final String title;
-  final IconData icon;
+  final dynamic icon;
   final AnimationController fabAnimationController;
   final Color primaryColor;
   final Color lightColor;
@@ -36,6 +38,33 @@ class CustomModernAppBarWithTabs extends StatefulWidget
 
 class _CustomModernAppBarWithTabsState
     extends State<CustomModernAppBarWithTabs> {
+  Color get effectivePrimaryColor {
+    if (widget.primaryColor == const Color(0xFF800020) || widget.primaryColor.toARGB32() == 0xFF800020) {
+      return AppColorPalette.primaryMaroon;
+    }
+    return widget.primaryColor;
+  }
+
+  Color get effectiveLightColor {
+    if (widget.lightColor == const Color(0xFFAA6976) || widget.lightColor.toARGB32() == 0xFFAA6976) {
+      return AppColorPalette.secondaryMaroon;
+    }
+    return widget.lightColor;
+  }
+
+  Widget _buildIcon(dynamic icon, {required Color color, double? size, List<Shadow>? shadows}) {
+    if (icon is FaIconData) {
+      return FaIcon(icon, color: color, size: size, shadows: shadows);
+    }
+    if (icon is IconData) {
+      return Icon(icon, color: color, size: size, shadows: shadows);
+    }
+    if (icon is Widget) {
+      return icon;
+    }
+    return const SizedBox();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -55,10 +84,10 @@ class _CustomModernAppBarWithTabsState
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          const Color(0xFF690013),
-                          widget.primaryColor,
-                          const Color(0xFFA12948),
-                          widget.lightColor,
+                          effectivePrimaryColor.withValues(alpha: 0.95),
+                          effectivePrimaryColor,
+                          effectiveLightColor.withValues(alpha: 0.95),
+                          effectiveLightColor,
                         ],
                         stops: const [0.0, 0.3, 0.6, 1.0],
                         transform: GradientRotation(
@@ -67,16 +96,16 @@ class _CustomModernAppBarWithTabsState
                     },
                     blendMode: BlendMode.srcATop,
                     child: Container(
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            Color(0xFF800020),
-                            Color(0xFF9A1E3C),
+                            effectivePrimaryColor,
+                            effectivePrimaryColor.withValues(alpha: 0.85),
                           ],
                         ),
-                        borderRadius: BorderRadius.only(
+                        borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(30),
                           bottomRight: Radius.circular(30),
                         ),
@@ -245,9 +274,8 @@ class _CustomModernAppBarWithTabsState
                                                     ),
                                                   ],
                                                 ),
-                                                child: Icon(
-                                                  widget.icon,
-                                                  color: widget.primaryColor,
+                                                child: _buildIcon(widget.icon,
+                                                  color: effectivePrimaryColor,
                                                   size: 20,
                                                 ),
                                               ),

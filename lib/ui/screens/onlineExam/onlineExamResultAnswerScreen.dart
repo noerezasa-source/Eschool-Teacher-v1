@@ -1,4 +1,5 @@
-﻿import 'package:eschool_saas_staff/cubits/onlineExam/onlineExamCubit.dart';
+import 'package:eschool_saas_staff/cubits/onlineExam/onlineExamCubit.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:flutter/services.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customErrorWidget.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
@@ -51,8 +52,8 @@ class _OnlineExamResultAnswerScreenState
   late AnimationController _animationController;
 
   // Theme colors for the app bar
-  static const Color _primaryColor = Color(0xFF7A1E23); // Softer deep maroon
-  static const Color _energyColor = Color(0xFFCE6D6D); // Softer light maroon
+  static Color get _primaryColor => AppColorPalette.primaryMaroon; // Softer deep maroon
+  static Color get _energyColor => AppColorPalette.lightMaroon; // Softer light maroon
   @override
   void initState() {
     super.initState();
@@ -470,7 +471,7 @@ class _OnlineExamResultAnswerScreenState
         width: double.infinity, // Lebar penuh
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF8B0000), // Warna maroon
+            backgroundColor: AppColorPalette.primaryMaroon, // Warna maroon
             foregroundColor: Colors.white, // Warna teks putih
             padding: const EdgeInsets.symmetric(vertical: 14),
             shape:

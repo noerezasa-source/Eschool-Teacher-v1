@@ -1,5 +1,6 @@
 ﻿import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
 import 'package:eschool_saas_staff/cubits/student/studentAttendanceForStaffCubit.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/data/models/academic/classSection.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customCircularProgressIndicator.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customFilterModernAppbar.dart';
@@ -55,8 +56,8 @@ class _StudentsAttendanceScreenState extends State<StudentsAttendanceScreen>
   late final AnimationController _animationController;
 
   // Define theme colors
-  static const Color maroonPrimary = Color(0xFF8B1F41);
-  static const Color maroonLight = Color(0xFFAC3B5C);
+  static Color get maroonPrimary => AppColorPalette.primaryMaroon;
+  static Color get maroonLight => AppColorPalette.secondaryMaroon;
   final Color cardColor = Colors.white;
   @override
   void initState() {

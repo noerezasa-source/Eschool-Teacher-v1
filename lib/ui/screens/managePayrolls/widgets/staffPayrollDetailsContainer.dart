@@ -1,5 +1,6 @@
 ﻿import 'dart:math';
 import 'package:eschool_saas_staff/cubits/payRoll/downloadPayRollSlipCubit.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/userDetails/staffAllowedPermissionsAndModulesCubit.dart';
 import 'package:eschool_saas_staff/data/models/payroll/staffPayRoll.dart';
 import 'package:eschool_saas_staff/ui/screens/managePayrolls/widgets/allowanceAndDeductionsBottomsheet.dart';
@@ -52,8 +53,8 @@ class StaffPayrollDetailsContainerState
       AnimationController(vsync: this, duration: tileCollapsedDuration);
 
   // Colors for the modern maroon theme
-  final Color _maroonPrimary = const Color(0xFF800020);
-  final Color _maroonLight = const Color(0xFFAA6976);
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
+  Color get _maroonLight => AppColorPalette.secondaryMaroon;
 
   late final Animation<double> _opacityAnimation =
       Tween<double>(begin: 0, end: 1.0).animate(CurvedAnimation(

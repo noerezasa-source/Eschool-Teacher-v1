@@ -14,6 +14,7 @@ import '../../widgets/system/customModernAppBar.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/no_search_results_widget.dart';
 import 'package:eschool_saas_staff/ui/widgets/skeleton/skeleton_widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 
 // Controller GetX untuk lifecycle
 class QuestionBankListController extends GetxController {
@@ -125,17 +126,17 @@ class _QuestionBankListScreenState extends State<QuestionBankListScreen>
   // final List<ParticleModel> _particles = [];
 
   // Theme colors - Softer Maroon palette
-  static const Color _primaryColor = Color(0xFF7A1E23); // Softer deep maroon
-  static const Color _accentColor = Color(0xFF9D3C3C); // Softer medium maroon
-  static const Color _highlightColor =
-      Color(0xFFB84D4D); // Softer bright maroon
-  static const Color _glowColor = Color(0xFFAF4F4F); // Softer rich maroon
+  static Color get _primaryColor => AppColorPalette.primaryMaroon; // Softer deep maroon
+  static Color get _accentColor => AppColorPalette.secondaryMaroon; // Softer medium maroon
+  static Color get _highlightColor =>
+      AppColorPalette.secondaryMaroon; // Softer bright maroon
+  static Color get _glowColor => AppColorPalette.secondaryMaroon; // Softer rich maroon
 
   final List<Color> _cardGradients = [
     const Color(0xFF7A2828), // Softer dark maroon
-    const Color(0xFF9D3C3C), // Softer classic maroon
-    const Color(0xFFAF4F4F), // Softer rich maroon
-    const Color(0xFFB84D4D), // Softer brown-maroon
+    AppColorPalette.secondaryMaroon, // Softer classic maroon
+    AppColorPalette.secondaryMaroon, // Softer rich maroon
+    AppColorPalette.secondaryMaroon, // Softer brown-maroon
     const Color(0xFFC65454), // Softer firebrick
     const Color(0xFFAA3939), // Softer dark red
     const Color(0xFF8F2D2D), // Softer deep maroon
@@ -212,7 +213,7 @@ class _QuestionBankListScreenState extends State<QuestionBankListScreen>
     ]);
 
     // Set system UI style for immersive experience
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
       systemNavigationBarColor: _primaryColor,
@@ -534,10 +535,10 @@ class _QuestionBankListScreenState extends State<QuestionBankListScreen>
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Cari bank soal...',
-                prefixIcon: const Icon(Icons.search, color: _primaryColor),
+                prefixIcon: Icon(Icons.search, color: _primaryColor),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
-                        icon: const Icon(Icons.clear, color: _primaryColor),
+                        icon: Icon(Icons.clear, color: _primaryColor),
                         onPressed: () {
                           _clearSearch(banks);
                         },
@@ -1208,7 +1209,7 @@ class _QuestionBankListScreenState extends State<QuestionBankListScreen>
                   ),
                 ],
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.more_vert_rounded,
                 color: _primaryColor,
                 size: 22,

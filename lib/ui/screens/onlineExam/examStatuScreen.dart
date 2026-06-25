@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/cubits/examStatus/examStatusCubit.dart';
+import 'package:eschool_saas_staff/cubits/examStatus/examStatusCubit.dart';
 import 'package:eschool_saas_staff/cubits/onlineExam/onlineExamCubit.dart';
 import 'package:eschool_saas_staff/data/models/exam/onlineExam.dart';
 import 'package:eschool_saas_staff/data/models/exam/studentExamStatus.dart';
@@ -13,6 +13,7 @@ import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customErrorWidget.dart';
 import 'package:eschool_saas_staff/utils/system/errorMessageUtils.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/no_search_results_widget.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 
 class ExamStatusScreen extends StatefulWidget {
   const ExamStatusScreen({super.key});
@@ -57,9 +58,9 @@ class _ExamStatusScreenState extends State<ExamStatusScreen>
   bool isAscending = true;
 
   // Soft maroon color palette matching OnlineExamScreen
-  static const Color _primaryColor = Color(0xFF7A1E23); // Softer deep maroon
-  static const Color _accentColor = Color(0xFF9D3C3C); // Softer medium maroon
-  static const Color _glowColor = Color(0xFFAF4F4F); // Softer rich maroon
+  static Color get _primaryColor => AppColorPalette.primaryMaroon; // Softer deep maroon
+  static Color get _accentColor => AppColorPalette.secondaryMaroon; // Softer medium maroon
+  static Color get _glowColor => AppColorPalette.secondaryMaroon; // Softer rich maroon
 
   final ScrollController _scrollController = ScrollController();
 
@@ -222,7 +223,7 @@ class _ExamStatusScreenState extends State<ExamStatusScreen>
         child: DropdownButtonHideUnderline(
           child: DropdownButton<OnlineExam>(
             isExpanded: true,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded,
+            icon: Icon(Icons.keyboard_arrow_down_rounded,
                 color: _accentColor, size: 28),
             hint: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -300,7 +301,7 @@ class _ExamStatusScreenState extends State<ExamStatusScreen>
               fontSize: 15,
               color: Colors.grey[500],
             ),
-            prefixIcon: const Icon(
+            prefixIcon: Icon(
               Icons.search,
               color: _accentColor,
               size: 20,
@@ -406,7 +407,7 @@ class _ExamStatusScreenState extends State<ExamStatusScreen>
                         color: _primaryColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.sort_rounded,
                         color: _primaryColor,
                       ),

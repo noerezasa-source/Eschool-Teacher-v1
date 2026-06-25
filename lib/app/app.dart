@@ -1,5 +1,7 @@
 ﻿import 'dart:io';
 
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
+import 'package:eschool_saas_staff/cubits/settings/appThemeCubit.dart';
 import 'package:eschool_saas_staff/app/appTranslation.dart';
 import 'package:eschool_saas_staff/app/routes.dart';
 import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
@@ -93,6 +95,9 @@ class _MyAppState extends State<MyApp> {
           BlocProvider<AppConfigurationCubit>(
             create: (_) => AppConfigurationCubit(),
           ),
+          BlocProvider<AppThemeCubit>(
+            create: (_) => AppThemeCubit(),
+          ),
           BlocProvider<AuthCubit>(
             create: (_) => AuthCubit(),
           ),
@@ -115,44 +120,47 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
         ],
-        child: Builder(builder: (context) {
-          return GetMaterialApp(
-            builder: (context, child) {
-              return Stack(
-                textDirection: TextDirection.ltr,
-                children: [
-                  if (child != null) child,
-                  const GlobalEnvFab(),
-                ],
-              );
-            },
-            title: 'eSchool - Guru & Staff',
-            debugShowCheckedModeBanner: false,
-            translationsKeys: AppTranslation.translationsKeys,
-            theme: Theme.of(context).copyWith(
+        child: BlocBuilder<AppThemeCubit, AppThemeState>(
+          builder: (context, state) {
+            return GetMaterialApp(
+              builder: (context, child) {
+                return Stack(
+                  textDirection: TextDirection.ltr,
+                  children: [
+                    if (child != null) child,
+                    const GlobalEnvFab(),
+                  ],
+                );
+              },
+              title: 'eSchool - Guru & Staff',
+              debugShowCheckedModeBanner: false,
+              translationsKeys: AppTranslation.translationsKeys,
+              theme: Theme.of(context).copyWith(
                 extensions: <ThemeExtension<dynamic>>[customColorsExtension],
                 textTheme:
                     GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
                 scaffoldBackgroundColor: pageBackgroundColor,
-                colorScheme: Theme.of(context).colorScheme.copyWith(
-                    primary: primaryColor,
-                    secondary: secondaryColor,
-                    surface: backgroundColor,
-                    error: errorColor,
-                    tertiary: tertiaryColor)),
-            getPages: Routes.getPages,
-            initialRoute: Routes.splashScreen,
-            locale: context.read<AppLocalizationCubit>().state.language,
-            fallbackLocale: const Locale("id"),
-            localizationsDelegates: const [
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: const [
-              Locale('id', 'ID'),
-            ],
-          );
-        }));
+                colorScheme: ColorScheme.fromSeed(
+                  seedColor: AppColorPalette.primaryMaroon,
+                  primary: AppColorPalette.primaryMaroon,
+                  secondary: AppColorPalette.secondaryMaroon,
+                  surface: Colors.white,
+                  error: const Color(0xffBA1A1A),
+                )),
+              getPages: Routes.getPages,
+              initialRoute: Routes.splashScreen,
+              locale: context.read<AppLocalizationCubit>().state.language,
+              fallbackLocale: const Locale("id"),
+              localizationsDelegates: const [
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: const [
+                Locale('id', 'ID'),
+              ],
+            );
+          },
+        ));
   }
 }

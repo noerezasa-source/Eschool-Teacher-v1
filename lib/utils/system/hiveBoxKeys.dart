@@ -17,3 +17,5 @@ const String vibrationEnabledKey = "vibrationEnabled";
 const String notificationsBoxKey = "notifications";
 const String temporarilyStoredNotificationsKey =
     "temporarilyStoredNotifications";
+
+const String appThemeModeKey = "appThemeMode";

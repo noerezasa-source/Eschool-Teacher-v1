@@ -33,8 +33,8 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen>
   late AnimationController _controller;
   final ScrollController _scrollController = ScrollController();
   late AnimationController _fabAnimationController;
-  final Color _maroonPrimary = AppColorPalette.primaryMaroon;
-  final Color _maroonLight = AppColorPalette.secondaryMaroon;
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
+  Color get _maroonLight => AppColorPalette.secondaryMaroon;
 
   @override
   void initState() {
@@ -249,7 +249,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen>
           Container(
             padding: const EdgeInsets.all(30),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
+              gradient: LinearGradient(
                 colors: [
                   AppColorPalette.primaryMaroon,
                   AppColorPalette.secondaryMaroon,
@@ -284,7 +284,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen>
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.privacy_tip,
                         size: 40,
                         color: AppColorPalette.primaryMaroon,

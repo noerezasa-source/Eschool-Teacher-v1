@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eschool_saas_staff/cubits/extracurricular/extracurricularCubit.dart';
 import 'package:eschool_saas_staff/data/models/extracurricular/extracurricular.dart';
@@ -27,8 +28,8 @@ class _ArchiveExtracurricularState extends State<ArchiveExtracurricular>
   late Animation<double> _pulseAnimation;
 
   // Theme colors - matching onlineExamScreen
-  static const Color _primaryColor = Color(0xFF7A1E23); // Softer deep maroon
-  static const Color _accentColor = Color(0xFF9D3C3C); // Softer medium maroon
+  static Color get _primaryColor => AppColorPalette.primaryMaroon; // Softer deep maroon
+  static Color get _accentColor => AppColorPalette.secondaryMaroon; // Softer medium maroon
 
   @override
   void initState() {
@@ -100,12 +101,12 @@ class _ArchiveExtracurricularState extends State<ArchiveExtracurricular>
                     ),
                   ),
                   // Judul
-                  const Text(
+                  Text(
                     'Filter Ekstrakurikuler Arsip',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF8B0000),
+                      color: AppColorPalette.primaryMaroon,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -318,10 +319,10 @@ class _ArchiveExtracurricularState extends State<ArchiveExtracurricular>
                       Flexible(
                         child: Text(
                           extracurricular.name,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF8B0000),
+                            color: AppColorPalette.primaryMaroon,
                             overflow: TextOverflow.visible,
                           ),
                         ),

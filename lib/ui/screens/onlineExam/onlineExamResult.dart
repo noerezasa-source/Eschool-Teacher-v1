@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'dart:math' as math;
 import 'package:eschool_saas_staff/cubits/onlineExam/onlineExamCubit.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customErrorWidget.dart';
@@ -52,8 +53,8 @@ class _OnlineExamResultScreenState extends State<OnlineExamResultScreen>
   late AnimationController _animationController;
 
   // Theme colors for the app bar
-  static const Color _primaryColor = Color(0xFF7A1E23); // Deep maroon
-  static const Color _accentColor = Color(0xFF9D3C3C); // Medium maroon
+  static Color get _primaryColor => AppColorPalette.primaryMaroon; // Deep maroon
+  static Color get _accentColor => AppColorPalette.secondaryMaroon; // Medium maroon
   @override
   void initState() {
     super.initState();
@@ -108,12 +109,12 @@ class _OnlineExamResultScreenState extends State<OnlineExamResultScreen>
                     ),
                   ),
                   // Judul
-                  const Text(
+                  Text(
                     'Filter Status Ujian',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF8B0000),
+                      color: AppColorPalette.primaryMaroon,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -277,7 +278,7 @@ class _OnlineExamResultScreenState extends State<OnlineExamResultScreen>
                 ),
                 Radio<String>(
                   value: label,
-                  activeColor: const Color(0xFF8B0000),
+                  activeColor: AppColorPalette.primaryMaroon,
                 ),
               ],
             ),
@@ -372,7 +373,7 @@ class _OnlineExamResultScreenState extends State<OnlineExamResultScreen>
               onRetry: () {
                 context.read<OnlineExamCubit>().getOnlineExams();
               },
-              primaryColor: const Color(0xFF800020),
+              primaryColor: AppColorPalette.primaryMaroon,
             ),
           );
         }

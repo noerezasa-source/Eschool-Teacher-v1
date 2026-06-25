@@ -1,5 +1,6 @@
-﻿import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eschool_saas_staff/cubits/teacher/timeTableOfTeacherCubit.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/data/models/auth/userDetails.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customTextContainer.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/errorContainer.dart';
@@ -226,8 +227,8 @@ class _TeacherTimeTableDetailsScreenState
   final List<GlobalKey> _dayKeys = List.generate(7, (_) => GlobalKey());
 
   // Theme colors
-  final Color _maroonPrimary = const Color(0xFF800020);
-  final Color _maroonLight = const Color(0xFFAA6976);
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
+  Color get _maroonLight => AppColorPalette.secondaryMaroon;
 
   // Day mapping for the UI and backend (keys taken from Utils.weekDays for consistency)
   List<Map<String, String>> get _weekDays {
@@ -442,9 +443,9 @@ class _TeacherTimeTableDetailsScreenState
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          const Color(0xFF690013),
+                          AppColorPalette.primaryMaroon,
                           _maroonPrimary,
-                          const Color(0xFFA12948),
+                          AppColorPalette.secondaryMaroon,
                           _maroonLight,
                         ],
                         stops: const [0.0, 0.3, 0.6, 1.0],
@@ -454,16 +455,16 @@ class _TeacherTimeTableDetailsScreenState
                     },
                     blendMode: BlendMode.srcATop,
                     child: Container(
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            Color(0xFF800020),
-                            Color(0xFF9A1E3C),
+                            AppColorPalette.primaryMaroon,
+                            const Color(0xFF9A1E3C),
                           ],
                         ),
-                        borderRadius: BorderRadius.only(
+                        borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(30),
                           bottomRight: Radius.circular(30),
                         ),

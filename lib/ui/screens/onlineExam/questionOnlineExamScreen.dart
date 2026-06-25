@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eschool_saas_staff/cubits/questionOnlineExam/questionOnlineExamCubit.dart';
 import 'package:eschool_saas_staff/data/models/exam/questionOnlineExam.dart';
@@ -17,6 +17,7 @@ import '../../../app/routes.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customErrorWidget.dart';
 import 'package:eschool_saas_staff/utils/system/errorMessageUtils.dart';
 import 'package:eschool_saas_staff/ui/widgets/skeleton/skeleton_widgets.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 
 class QuestionOnlineExamScreen extends StatefulWidget {
   final int examId;
@@ -38,8 +39,8 @@ class _QuestionOnlineExamScreenState extends State<QuestionOnlineExamScreen>
   final Set<int> _selectedQuestions = {};
   late AnimationController _animationController;
   // Theme colors - Softer Maroon palette
-  static const Color _primaryColor = Color(0xFF7A1E23); // Softer deep maroon
-  static const Color _accentColor = Color(0xFF9D3C3C); // Softer medium maroon
+  static Color get _primaryColor => AppColorPalette.primaryMaroon; // Softer deep maroon
+  static Color get _accentColor => AppColorPalette.secondaryMaroon; // Softer medium maroon
 
   @override
   void initState() {
@@ -331,7 +332,7 @@ class _QuestionOnlineExamScreenState extends State<QuestionOnlineExamScreen>
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.touch_app, color: _primaryColor),
+                            Icon(Icons.touch_app, color: _primaryColor),
                             const SizedBox(width: 12.0),
                             Flexible(
                               child: Column(

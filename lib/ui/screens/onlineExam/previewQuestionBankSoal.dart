@@ -18,6 +18,7 @@ import '../../../cubits/teacherAcademics/assignment/questionBankCubit.dart';
 import '../../widgets/system/customModernAppBar.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customErrorWidget.dart';
 import 'package:eschool_saas_staff/utils/system/errorMessageUtils.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/ui/widgets/skeleton/skeleton_widgets.dart';
 import 'package:eschool_saas_staff/ui/screens/onlineExam/painters/previewQuestionPainters.dart';
 import 'package:eschool_saas_staff/ui/screens/onlineExam/widgets/questionDetailWidget.dart';
@@ -60,7 +61,7 @@ class _PreviewQuestionBankSoalState extends State<PreviewQuestionBankSoal>
   final BorderRadius cardBorderRadius = BorderRadius.circular(28);
 
   // New color variables
-  static const Color _primaryColor = Color(0xFF7A1E23); // Softer deep maroon
+  static Color get _primaryColor => AppColorPalette.primaryMaroon; // Softer deep maroon
 
   @override
   void initState() {
@@ -213,9 +214,9 @@ class _PreviewQuestionBankSoalState extends State<PreviewQuestionBankSoal>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
+              Icon(
                 Icons.info_outline_rounded,
-                color: Color(0xFF7A1E23),
+                color: AppColorPalette.primaryMaroon,
                 size: 48,
               ),
               const SizedBox(height: 16),
@@ -241,21 +242,21 @@ class _PreviewQuestionBankSoalState extends State<PreviewQuestionBankSoal>
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF7A1E23).withValues(alpha: 0.1),
+                  color: AppColorPalette.primaryMaroon.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: const Color(0xFF7A1E23).withValues(alpha: 0.3),
+                    color: AppColorPalette.primaryMaroon.withValues(alpha: 0.3),
                     width: 1,
                   ),
                 ),
-                child: const Row(
+                child: Row(
                   children: [
                     Icon(
                       Icons.touch_app_rounded,
-                      color: Color(0xFF7A1E23),
+                      color: AppColorPalette.primaryMaroon,
                       size: 20,
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         'Tekan lama card soal untuk melihat detail lengkap soal',
@@ -263,7 +264,7 @@ class _PreviewQuestionBankSoalState extends State<PreviewQuestionBankSoal>
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF7A1E23),
+                          color: AppColorPalette.primaryMaroon,
                         ),
                       ),
                     ),
@@ -274,7 +275,7 @@ class _PreviewQuestionBankSoalState extends State<PreviewQuestionBankSoal>
               ElevatedButton(
                 onPressed: () => Get.back(),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF7A1E23),
+                  backgroundColor: AppColorPalette.primaryMaroon,
                   foregroundColor: Colors.white,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -302,7 +303,7 @@ class _PreviewQuestionBankSoalState extends State<PreviewQuestionBankSoal>
         fabAnimationController: _selectionController,
         primaryColor: const Color(
             0xFF7A1E23), // Using the maroon color from state variables
-        lightColor: const Color(0xFFB84D4D),
+        lightColor: AppColorPalette.secondaryMaroon,
         onBackPressed: () => Navigator.of(context).pop(),
         showHelperButton: true,
         onHelperPressed: _showHelpInfo,
@@ -523,8 +524,8 @@ class _PreviewQuestionBankSoalState extends State<PreviewQuestionBankSoal>
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(Icons.swipe,
-                                      color: Color(0xFF8B0000)),
+                                  Icon(Icons.swipe,
+                                      color: AppColorPalette.primaryMaroon),
                                   const SizedBox(width: 12.0),
                                   Flexible(
                                     child: Column(

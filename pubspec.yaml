@@ -91,7 +91,7 @@ dependencies:
   flutter_staggered_animations: ^1.1.1
   lottie: ^2.7.0
   animations: ^2.0.8
-  font_awesome_flutter: ^10.8.0
+  font_awesome_flutter: ^11.0.0
   animated_text_kit: ^4.2.2
   animated_card: ^2.0.0
   confetti: ^0.8.0
@@ -121,6 +121,8 @@ dependencies:
 
   # PERBAIKAN UTAMA: Mengganti open_settings yang eror lStar dengan package yang up-to-date
   app_settings: ^6.0.0
+  webview_flutter: ^4.8.0
+
 
 dependency_overrides:
   webview_flutter_android: ^3.16.0

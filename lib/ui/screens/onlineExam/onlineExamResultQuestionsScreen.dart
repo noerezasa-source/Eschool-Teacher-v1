@@ -1,6 +1,7 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 
 import 'package:eschool_saas_staff/ui/widgets/system/customErrorWidget.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -76,8 +77,8 @@ class _OnlineExamResultQuestionsScreenState
 
   late AnimationController _animationController;
 
-  static const Color _primaryColor = Color(0xFF7A1E23);
-  static const Color _accentColor = Color(0xFF9D3C3C);
+  static Color get _primaryColor => AppColorPalette.primaryMaroon;
+  static Color get _accentColor => AppColorPalette.secondaryMaroon;
 
   String parseHtmlString(String htmlString) {
     final document = parse(htmlString);

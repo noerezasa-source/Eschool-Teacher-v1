@@ -1,5 +1,6 @@
 ﻿import 'package:eschool_saas_staff/cubits/academics/sessionYearsCubit.dart';
 import 'package:eschool_saas_staff/cubits/authentication/authCubit.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/leave/userLeavesCubit.dart';
 import 'package:eschool_saas_staff/data/models/academic/sessionYear.dart';
 import 'package:eschool_saas_staff/data/models/auth/userDetails.dart';
@@ -61,9 +62,9 @@ class _LeavesScreenState extends State<LeavesScreen>
   late final AnimationController _cardAnimationController;
 
   // Define theme colors - modern palette
-  static const Color maroonPrimary = Color(0xFF8B1F41);
-  static const Color maroonLight = Color(0xFFAC3B5C);
-  static const Color bgColor = Color(0xFFFCF6F7);
+  static Color get maroonPrimary => AppColorPalette.primaryMaroon;
+  static Color get maroonLight => AppColorPalette.secondaryMaroon;
+  static Color get bgColor => AppColorPalette.warmBeige;
   final Color cardColor = Colors.white;
   static const Color textDarkColor = Color(0xFF2D2D2D);
   static const Color textMediumColor = Color(0xFF717171);
@@ -393,7 +394,7 @@ class _LeavesScreenState extends State<LeavesScreen>
                               color: maroonPrimary.withValues(alpha: 0.08),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.event_note_rounded,
                               color: maroonPrimary,
                               size: 20,
@@ -481,7 +482,7 @@ class _LeavesScreenState extends State<LeavesScreen>
                                 color: maroonPrimary.withValues(alpha: 0.08),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.list_alt_rounded,
                                 color: maroonPrimary,
                                 size: 20,
@@ -522,7 +523,7 @@ class _LeavesScreenState extends State<LeavesScreen>
                               ),
                               child: Text(
                                 "${filteredLeaves.length} Cuti",
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: maroonPrimary,
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12,
@@ -559,7 +560,7 @@ class _LeavesScreenState extends State<LeavesScreen>
                                   ),
                                   child: Text(
                                     "${index + 1}",
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14,
@@ -717,7 +718,7 @@ class _LeavesScreenState extends State<LeavesScreen>
                     return ListTile(
                       title: Text(year.name ?? ""),
                       trailing: _selectedSessionYear?.id == year.id
-                          ? const Icon(Icons.check_circle, color: maroonPrimary)
+                          ? Icon(Icons.check_circle, color: maroonPrimary)
                           : null,
                       onTap: () {
                         Navigator.pop(context);
@@ -786,7 +787,7 @@ class _LeavesScreenState extends State<LeavesScreen>
                     return ListTile(
                       title: Text(month.tr),
                       trailing: _selectedMonthKey == month
-                          ? const Icon(Icons.check_circle, color: maroonPrimary)
+                          ? Icon(Icons.check_circle, color: maroonPrimary)
                           : null,
                       onTap: () {
                         Navigator.pop(context);

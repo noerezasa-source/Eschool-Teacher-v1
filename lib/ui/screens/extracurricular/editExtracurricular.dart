@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eschool_saas_staff/cubits/extracurricular/extracurricularCubit.dart';
 import 'package:eschool_saas_staff/data/models/extracurricular/extracurricular.dart';
@@ -26,8 +27,8 @@ class _EditExtracurricularState extends State<EditExtracurricular>
   late AnimationController _animationController;
   late AnimationController _pulseController;
 
-  static const Color _primaryColor = Color(0xFF7A1E23);
-  static const Color _highlightColor = Color(0xFFB84D4D);
+  static Color get _primaryColor => AppColorPalette.primaryMaroon;
+  static Color get _highlightColor => AppColorPalette.secondaryMaroon;
 
   @override
   void initState() {
@@ -113,7 +114,7 @@ class _EditExtracurricularState extends State<EditExtracurricular>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Informasi Dasar',
               style: TextStyle(
                 fontSize: 18,
@@ -162,7 +163,7 @@ class _EditExtracurricularState extends State<EditExtracurricular>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Pelatih/Pembina',
               style: TextStyle(
                 fontSize: 18,
@@ -233,7 +234,7 @@ class _EditExtracurricularState extends State<EditExtracurricular>
         fillColor: Colors.grey.shade50,
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: _primaryColor, width: 2),
+          borderSide: BorderSide(color: _primaryColor, width: 2),
         ),
       ),
     );
@@ -246,7 +247,7 @@ class _EditExtracurricularState extends State<EditExtracurricular>
         width: double.infinity,
         height: 55,
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             colors: [_primaryColor, _highlightColor],
           ),
           borderRadius: BorderRadius.circular(15),
@@ -312,7 +313,7 @@ class _EditExtracurricularState extends State<EditExtracurricular>
                     ),
                   ],
                 ),
-                child: const Column(
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     SizedBox(
@@ -320,13 +321,13 @@ class _EditExtracurricularState extends State<EditExtracurricular>
                       height: 50,
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(
-                          Color(0xFF7A1E23),
+                          AppColorPalette.primaryMaroon,
                         ),
                         strokeWidth: 4,
                       ),
                     ),
-                    SizedBox(height: 24),
-                    Text(
+                    const SizedBox(height: 24),
+                    const Text(
                       'Menyimpan perubahan...',
                       style: TextStyle(
                         fontSize: 16,
@@ -379,7 +380,7 @@ class _EditExtracurricularState extends State<EditExtracurricular>
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text(
+                  Text(
                     'Berhasil!',
                     style: TextStyle(
                       fontSize: 24,

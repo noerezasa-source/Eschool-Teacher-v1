@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eschool_saas_staff/cubits/onlineExam/onlineExamCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/classSectionsAndSubjects.dart';
@@ -74,8 +75,8 @@ class _CreateOnlineExamState extends State<CreateOnlineExam>
         title: 'Buat Ujian Online',
         icon: Icons.assignment,
         fabAnimationController: _animationController,
-        primaryColor: const Color(0xFF7A1E23),
-        lightColor: const Color(0xFFB84D4D),
+        primaryColor: AppColorPalette.primaryMaroon,
+        lightColor: AppColorPalette.secondaryMaroon,
         onBackPressed: () => Navigator.of(context).pop(),
       ),
       body: BlocListener<OnlineExamCubit, OnlineExamState>(
@@ -298,7 +299,7 @@ class _CreateOnlineExamState extends State<CreateOnlineExam>
                 });
               },
               tooltip: 'Generate Kunci Ujian',
-              color: const Color(0xFF8B0000),
+              color: AppColorPalette.primaryMaroon,
             ),
           ),
         ],
@@ -504,9 +505,9 @@ class _CreateOnlineExamState extends State<CreateOnlineExam>
           return Column(
             children: [
               DropdownButtonFormField<String>(
-                value: selectedTingkatan,
+                initialValue: selectedTingkatan,
                 decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.layers, color: Color(0xFF8B0000)),
+                  prefixIcon: Icon(Icons.layers, color: AppColorPalette.primaryMaroon),
                   labelText: 'Pilih Tingkatan',
                   filled: true,
                   fillColor: Colors.grey.shade50,
@@ -529,9 +530,9 @@ class _CreateOnlineExamState extends State<CreateOnlineExam>
               if (selectedTingkatan != null) ...[
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
-                  value: selectedKelas,
+                  initialValue: selectedKelas,
                   decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.class_, color: Color(0xFF8B0000)),
+                    prefixIcon: Icon(Icons.class_, color: AppColorPalette.primaryMaroon),
                     labelText: 'Pilih Kelas',
                     filled: true,
                     fillColor: Colors.grey.shade50,
@@ -552,7 +553,9 @@ class _CreateOnlineExamState extends State<CreateOnlineExam>
                         if (selectedClass.id != null) {
                           context.read<ClassSectionsAndSubjectsCubit>().getNewSubjectsFromSelectedClassSectionIndex(newClassSectionId: selectedClass.id!);
                         }
-                      } catch (e) {}
+                      } catch (e) {
+                        debugPrint(e.toString());
+                      }
                     }
                   },
                   isExpanded: true,
@@ -562,9 +565,9 @@ class _CreateOnlineExamState extends State<CreateOnlineExam>
               if (selectedKelas != null) ...[
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
-                  value: selectedMapel,
+                  initialValue: selectedMapel,
                   decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.menu_book, color: Color(0xFF8B0000)),
+                    prefixIcon: Icon(Icons.menu_book, color: AppColorPalette.primaryMaroon),
                     labelText: 'Pilih Mata Pelajaran',
                     filled: true,
                     fillColor: Colors.grey.shade50,
@@ -638,7 +641,7 @@ class _CreateOnlineExamState extends State<CreateOnlineExam>
                     ),
                   ],
                 ),
-                child: const Column(
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     SizedBox(
@@ -646,13 +649,13 @@ class _CreateOnlineExamState extends State<CreateOnlineExam>
                       height: 50,
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(
-                          Color(0xFF7A1E23),
+                          AppColorPalette.primaryMaroon,
                         ),
                         strokeWidth: 4,
                       ),
                     ),
-                    SizedBox(height: 24),
-                    Text(
+                    const SizedBox(height: 24),
+                    const Text(
                       'Membuat Ujian...',
                       style: TextStyle(
                         fontSize: 16,
@@ -715,7 +718,7 @@ class _CreateOnlineExamState extends State<CreateOnlineExam>
                       width: 80,
                       height: 80,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF4CAF50).withOpacity(0.1),
+                        color: const Color(0xFF4CAF50).withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(

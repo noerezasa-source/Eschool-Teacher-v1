@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
@@ -7,7 +9,7 @@ import 'dart:math' as math;
 class CustomModernAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
   final String? subtitle;
-  final IconData icon;
+  final dynamic icon;
   final AnimationController fabAnimationController;
   final Color primaryColor;
   final Color lightColor;
@@ -19,7 +21,7 @@ class CustomModernAppBar extends StatefulWidget implements PreferredSizeWidget {
       showArchiveButton; // New parameter to control archive button visibility
   final VoidCallback?
       onArchivePressed; // New parameter for archive button action
-  final IconData? archiveIcon; // New parameter to customize archive icon
+  final dynamic archiveIcon; // New parameter to customize archive icon
   final bool
       showFilterButton; // New parameter to control filter button visibility
   final VoidCallback? onFilterPressed; // New parameter for filter button action
@@ -30,7 +32,7 @@ class CustomModernAppBar extends StatefulWidget implements PreferredSizeWidget {
   final bool
       showHelperButton; // New parameter to control helper button visibility
   final VoidCallback? onHelperPressed; // New parameter for helper button action
-  final IconData? helperIcon; // New parameter to customize helper icon
+  final dynamic helperIcon; // New parameter to customize helper icon
   final Widget Function(BuildContext)?
       tabBuilder; // New parameter for custom tabs in AppBar
 
@@ -69,6 +71,33 @@ class CustomModernAppBar extends StatefulWidget implements PreferredSizeWidget {
 
 class _CustomModernAppBarState extends State<CustomModernAppBar>
     with TickerProviderStateMixin {
+  Color get effectivePrimaryColor {
+    if (widget.primaryColor == const Color(0xFF800020) || widget.primaryColor.toARGB32() == 0xFF800020) {
+      return AppColorPalette.primaryMaroon;
+    }
+    return widget.primaryColor;
+  }
+
+  Color get effectiveLightColor {
+    if (widget.lightColor == const Color(0xFFAA6976) || widget.lightColor.toARGB32() == 0xFFAA6976) {
+      return AppColorPalette.secondaryMaroon;
+    }
+    return widget.lightColor;
+  }
+
+  Widget _buildIcon(dynamic icon, {required Color color, double? size, List<Shadow>? shadows}) {
+    if (icon is FaIconData) {
+      return FaIcon(icon, color: color, size: size, shadows: shadows);
+    }
+    if (icon is IconData) {
+      return Icon(icon, color: color, size: size, shadows: shadows);
+    }
+    if (icon is Widget) {
+      return icon;
+    }
+    return const SizedBox();
+  }
+
   late AnimationController _glowAnimationController;
   late AnimationController _pulseAnimationController;
   late AnimationController _rotationAnimationController;
@@ -151,10 +180,10 @@ class _CustomModernAppBarState extends State<CustomModernAppBar>
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        const Color(0xFF690013),
-                        widget.primaryColor,
-                        const Color(0xFFA12948),
-                        widget.lightColor,
+                        effectivePrimaryColor.withValues(alpha: 0.95),
+                        effectivePrimaryColor,
+                        effectiveLightColor.withValues(alpha: 0.95),
+                        effectiveLightColor,
                       ],
                       stops: const [0.0, 0.3, 0.6, 1.0],
                       transform: GradientRotation(
@@ -163,16 +192,16 @@ class _CustomModernAppBarState extends State<CustomModernAppBar>
                   },
                   blendMode: BlendMode.srcATop,
                   child: Container(
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          Color(0xFF800020),
-                          Color(0xFF9A1E3C),
+                          effectivePrimaryColor,
+                          effectivePrimaryColor.withValues(alpha: 0.85),
                         ],
                       ),
-                      borderRadius: BorderRadius.only(
+                      borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(30),
                         bottomRight: Radius.circular(30),
                       ),
@@ -480,9 +509,9 @@ class _CustomModernAppBarState extends State<CustomModernAppBar>
                                                     ),
                                                   ],
                                                 ),
-                                                child: Icon(
+                                                child: _buildIcon(
                                                   widget.icon,
-                                                  color: widget.primaryColor,
+                                                  color: effectivePrimaryColor,
                                                   size: 20,
                                                 ),
                                               ),
@@ -630,7 +659,7 @@ class _CustomModernAppBarState extends State<CustomModernAppBar>
                                               ),
                                               // Subtle glow shadow
                                               BoxShadow(
-                                                color: widget.primaryColor
+                                                color: effectivePrimaryColor
                                                     .withValues(alpha: 0.15 *
                                                         _glowAnimation.value),
                                                 blurRadius: 8 +
@@ -651,11 +680,11 @@ class _CustomModernAppBarState extends State<CustomModernAppBar>
                                               begin: Alignment.topLeft,
                                               end: Alignment.bottomRight,
                                               colors: [
-                                                widget.lightColor.withValues(alpha: 
+                                                effectiveLightColor.withValues(alpha: 
                                                     0.75 +
                                                         (_glowAnimation.value *
                                                             0.05)),
-                                                widget.primaryColor.withValues(alpha: 
+                                                effectivePrimaryColor.withValues(alpha: 
                                                     0.75 +
                                                         (_glowAnimation.value *
                                                             0.05)),
@@ -799,7 +828,7 @@ class _CustomModernAppBarState extends State<CustomModernAppBar>
                                               ),
                                               // Subtle glow shadow
                                               BoxShadow(
-                                                color: widget.lightColor
+                                                color: effectiveLightColor
                                                     .withValues(alpha: 0.12 *
                                                         _glowAnimation.value),
                                                 blurRadius: 6 +
@@ -820,11 +849,11 @@ class _CustomModernAppBarState extends State<CustomModernAppBar>
                                               begin: Alignment.topLeft,
                                               end: Alignment.bottomRight,
                                               colors: [
-                                                widget.lightColor.withValues(alpha: 
+                                                effectiveLightColor.withValues(alpha: 
                                                     0.75 +
                                                         (_glowAnimation.value *
                                                             0.04)),
-                                                widget.primaryColor.withValues(alpha: 
+                                                effectivePrimaryColor.withValues(alpha: 
                                                     0.75 +
                                                         (_glowAnimation.value *
                                                             0.04)),
@@ -871,7 +900,7 @@ class _CustomModernAppBarState extends State<CustomModernAppBar>
                                                                 math.pi +
                                                             1) *
                                                     0.02,
-                                                child: Icon(
+                                                child: _buildIcon(
                                                   widget.archiveIcon ??
                                                       Icons.archive_rounded,
                                                   color: Colors.white,
@@ -944,7 +973,7 @@ class _CustomModernAppBarState extends State<CustomModernAppBar>
                                                     ),
                                                   ],
                                                   border: Border.all(
-                                                      color: widget.primaryColor
+                                                      color: effectivePrimaryColor
                                                           .withValues(alpha: 0.12),
                                                       width: 1.0),
                                                 )
@@ -970,7 +999,7 @@ class _CustomModernAppBarState extends State<CustomModernAppBar>
                                                     ),
                                                     // Subtle glow shadow
                                                     BoxShadow(
-                                                      color: widget.lightColor
+                                                      color: effectiveLightColor
                                                           .withValues(alpha: 0.1 *
                                                               _glowAnimation
                                                                   .value),
@@ -997,12 +1026,12 @@ class _CustomModernAppBarState extends State<CustomModernAppBar>
                                                     begin: Alignment.topLeft,
                                                     end: Alignment.bottomRight,
                                                     colors: [
-                                                      widget.lightColor
+                                                      effectiveLightColor
                                                           .withValues(alpha: 0.75 +
                                                               (_glowAnimation
                                                                       .value *
                                                                   0.03)),
-                                                      widget.primaryColor
+                                                      effectivePrimaryColor
                                                           .withValues(alpha: 0.75 +
                                                               (_glowAnimation
                                                                       .value *
@@ -1014,7 +1043,7 @@ class _CustomModernAppBarState extends State<CustomModernAppBar>
                                               ? Center(
                                                   child: Icon(
                                                     Icons.filter_list,
-                                                    color: widget.primaryColor,
+                                                    color: effectivePrimaryColor,
                                                     size: 24,
                                                   ),
                                                 )
@@ -1140,7 +1169,7 @@ class _CustomModernAppBarState extends State<CustomModernAppBar>
                                               ),
                                               // Subtle glow shadow
                                               BoxShadow(
-                                                color: widget.primaryColor
+                                                color: effectivePrimaryColor
                                                     .withValues(alpha: 0.12 *
                                                         _glowAnimation.value),
                                                 blurRadius: 6 +
@@ -1161,11 +1190,11 @@ class _CustomModernAppBarState extends State<CustomModernAppBar>
                                               begin: Alignment.topLeft,
                                               end: Alignment.bottomRight,
                                               colors: [
-                                                widget.lightColor.withValues(alpha: 
+                                                effectiveLightColor.withValues(alpha: 
                                                     0.75 +
                                                         (_glowAnimation.value *
                                                             0.04)),
-                                                widget.primaryColor.withValues(alpha: 
+                                                effectivePrimaryColor.withValues(alpha: 
                                                     0.75 +
                                                         (_glowAnimation.value *
                                                             0.04)),
@@ -1287,7 +1316,7 @@ class _CustomModernAppBarState extends State<CustomModernAppBar>
                                               ),
                                               // Subtle glow shadow
                                               BoxShadow(
-                                                color: widget.primaryColor
+                                                color: effectivePrimaryColor
                                                     .withValues(alpha: 0.08 *
                                                         _glowAnimation.value),
                                                 blurRadius: 4 +
@@ -1308,11 +1337,11 @@ class _CustomModernAppBarState extends State<CustomModernAppBar>
                                               begin: Alignment.topLeft,
                                               end: Alignment.bottomRight,
                                               colors: [
-                                                widget.lightColor.withValues(alpha: 
+                                                effectiveLightColor.withValues(alpha: 
                                                     0.75 +
                                                         (_glowAnimation.value *
                                                             0.02)),
-                                                widget.primaryColor.withValues(alpha: 
+                                                effectivePrimaryColor.withValues(alpha: 
                                                     0.75 +
                                                         (_glowAnimation.value *
                                                             0.02)),
@@ -1360,7 +1389,7 @@ class _CustomModernAppBarState extends State<CustomModernAppBar>
                                                                 math.pi +
                                                             3) *
                                                         0.02),
-                                                child: Icon(
+                                                child: _buildIcon(
                                                   widget.helperIcon ??
                                                       Icons.help,
                                                   color: Colors.white,
@@ -1453,19 +1482,13 @@ class AnimatedAppBarDecorationPainter extends CustomPainter {
       ..color = color
       ..style = PaintingStyle.fill;
 
-    final glowPaint = Paint()
-      ..color = color.withValues(alpha: color.a * (0.3 + glowValue * 0.3))
-      ..style = PaintingStyle.fill
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 1 + glowValue * 2);
-
-    // Refined animated decorative circles - more subtle movement
+    // Optimized decorative circles - reduced number and complexity to prevent buffer spam
     final circles = [
       {
         'center': Offset(
             size.width * (0.88 + math.sin(glowValue * 2 * math.pi) * 0.01),
             size.height * (0.22 + math.cos(glowValue * 2 * math.pi) * 0.008)),
-        'radius': 25 * (0.9 + math.sin(pulseValue * math.pi) * 0.15),
-        'hasGlow': true,
+        'radius': 20 * (0.9 + math.sin(pulseValue * math.pi) * 0.1),
       },
       {
         'center': Offset(
@@ -1473,110 +1496,50 @@ class AnimatedAppBarDecorationPainter extends CustomPainter {
                 (0.12 + math.cos(glowValue * 2 * math.pi + 1.5) * 0.008),
             size.height *
                 (0.78 + math.sin(glowValue * 2 * math.pi + 1.5) * 0.01)),
-        'radius': 18 * (0.95 + math.sin(pulseValue * math.pi + 0.5) * 0.1),
-        'hasGlow': false,
+        'radius': 15 * (0.95 + math.sin(pulseValue * math.pi + 0.5) * 0.08),
       },
       {
         'center': Offset(
             size.width * (0.52 + math.sin(glowValue * 2 * math.pi + 3) * 0.012),
             size.height *
                 (0.18 + math.cos(glowValue * 2 * math.pi + 3) * 0.006)),
-        'radius': 12 * (1.0 + math.sin(pulseValue * math.pi + 1) * 0.2),
-        'hasGlow': true,
-      },
-      {
-        'center': Offset(
-            size.width *
-                (0.72 + math.cos(glowValue * 2 * math.pi + 4.5) * 0.008),
-            size.height *
-                (0.68 + math.sin(glowValue * 2 * math.pi + 4.5) * 0.01)),
-        'radius': 8 * (0.8 + math.sin(pulseValue * math.pi + 1.5) * 0.3),
-        'hasGlow': false,
-      },
-      {
-        'center': Offset(
-            size.width * (0.25 + math.sin(glowValue * 2 * math.pi + 6) * 0.01),
-            size.height *
-                (0.42 + math.cos(glowValue * 2 * math.pi + 6) * 0.008)),
-        'radius': 6 * (1.0 + math.sin(pulseValue * math.pi + 2) * 0.15),
-        'hasGlow': true,
+        'radius': 10 * (1.0 + math.sin(pulseValue * math.pi + 1) * 0.12),
       },
     ];
 
-    // Draw refined animated circles
+    // Draw optimized animated circles
     for (var circle in circles) {
       final center = circle['center'] as Offset;
       final radius = circle['radius'] as double;
-      final hasGlow = circle['hasGlow'] as bool;
-
-      if (hasGlow) {
-        // Draw subtle glow effect
-        canvas.drawCircle(center, radius * 1.3, glowPaint);
-      }
-      // Draw main circle
       canvas.drawCircle(center, radius, paint);
     }
 
-    // Refined animated arcs - smoother movement
+    // Simplified animated arc
     final arcPaint = Paint()
-      ..color = color
+      ..color = color.withValues(alpha: color.a * 0.5)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5 + glowValue * 0.5;
+      ..strokeWidth = 1.2;
 
-    final glowArcPaint = Paint()
-      ..color = color.withValues(alpha: color.a * (0.2 + glowValue * 0.3))
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3 + glowValue * 1
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 0.5 + glowValue * 1.5);
-
-    // First refined animated arc
     final arcRect = Rect.fromLTRB(
         size.width * (0.12 + math.sin(glowValue * 2 * math.pi) * 0.02),
         size.height * (0.25 + math.cos(glowValue * 2 * math.pi) * 0.015),
         size.width * (0.58 + math.sin(glowValue * 2 * math.pi + 1) * 0.025),
         size.height * (0.58 + math.cos(glowValue * 2 * math.pi + 1) * 0.02));
 
-    final arcSweep = 1.2 + math.sin(glowValue * 2 * math.pi) * 0.2;
-    final arcStart = 0.3 + rotationValue * 0.05;
+    final arcSweep = 1.1 + math.sin(glowValue * 2 * math.pi) * 0.15;
+    canvas.drawArc(arcRect, 0.3 + rotationValue * 0.05, arcSweep, false, arcPaint);
 
-    // Draw subtle glow arc
-    canvas.drawArc(arcRect, arcStart, arcSweep, false, glowArcPaint);
-    // Draw main arc
-    canvas.drawArc(arcRect, arcStart, arcSweep, false, arcPaint);
-
-    // Second refined animated arc
-    final arcRect2 = Rect.fromLTRB(
-        size.width * (0.48 + math.cos(glowValue * 2 * math.pi + 2) * 0.015),
-        size.height * (0.42 + math.sin(glowValue * 2 * math.pi + 2) * 0.01),
-        size.width * (0.88 + math.cos(glowValue * 2 * math.pi + 3) * 0.02),
-        size.height * (0.78 + math.sin(glowValue * 2 * math.pi + 3) * 0.015));
-
-    final arcSweep2 = 1.3 + math.sin(glowValue * 2 * math.pi + 1) * 0.15;
-    final arcStart2 = 2.8 - rotationValue * 0.08;
-
-    // Draw subtle glow arc
-    canvas.drawArc(arcRect2, arcStart2, arcSweep2, false, glowArcPaint);
-    // Draw main arc
-    canvas.drawArc(arcRect2, arcStart2, arcSweep2, false, arcPaint);
-
-    // Refined floating particles - gentler movement
-    for (int i = 0; i < 6; i++) {
-      final angle = (i * 1.047) + rotationValue * 0.3; // 1.047 = 2π/6
+    // Optimized floating particles
+    for (int i = 0; i < 3; i++) {
+      final angle = (i * 2.094) + rotationValue * 0.3; // 2.094 = 2π/3
       final baseDistance = 25 + math.sin(glowValue * 2 * math.pi + i) * 8;
-      final particleSize =
-          1.5 + math.sin(glowValue * 2 * math.pi + i * 1.5) * 0.8;
-
+      
       final particleCenter = Offset(
         size.width * 0.5 + (baseDistance * math.cos(angle)),
         size.height * 0.5 + (baseDistance * math.sin(angle)),
       );
 
-      final particlePaint = Paint()
-        ..color = color
-            .withValues(alpha: 0.4 + math.sin(glowValue * 2 * math.pi + i * 2) * 0.3)
-        ..style = PaintingStyle.fill;
-
-      canvas.drawCircle(particleCenter, particleSize, particlePaint);
+      canvas.drawCircle(particleCenter, 1.2, paint);
     }
   }
 

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eschool_saas_staff/cubits/onlineExam/onlineExamCubit.dart';
@@ -73,9 +74,9 @@ class _OnlineExamScreenState extends State<OnlineExamScreen>
   StreamSubscription? _examSub;
 
   // Theme colors - Softer Maroon palette
-  static const Color _primaryColor = Color(0xFF7A1E23); // Softer deep maroon
-  static const Color _highlightColor =
-      Color(0xFFB84D4D); // Softer bright maroon  @override
+  static Color get _primaryColor => AppColorPalette.primaryMaroon; // Softer deep maroon
+  static Color get _highlightColor =>
+      AppColorPalette.secondaryMaroon; // Softer bright maroon
   @override
   void initState() {
     super.initState();
@@ -454,7 +455,7 @@ class _OnlineExamScreenState extends State<OnlineExamScreen>
               borderRadius: BorderRadius.circular(15),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF8B0000).withValues(alpha: 0.1),
+                  color: AppColorPalette.primaryMaroon.withValues(alpha: 0.1),
                   blurRadius: 10,
                   offset: const Offset(0, 5),
                 ),
@@ -466,17 +467,17 @@ class _OnlineExamScreenState extends State<OnlineExamScreen>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Row(
+                    Row(
                       children: [
                         Icon(Icons.filter_alt_rounded,
-                            color: Color(0xFF8B0000)),
-                        SizedBox(width: 10),
+                            color: AppColorPalette.primaryMaroon),
+                        const SizedBox(width: 10),
                         Text(
                           'Filter Ujian',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF8B0000),
+                            color: AppColorPalette.primaryMaroon,
                           ),
                         ),
                       ],
@@ -490,10 +491,10 @@ class _OnlineExamScreenState extends State<OnlineExamScreen>
                         });
                         context.read<OnlineExamCubit>().getOnlineExams();
                       },
-                      child: const Text(
+                      child: Text(
                         'Reset',
                         style: TextStyle(
-                          color: Color(0xFF800020),
+                          color: AppColorPalette.primaryMaroon,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -506,11 +507,11 @@ class _OnlineExamScreenState extends State<OnlineExamScreen>
                   initialValue: selectedTingkatan,
                   decoration: InputDecoration(
                     prefixIcon:
-                        const Icon(Icons.layers, color: Color(0xFF8B0000)),
+                        Icon(Icons.layers, color: AppColorPalette.primaryMaroon),
                     labelText: 'Pilih Tingkatan',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Color(0xFF8B0000)),
+                      borderSide: BorderSide(color: AppColorPalette.primaryMaroon),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -518,7 +519,7 @@ class _OnlineExamScreenState extends State<OnlineExamScreen>
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Color(0xFF8B0000)),
+                      borderSide: BorderSide(color: AppColorPalette.primaryMaroon),
                     ),
                   ),
                   items: tingkatanList
@@ -545,11 +546,11 @@ class _OnlineExamScreenState extends State<OnlineExamScreen>
                     initialValue: selectedKelas,
                     decoration: InputDecoration(
                       prefixIcon:
-                          const Icon(Icons.class_, color: Color(0xFF8B0000)),
+                          Icon(Icons.class_, color: AppColorPalette.primaryMaroon),
                       labelText: 'Pilih Kelas',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Color(0xFF8B0000)),
+                        borderSide: BorderSide(color: AppColorPalette.primaryMaroon),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -557,7 +558,7 @@ class _OnlineExamScreenState extends State<OnlineExamScreen>
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Color(0xFF8B0000)),
+                        borderSide: BorderSide(color: AppColorPalette.primaryMaroon),
                       ),
                     ),
                     items: kelasList
@@ -585,11 +586,11 @@ class _OnlineExamScreenState extends State<OnlineExamScreen>
                     initialValue: selectedMapel,
                     decoration: InputDecoration(
                       prefixIcon:
-                          const Icon(Icons.menu_book, color: Color(0xFF8B0000)),
+                          Icon(Icons.menu_book, color: AppColorPalette.primaryMaroon),
                       labelText: 'Pilih Mata Pelajaran',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Color(0xFF8B0000)),
+                        borderSide: BorderSide(color: AppColorPalette.primaryMaroon),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -597,7 +598,7 @@ class _OnlineExamScreenState extends State<OnlineExamScreen>
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Color(0xFF8B0000)),
+                        borderSide: BorderSide(color: AppColorPalette.primaryMaroon),
                       ),
                     ),
                     items: mapelList

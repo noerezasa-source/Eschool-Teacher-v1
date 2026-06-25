@@ -1,6 +1,7 @@
 ﻿import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/authentication/authCubit.dart';
 import 'package:eschool_saas_staff/cubits/authentication/editProfileCubit.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
@@ -55,7 +56,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
   late Animation<Offset> _slideAnimation;
 
   // Soft maroon color scheme
-  final Color primaryMaroon = const Color(0xFF8B1F41);
+  Color get primaryMaroon => AppColorPalette.primaryMaroon;
   final Color lightMaroon = const Color(0xFFBF6680);
   final Color accentMaroon = const Color(0xFF5D1429);
   final Color backgroundMaroon = const Color(0xFFFDF6F8);

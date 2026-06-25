@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:eschool_saas_staff/utils/system/api.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 
 class EditQuestionScreen extends StatefulWidget {
   final Map<String, dynamic>? questionData;
@@ -40,13 +41,13 @@ class _EditQuestionScreenState extends State<EditQuestionScreen>
   final ImagePicker _picker = ImagePicker();
 
   // Theme colors - Softer Maroon palette
-  static const Color _primaryColor =
-      Color(0xFF7A1E23); // Softer deep maroon - UPDATED
-  static const Color _accentColor = Color(0xFF9D3C3C); // Softer medium maroon
-  static const Color _highlightColor =
-      Color(0xFFB84D4D); // Softer bright maroon
-  static const Color _energyColor = Color(0xFFCE6D6D); // Softer light maroon
-  static const Color _glowColor = Color(0xFFAF4F4F); // Softer rich maroon
+  static Color get _primaryColor =>
+      AppColorPalette.primaryMaroon; // Softer deep maroon - UPDATED
+  static Color get _accentColor => AppColorPalette.secondaryMaroon; // Softer medium maroon
+  static Color get _highlightColor =>
+      AppColorPalette.secondaryMaroon; // Softer bright maroon
+  static Color get _energyColor => AppColorPalette.lightMaroon; // Softer light maroon
+  static Color get _glowColor => AppColorPalette.secondaryMaroon; // Softer rich maroon
 
   void _loadImage() async {
     _imageFile = await Api.fetchImg(widget.questionData?["image"]);
@@ -580,13 +581,13 @@ class _EditQuestionScreenState extends State<EditQuestionScreen>
           // Header with gradient
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [_primaryColor, _accentColor],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
               ),
@@ -708,7 +709,7 @@ class _EditQuestionScreenState extends State<EditQuestionScreen>
               const SizedBox(width: 8),
               Text(
                 label,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
                   color: _primaryColor,
@@ -734,7 +735,7 @@ class _EditQuestionScreenState extends State<EditQuestionScreen>
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: _primaryColor, width: 2),
+                borderSide: BorderSide(color: _primaryColor, width: 2),
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -786,13 +787,13 @@ class _EditQuestionScreenState extends State<EditQuestionScreen>
             // Styled header
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [_accentColor, _highlightColor],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
                 ),
@@ -877,7 +878,7 @@ class _EditQuestionScreenState extends State<EditQuestionScreen>
       child: DropdownButtonFormField<String>(
         initialValue: selectedType,
         icon:
-            const Icon(Icons.keyboard_arrow_down_rounded, color: _primaryColor),
+            Icon(Icons.keyboard_arrow_down_rounded, color: _primaryColor),
         decoration: const InputDecoration(
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -1051,13 +1052,13 @@ class _EditQuestionScreenState extends State<EditQuestionScreen>
             // Styled header
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [_highlightColor, _energyColor],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
                 ),
@@ -1314,7 +1315,7 @@ class _EditQuestionScreenState extends State<EditQuestionScreen>
                     minLines: 2,
                     decoration: InputDecoration(
                       labelText: 'Teks Jawaban',
-                      prefixIcon: const Icon(
+                      prefixIcon: Icon(
                         Icons.text_fields_rounded,
                         color: _primaryColor,
                       ),
@@ -1384,7 +1385,7 @@ class _EditQuestionScreenState extends State<EditQuestionScreen>
                     initialValue: options[index]['feedback'],
                     decoration: InputDecoration(
                       labelText: 'Umpan Balik untuk jawaban ini',
-                      prefixIcon: const Icon(
+                      prefixIcon: Icon(
                         Icons.comment_outlined,
                         color: _primaryColor,
                       ),
@@ -1556,7 +1557,7 @@ class _EditQuestionScreenState extends State<EditQuestionScreen>
                     initialValue: options[index]['feedback'],
                     decoration: InputDecoration(
                       labelText: 'Umpan Balik',
-                      prefixIcon: const Icon(
+                      prefixIcon: Icon(
                         Icons.comment_outlined,
                         color: _primaryColor,
                       ),
@@ -1655,7 +1656,7 @@ class _EditQuestionScreenState extends State<EditQuestionScreen>
                                   : selectedType == 'short_answer'
                                       ? 'Jawaban Singkat'
                                       : 'Jawaban Numerik',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 15,
                                 color: _primaryColor,
@@ -1734,7 +1735,7 @@ class _EditQuestionScreenState extends State<EditQuestionScreen>
                           decoration: InputDecoration(
                             labelText: 'Persentase Nilai',
                             prefixIcon:
-                                const Icon(Icons.percent, color: _primaryColor),
+                                Icon(Icons.percent, color: _primaryColor),
                             suffixText: '%',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -1763,7 +1764,7 @@ class _EditQuestionScreenState extends State<EditQuestionScreen>
                           initialValue: options[index]['feedback'],
                           decoration: InputDecoration(
                             labelText: 'Umpan Balik',
-                            prefixIcon: const Icon(Icons.comment_outlined,
+                            prefixIcon: Icon(Icons.comment_outlined,
                                 color: _primaryColor),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -1814,7 +1815,7 @@ class _EditQuestionScreenState extends State<EditQuestionScreen>
               border: Border.all(color: _primaryColor.withValues(alpha: 0.5)),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
@@ -1822,7 +1823,7 @@ class _EditQuestionScreenState extends State<EditQuestionScreen>
                   color: _primaryColor,
                   size: 18,
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
                   'Tambah Pilihan Jawaban',
                   style: TextStyle(
@@ -1853,7 +1854,7 @@ class _EditQuestionScreenState extends State<EditQuestionScreen>
               border: Border.all(color: _primaryColor.withValues(alpha: 0.5)),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
@@ -1861,7 +1862,7 @@ class _EditQuestionScreenState extends State<EditQuestionScreen>
                   color: _primaryColor,
                   size: 18,
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
                   'Tambah Jawaban',
                   style: TextStyle(

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/app/routes.dart';
 import 'package:eschool_saas_staff/cubits/authentication/authCubit.dart';
 import 'package:eschool_saas_staff/cubits/userDetails/staffAllowedPermissionsAndModulesCubit.dart';
@@ -12,14 +13,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-
-class AppColorPalette {
-  static const Color primaryMaroon = Color(0xFF8B1F41);
-  static const Color secondaryMaroon = Color(0xFFA84B5C);
-  static const Color lightMaroon = Color(0xFFE7C8CD);
-  static const Color accentPink = Color(0xFFF4D0D9);
-  static const Color warmBeige = Color(0xFFF5E6E8);
-}
 
 class StaffAcademicsContainer extends StatefulWidget {
   const StaffAcademicsContainer({super.key});
@@ -104,7 +97,7 @@ class _StaffAcademicsContainerState extends State<StaffAcademicsContainer>
                           context: context,
                           title: "Kelas",
                           icon: Icons.class_outlined,
-                          iconColor: const Color(0xFF8B0000).withValues(alpha: 0.9),
+                          iconColor: AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
                           index: 0,
                           menus: [
                             _buildMenuItem(
@@ -125,7 +118,7 @@ class _StaffAcademicsContainerState extends State<StaffAcademicsContainer>
                           context: context,
                           title: "Tahun Ajaran",
                           icon: Icons.calendar_today,
-                          iconColor: const Color(0xFF8B0000).withValues(alpha: 0.9),
+                          iconColor: AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
                           index: 1,
                           menus: [
                             _buildMenuItem(
@@ -145,7 +138,7 @@ class _StaffAcademicsContainerState extends State<StaffAcademicsContainer>
                     context: context,
                     title: "Cuti",
                     icon: Icons.work_off,
-                    iconColor: const Color(0xFF8B0000).withValues(alpha: 0.9),
+                    iconColor: AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
                     index: 2,
                     menus: [
                       _buildMenuItem(
@@ -214,7 +207,7 @@ class _StaffAcademicsContainerState extends State<StaffAcademicsContainer>
                   //         context: context,
                   //         title: "Kehadiran",
                   //         icon: Icons.people,
-                  //         iconColor: Color(0xFF8B0000).withValues(alpha: 0.9),
+                  //         iconColor: AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
                   //         index: 3,
                   //         menus: [
                   //           _buildMenuItem(
@@ -240,7 +233,7 @@ class _StaffAcademicsContainerState extends State<StaffAcademicsContainer>
                           context: context,
                           title: "Jadwal",
                           icon: Icons.schedule,
-                          iconColor: const Color(0xFF8B0000).withValues(alpha: 0.9),
+                          iconColor: AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
                           index: 4,
                           menus: [
                             _buildMenuItem(
@@ -272,7 +265,7 @@ class _StaffAcademicsContainerState extends State<StaffAcademicsContainer>
                     context: context,
                     title: "Bank Soal",
                     icon: Icons.quiz,
-                    iconColor: const Color(0xFF8B0000).withValues(alpha: 0.9),
+                    iconColor: AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
                     index: 6,
                     menus: [
                       _buildMenuItem(
@@ -323,7 +316,7 @@ class _StaffAcademicsContainerState extends State<StaffAcademicsContainer>
                           context: context,
                           title: "Ujian Offline",
                           icon: Icons.school,
-                          iconColor: const Color(0xFF8B0000).withValues(alpha: 0.9),
+                          iconColor: AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
                           index: 5,
                           menus: [
                             staffAllowedPermissionsAndModulesCubit
@@ -359,7 +352,7 @@ class _StaffAcademicsContainerState extends State<StaffAcademicsContainer>
                     context: context,
                     title: "Ujian Online",
                     icon: Icons.computer,
-                    iconColor: const Color(0xFF8B0000).withValues(alpha: 0.9),
+                    iconColor: AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
                     index: 7,
                     menus: [
                       _buildMenuItem(
@@ -396,7 +389,7 @@ class _StaffAcademicsContainerState extends State<StaffAcademicsContainer>
                     context: context,
                     title: "Ekstrakurikuler",
                     icon: Icons.sports_soccer,
-                    iconColor: const Color(0xFF8B0000).withValues(alpha: 0.9),
+                    iconColor: AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
                     index: 8,
                     menus: [
                       _buildMenuItem(
@@ -452,7 +445,7 @@ class _StaffAcademicsContainerState extends State<StaffAcademicsContainer>
                           context: context,
                           title: "Pengumuman",
                           icon: Icons.announcement,
-                          iconColor: const Color(0xFF8B0000).withValues(alpha: 0.9),
+                          iconColor: AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
                           index: 8,
                           menus: [
                             (staffAllowedPermissionsAndModulesCubit
@@ -506,7 +499,7 @@ class _StaffAcademicsContainerState extends State<StaffAcademicsContainer>
                           context: context,
                           title: "Pembayaran",
                           icon: Icons.payments,
-                          iconColor: const Color(0xFF8B0000).withValues(alpha: 0.9),
+                          iconColor: AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
                           index: 9,
                           menus: [
                             (staffAllowedPermissionsAndModulesCubit
@@ -817,37 +810,35 @@ class BackgroundPatternPainter extends CustomPainter {
     final width = size.width;
     final height = size.height;
 
-    // Draw dots pattern
+    // Optimized dots pattern
     final dotPaint = Paint()
       ..color = primaryColor
       ..style = PaintingStyle.fill;
 
-    for (var x = 0; x < width; x += 30) {
-      for (var y = 0; y < height; y += 30) {
-        final offset = sin(x * 0.05 + y * 0.05 + animation.value) * 3;
-        final radius = 1 + sin(x * 0.04 + y * 0.04 + animation.value) * 0.5;
+    for (var x = 0.0; x < width; x += 60.0) {
+      for (var y = 0.0; y < height; y += 60.0) {
+        final offset = sin(x * 0.02 + y * 0.02 + animation.value) * 2;
         canvas.drawCircle(
           Offset(x + offset, y + offset),
-          radius,
+          1.2,
           dotPaint,
         );
       }
     }
 
-    // Draw animated wave
+    // Simplified wave
     final wavePaint = Paint()
       ..color = accentColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
+      ..strokeWidth = 1.0;
 
-    for (var startY = 0; startY < height; startY += 200) {
+    for (var startY = 100.0; startY < height; startY += 250) {
       final path = Path();
-      var startX = 0.0;
-      path.moveTo(startX, startY.toDouble());
+      path.moveTo(0, startY);
 
-      for (var x = 0; x < width; x += 10) {
-        final y = startY + sin(x * 0.02 + animation.value) * 20;
-        path.lineTo(x.toDouble(), y);
+      for (var x = 0.0; x < width; x += 20.0) {
+        final y = startY + sin(x * 0.01 + animation.value) * 15;
+        path.lineTo(x, y);
       }
 
       canvas.drawPath(path, wavePaint);

@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -297,8 +298,7 @@ class _SchoolListScreenState extends State<SchoolListScreen>
   @override
   Widget build(BuildContext context) {
     // Modern elegant maroon color palette
-    const Color primaryMaroon =
-        Color(0xFF800020); // Primary maroon (main brand color)
+    final primaryMaroon = AppColorPalette.primaryMaroon; // Primary maroon (main brand color)
     const Color softMaroon =
         Color(0xFFE8D5DA); // Very soft maroon pink for backgrounds
     const Color deepMaroon =
@@ -359,7 +359,7 @@ class _SchoolListScreenState extends State<SchoolListScreen>
                                   ),
                                   const SizedBox(height: 20),
                                   // Clean Title
-                                  const Text(
+                                  Text(
                                     'Pilih Sekolah Anda',
                                     style: TextStyle(
                                       fontSize: 28,
@@ -1174,8 +1174,7 @@ class _SchoolListScreenState extends State<SchoolListScreen>
   Widget _buildElegantBackground() {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    const Color primaryMaroon =
-        Color(0xFF800020); // Primary maroon (main brand color)
+    final primaryMaroon = AppColorPalette.primaryMaroon; // Primary maroon (main brand color)
     const Color softMaroon =
         Color(0xFFE8D5DA); // Very soft maroon pink for backgrounds
     const Color deepMaroon =

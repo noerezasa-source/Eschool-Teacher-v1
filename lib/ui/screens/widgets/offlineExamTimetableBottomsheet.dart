@@ -1,5 +1,6 @@
 ﻿import 'dart:ui';
 import 'package:eschool_saas_staff/data/models/exam/offlineExam.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/data/models/exam/offlineExamTimetableSlot.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customBottomsheet.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customTextContainer.dart';
@@ -111,10 +112,10 @@ class OfflineExamTimetableBottomsheet extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      const Color(0xFF690013),
+                      AppColorPalette.primaryMaroon,
                       primaryColor,
-                      const Color(0xFFA12948),
-                      const Color(0xFFAA6976),
+                      AppColorPalette.secondaryMaroon,
+                      AppColorPalette.secondaryMaroon,
                     ],
                     stops: const [0.0, 0.3, 0.6, 1.0],
                   ),

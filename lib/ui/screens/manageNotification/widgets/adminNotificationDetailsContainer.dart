@@ -1,5 +1,6 @@
 ﻿import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/announcement/deleteNotificationCubit.dart';
 import 'package:eschool_saas_staff/cubits/announcement/notificationsCubit.dart';
 import 'package:eschool_saas_staff/cubits/userDetails/staffAllowedPermissionsAndModulesCubit.dart';
@@ -35,7 +36,7 @@ class _AdminNotificationDetailsContainerState
   late final AnimationController _deleteAnimationController =
       AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
 
-  final Color _maroonPrimary = const Color(0xFF800020);
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
 
   bool _isHovering = false;
 

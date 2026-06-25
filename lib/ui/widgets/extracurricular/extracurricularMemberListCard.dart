@@ -1,4 +1,5 @@
 import 'package:eschool_saas_staff/data/models/extracurricular/extracurricularMember.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -7,9 +8,9 @@ class ExtracurricularMemberListCard extends StatelessWidget {
   final VoidCallback onTap;
 
   // Define theme colors
-  static const Color maroonPrimary = Color(0xFF8B1F41);
-  static const Color maroonLight = Color(0xFFAC3B5C);
-  static const Color accentColor = Color(0xFFF5EBE0);
+  static Color get maroonPrimary => AppColorPalette.primaryMaroon;
+  static Color get maroonLight => AppColorPalette.secondaryMaroon;
+  static Color get accentColor => AppColorPalette.lightMaroon;
   final Color cardColor = Colors.white;
   static const Color textDarkColor = Color(0xFF2D2D2D);
   static const Color textMediumColor = Color(0xFF717171);
@@ -170,7 +171,7 @@ class ExtracurricularMemberListCard extends StatelessWidget {
                             height: 65,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              gradient: const LinearGradient(
+                              gradient: LinearGradient(
                                 colors: [maroonLight, maroonPrimary],
                               ),
                               boxShadow: [
@@ -261,7 +262,7 @@ class ExtracurricularMemberListCard extends StatelessWidget {
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            const Icon(
+                                            Icon(
                                               Icons.sports_soccer,
                                               color: maroonPrimary,
                                               size: 12,
@@ -270,7 +271,7 @@ class ExtracurricularMemberListCard extends StatelessWidget {
                                             Flexible(
                                               child: Text(
                                                 member.extracurricularName!,
-                                                style: const TextStyle(
+                                                style: TextStyle(
                                                   color: maroonPrimary,
                                                   fontSize: 11,
                                                   fontWeight: FontWeight.w600,
@@ -388,7 +389,7 @@ class ExtracurricularMemberListCard extends StatelessWidget {
                           member.isPending
                               ? "Tap untuk approve/reject"
                               : "Lihat detail anggota",
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 12,
                             color: maroonPrimary,

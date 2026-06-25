@@ -1,4 +1,4 @@
-﻿import 'dart:ui';
+import 'dart:ui';
 import 'package:eschool_saas_staff/app/routes.dart';
 import 'package:eschool_saas_staff/cubits/authentication/authCubit.dart';
 import 'package:eschool_saas_staff/cubits/authentication/sendPasswordResetEmailCubit.dart';
@@ -16,6 +16,7 @@ import 'package:eschool_saas_staff/utils/system/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/route_manager.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math' as math;
 
@@ -82,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen>
       TextEditingController();
 
   // Brand colors
-  final Color primaryMaroon = const Color(0xFF8B0000);
+  final Color primaryMaroon = AppColorPalette.primaryMaroon;
   final Color lightMaroon = const Color(0xFFC41E3A);
   final Color maroonRich = const Color(0xFF8C1D40);
   final Color accentColor = const Color(0xFFFFD700);

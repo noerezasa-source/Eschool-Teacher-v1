@@ -419,7 +419,7 @@ class _TeacherManageAssignmentScreenState
                             child: Container(
                               height: 6,
                               decoration: BoxDecoration(
-                                gradient: const LinearGradient(
+                                gradient: LinearGradient(
                                   colors: [maroonPrimary, maroonLight],
                                   begin: Alignment.centerLeft,
                                   end: Alignment.centerRight,
@@ -478,7 +478,7 @@ class _TeacherManageAssignmentScreenState
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            const Icon(
+                                            Icon(
                                               Icons.calendar_today_rounded,
                                               color: maroonPrimary,
                                               size: 14,
@@ -772,7 +772,7 @@ class _TeacherManageAssignmentScreenState
                                             ),
                                             child: state
                                                     is DeleteAssignmentInProgress
-                                                ? const Center(
+                                                ? Center(
                                                     child: SizedBox(
                                                       width: 20,
                                                       height: 20,
@@ -783,7 +783,7 @@ class _TeacherManageAssignmentScreenState
                                                       ),
                                                     ),
                                                   )
-                                                : const Icon(
+                                                : Icon(
                                                     Icons.more_vert_rounded,
                                                     color: maroonPrimary,
                                                     size: 22,
@@ -880,7 +880,7 @@ class _TeacherManageAssignmentScreenState
                                         maroonPrimary.withValues(alpha: 0.08),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.info_outline_rounded,
                                     color: maroonPrimary,
                                     size: 18,
@@ -1066,7 +1066,7 @@ class _TeacherManageAssignmentScreenState
                                           maroonPrimary.withValues(alpha: 0.08),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
-                                    child: const Icon(
+                                    child: Icon(
                                       Icons.attach_file_rounded,
                                       color: maroonPrimary,
                                       size: 18,
@@ -1234,7 +1234,7 @@ class _TeacherManageAssignmentScreenState
                                                         BorderRadius.circular(
                                                             14),
                                                   ),
-                                                  child: const Icon(
+                                                  child: Icon(
                                                     Icons.download_rounded,
                                                     color: maroonPrimary,
                                                     size: 20,
@@ -1273,7 +1273,7 @@ class _TeacherManageAssignmentScreenState
                             borderRadius: BorderRadius.circular(20),
                             child: Ink(
                               decoration: BoxDecoration(
-                                gradient: const LinearGradient(
+                                gradient: LinearGradient(
                                   colors: [maroonPrimary, maroonDark],
                                   begin: Alignment.centerLeft,
                                   end: Alignment.centerRight,
@@ -1503,7 +1503,7 @@ class _TeacherManageAssignmentScreenState
                           color: Colors.grey.shade100,
                           borderRadius: BorderRadius.circular(40),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.assignment_outlined,
                           size: 40,
                           color: maroonPrimary,
@@ -1687,7 +1687,7 @@ class _TeacherManageAssignmentScreenState
                                           ),
                                         ],
                                       ),
-                                      child: const Icon(
+                                      child: Icon(
                                         Icons.add_rounded,
                                         color: maroonPrimary,
                                         size: 20,

@@ -1,5 +1,8 @@
-﻿import 'dart:math';
+import 'package:eschool_saas_staff/cubits/settings/appThemeCubit.dart';
+import 'package:eschool_saas_staff/ui/screens/home/widgets/backgroundExperimentScreen.dart';
+import 'dart:math';
 import 'package:eschool_saas_staff/app/routes.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/settings/appLocalizationCubit.dart';
 import 'package:eschool_saas_staff/cubits/authentication/authCubit.dart';
 import 'package:eschool_saas_staff/data/repositories/system/settingsRepository.dart';
@@ -20,13 +23,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class AppColorPalette {
-  static const Color primaryMaroon = Color(0xFF8B1F41);
-  static const Color secondaryMaroon = Color(0xFFA84B5C);
-  static const Color lightMaroon = Color(0xFFE7C8CD);
-  static const Color accentPink = Color(0xFFF4D0D9);
-  static const Color warmBeige = Color(0xFFF5E6E8);
-}
+
 
 class ProfileContainer extends StatefulWidget {
   const ProfileContainer({super.key});
@@ -49,11 +46,10 @@ class _ProfileContainerState extends State<ProfileContainer>
   late Animation<double> _pulseAnimation;
   late Animation<double> _rotationAnimation;
 
-  // Maroon color palette for app bar
-  final Color maroonPrimary = const Color(0xFF800020); // Deep maroon
-  final Color maroonLight = const Color(0xFFAA6976); // Light maroon
-  final Color maroonDark =
-      const Color.fromARGB(255, 124, 9, 31); // Darker variant
+  Color get maroonPrimary => AppColorPalette.primaryMaroon; // Deep maroon
+  Color get maroonLight => AppColorPalette.secondaryMaroon; // Light maroon
+  Color get maroonDark => maroonPrimary.withValues(alpha: 0.8); // Darker variant
+  Color get maroonMiddle => maroonPrimary.withValues(alpha: 0.9); // Middle variant
 
   @override
   void initState() {
@@ -228,7 +224,7 @@ class _ProfileContainerState extends State<ProfileContainer>
                         title: "Pengaturan Personal",
                         icon: Icons.person_outline,
                         iconColor:
-                            const Color(0xFF8B0000).withValues(alpha: 0.9),
+                            AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
                         index: 0,
                         menus: [
                           _buildMenuItem(
@@ -254,6 +250,25 @@ class _ProfileContainerState extends State<ProfileContainer>
                             onTap: () =>
                                 _showNotificationSettingsBottomSheet(context),
                           ),
+                          _buildMenuItem(
+                            context: context,
+                            icon: Icons.palette_outlined,
+                            title: "Tema Aplikasi",
+                            index: 12,
+                            onTap: () => _showThemeSelectionBottomSheet(context),
+                          ),
+                          _buildMenuItem(
+                            context: context,
+                            icon: Icons.science_outlined,
+                            title: "BACKGROUND EXPERIMEN",
+                            index: 13,
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const BackgroundExperimentScreen(),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
 
@@ -262,7 +277,7 @@ class _ProfileContainerState extends State<ProfileContainer>
                         title: "Cuti",
                         icon: Icons.event_available,
                         iconColor:
-                            const Color(0xFF8B0000).withValues(alpha: 0.9),
+                            AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
                         index: 1,
                         menus: [
                           _buildMenuItem(
@@ -289,7 +304,7 @@ class _ProfileContainerState extends State<ProfileContainer>
                         title: "Penggajian",
                         icon: Icons.account_balance_wallet,
                         iconColor:
-                            const Color(0xFF8B0000).withValues(alpha: 0.9),
+                            AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
                         index: 2,
                         menus: [
                           _buildMenuItem(
@@ -315,7 +330,7 @@ class _ProfileContainerState extends State<ProfileContainer>
                         title: "Informasi",
                         icon: Icons.info_outline,
                         iconColor:
-                            const Color(0xFF8B0000).withValues(alpha: 0.9),
+                            AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
                         index: 3,
                         menus: [
                           _buildMenuItem(
@@ -363,7 +378,7 @@ class _ProfileContainerState extends State<ProfileContainer>
                         title: "Sekolah",
                         icon: Icons.school_outlined,
                         iconColor:
-                            const Color(0xFF8B0000).withValues(alpha: 0.9),
+                            AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
                         index: 4,
                         menus: [
                           _buildMenuItem(
@@ -377,14 +392,14 @@ class _ProfileContainerState extends State<ProfileContainer>
                                 context: context,
                                 barrierDismissible: false,
                                 builder: (BuildContext context) {
-                                  return const Dialog(
+                                  return Dialog(
                                     backgroundColor: Colors.transparent,
                                     elevation: 0,
                                     child: Center(
                                       child: CircularProgressIndicator(
                                         valueColor:
                                             AlwaysStoppedAnimation<Color>(
-                                          Color(0xFF8B1F41),
+                                          AppColorPalette.primaryMaroon,
                                         ),
                                       ),
                                     ),
@@ -524,7 +539,7 @@ class _ProfileContainerState extends State<ProfileContainer>
   //               ),
   //               child: Icon(
   //                 Icons.waving_hand_rounded,
-  //                 color: Color(0xFF8B0000).withValues(alpha: 0.9),
+  //                 color: AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
   //                 size: 22,
   //               ),
   //             ),
@@ -783,6 +798,113 @@ class _ProfileContainerState extends State<ProfileContainer>
     });
   }
 
+  void _showThemeSelectionBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Pilih Tema Aplikasi",
+              style: GoogleFonts.poppins(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColorPalette.primaryMaroon,
+              ),
+            ),
+            const SizedBox(height: 24),
+            _buildThemeOption(
+              context: context,
+              title: "Terang (Default)",
+              themeValue: 'light',
+              icon: Icons.light_mode_outlined,
+              color: const Color(0xFF8B1F41),
+            ),
+            _buildThemeOption(
+              context: context,
+              title: "Malam (Gelap)",
+              themeValue: 'dark',
+              icon: Icons.dark_mode_outlined,
+              color: const Color(0xFF1E1E1E),
+            ),
+            _buildThemeOption(
+              context: context,
+              title: "Violet (Ungu)",
+              themeValue: 'violet',
+              icon: Icons.auto_awesome_outlined,
+              color: const Color(0xFF6D28D9),
+            ),
+            _buildThemeOption(
+              context: context,
+              title: "Indonesia (Merah Putih)",
+              themeValue: 'indonesia',
+              icon: Icons.celebration_rounded,
+              color: const Color(0xFFD32F2F),
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildThemeOption({
+    required BuildContext context,
+    required String title,
+    required String themeValue,
+    required IconData icon,
+    required Color color,
+  }) {
+    final currentTheme = context.read<AppThemeCubit>().state.themeMode;
+    final isSelected = currentTheme == themeValue;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Material(
+        color: isSelected
+            ? color.withValues(alpha: 0.1)
+            : Colors.grey.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () {
+            context.read<AppThemeCubit>().changeTheme(themeValue);
+            Navigator.pop(context);
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: Row(
+              children: [
+                Icon(icon, color: color, size: 24),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                      color: isSelected ? color : Colors.black87,
+                    ),
+                  ),
+                ),
+                if (isSelected)
+                  Icon(Icons.check_circle, color: color, size: 24),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   void _showNotificationSettingsBottomSheet(BuildContext context) {
     final settingsRepository = SettingsRepository();
     bool vibrationEnabled = settingsRepository.getVibrationEnabled();
@@ -809,7 +931,7 @@ class _ProfileContainerState extends State<ProfileContainer>
                 children: [
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.notifications_active_outlined,
                         color: AppColorPalette.primaryMaroon,
                         size: 28,
@@ -838,7 +960,7 @@ class _ProfileContainerState extends State<ProfileContainer>
                     ),
                     child: Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.vibration,
                           color: AppColorPalette.primaryMaroon,
                           size: 24,
@@ -971,7 +1093,6 @@ class _ProfileContainerState extends State<ProfileContainer>
           fit: StackFit.expand,
           clipBehavior: Clip.none,
           children: [
-            // Background with dramatically curved bottom
             Positioned(
               top: 0,
               left: 0,
@@ -982,7 +1103,7 @@ class _ProfileContainerState extends State<ProfileContainer>
                   colors: [
                     maroonDark,
                     maroonPrimary,
-                    const Color(0xFF9A1E3C),
+                    maroonMiddle,
                     maroonLight,
                   ],
                   stops: [0.0, 0.3, 0.6, 1.0],
@@ -1428,37 +1549,38 @@ class BackgroundPatternPainter extends CustomPainter {
     final width = size.width;
     final height = size.height;
 
-    // Draw dots pattern
+    // Optimized dots pattern - increased spacing to reduce draw calls
     final dotPaint = Paint()
       ..color = primaryColor
       ..style = PaintingStyle.fill;
 
-    for (var x = 0; x < width; x += 30) {
-      for (var y = 0; y < height; y += 30) {
-        final offset = sin(x * 0.05 + y * 0.05 + animation.value) * 3;
-        final radius = 1 + sin(x * 0.04 + y * 0.04 + animation.value) * 0.5;
+    // Use a larger step (60 instead of 30) to significantly reduce complexity
+    for (var x = 0.0; x < width; x += 60.0) {
+      for (var y = 0.0; y < height; y += 60.0) {
+        // Simplified math for offset
+        final offset = sin(x * 0.02 + y * 0.02 + animation.value) * 2;
         canvas.drawCircle(
           Offset(x + offset, y + offset),
-          radius,
+          1.2,
           dotPaint,
         );
       }
     }
 
-    // Draw animated wave
+    // Draw static wave instead of animated one if needed, or simplify
     final wavePaint = Paint()
       ..color = accentColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
+      ..strokeWidth = 1.0;
 
-    for (var startY = 0; startY < height; startY += 200) {
+    for (var startY = 100.0; startY < height; startY += 250) {
       final path = Path();
-      var startX = 0.0;
-      path.moveTo(startX, startY.toDouble());
+      path.moveTo(0, startY);
 
-      for (var x = 0; x < width; x += 10) {
-        final y = startY + sin(x * 0.02 + animation.value) * 20;
-        path.lineTo(x.toDouble(), y);
+      // Draw wave with fewer segments
+      for (var x = 0.0; x < width; x += 20.0) {
+        final y = startY + sin(x * 0.01 + animation.value) * 15;
+        path.lineTo(x, y);
       }
 
       canvas.drawPath(path, wavePaint);
@@ -1539,7 +1661,7 @@ class LogoutConfirmationDialog extends StatelessWidget {
                 width: 100,
                 height: 100,
                 margin: const EdgeInsets.only(bottom: 20),
-                child: const Icon(
+                child: Icon(
                   Icons.logout_rounded,
                   size: 60,
                   color: AppColorPalette.primaryMaroon,
@@ -1698,7 +1820,9 @@ class DramaticCurvedGradientPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant DramaticCurvedGradientPainter oldDelegate) {
+    return colors != oldDelegate.colors || stops != oldDelegate.stops;
+  }
 }
 
 // Enhanced wave pattern for more visual impact
@@ -1768,7 +1892,9 @@ class EnhancedWavePatternPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant EnhancedWavePatternPainter oldDelegate) {
+    return color1 != oldDelegate.color1 || color2 != oldDelegate.color2;
+  }
 }
 
 // Enhanced custom painter for animated decorative elements in the app bar
@@ -1914,6 +2040,7 @@ class AnimatedAppBarDecorationPainter extends CustomPainter {
   bool shouldRepaint(covariant AnimatedAppBarDecorationPainter oldDelegate) {
     return oldDelegate.glowValue != glowValue ||
         oldDelegate.pulseValue != pulseValue ||
-        oldDelegate.rotationValue != rotationValue;
+        oldDelegate.rotationValue != rotationValue ||
+        oldDelegate.color != color;
   }
 }

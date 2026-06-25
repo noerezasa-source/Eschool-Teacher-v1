@@ -1,5 +1,6 @@
-﻿import 'dart:ui';
+import 'dart:ui';
 import 'dart:math';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/academics/sessionYearsCubit.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customTextContainer.dart';
@@ -192,6 +193,7 @@ class _SessionYearsScreenState extends State<SessionYearsScreen>
   }
 
   Widget _buildSearchBar() {
+    final searchColor = AppColorPalette.secondaryMaroon;
     return Positioned(
       top: MediaQuery.of(context).padding.top + 0,
       left: 0,
@@ -214,15 +216,13 @@ class _SessionYearsScreenState extends State<SessionYearsScreen>
                     ),
                   ],
                 ),
-                child: TextField(
+                child: TextField( // Added comment to force refresh
                   controller: _searchController,
                   decoration: InputDecoration(
                     hintText: 'Cari tahun ajaran...',
-                    prefixIcon: const Icon(Icons.search,
-                        color: AppColorPalette.secondaryMaroon),
+                    prefixIcon: Icon(Icons.search, color: searchColor),
                     suffixIcon: IconButton(
-                      icon: const Icon(Icons.close,
-                          color: AppColorPalette.secondaryMaroon),
+                      icon: Icon(Icons.close, color: searchColor),
                       onPressed: () {
                         setState(() {
                           _searchController.clear();
@@ -287,7 +287,7 @@ class _SessionYearsScreenState extends State<SessionYearsScreen>
                     }),
                 const SizedBox(height: 32),
                 ShaderMask(
-                  shaderCallback: (bounds) => const LinearGradient(
+                  shaderCallback: (bounds) => LinearGradient(
                     colors: [
                       AppColorPalette.primaryMaroon,
                       AppColorPalette.secondaryMaroon,
@@ -1040,11 +1040,4 @@ class BackgroundPatternPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-class AppColorPalette {
-  static const Color primaryMaroon = Color(0xFF8B1F41);
-  static const Color secondaryMaroon = Color(0xFFA84B5C);
-  static const Color lightMaroon = Color(0xFFE7C8CD);
-  static const Color accentPink = Color(0xFFF4D0D9);
-  static const Color warmBeige = Color(0xFFF5E6E8);
-  static const Color shadowColor = Color(0x298B1F41);
-}
+

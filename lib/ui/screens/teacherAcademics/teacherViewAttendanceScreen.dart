@@ -1,5 +1,6 @@
 ﻿import 'dart:async';
 import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/attendence/attendanceCubit.dart';
 import 'package:eschool_saas_staff/data/models/academic/classSection.dart';
 import 'package:eschool_saas_staff/ui/screens/teacherAcademics/widgets/holidayAttendanceContainer.dart';
@@ -52,8 +53,8 @@ class _TeacherViewAttendanceScreenState
   StudentAttendanceStatus? selectedStatus;
 
   // Color scheme for maroon theme
-  final Color _maroonPrimary = const Color(0xFF800020);
-  final Color _maroonLight = const Color(0xFFAA6976);
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
+  Color get _maroonLight => AppColorPalette.secondaryMaroon;
 
   // Animation controllers
   late AnimationController _fabAnimationController;

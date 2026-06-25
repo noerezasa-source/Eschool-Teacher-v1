@@ -1,5 +1,6 @@
 ﻿import 'dart:ui';
 import 'package:eschool_saas_staff/app/routes.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/announcement/announcementsCubit.dart';
 import 'package:eschool_saas_staff/cubits/announcement/deleteAnnouncementCubit.dart';
 import 'package:eschool_saas_staff/cubits/userDetails/staffAllowedPermissionsAndModulesCubit.dart';
@@ -55,7 +56,7 @@ class _AnnouncementDetailsContainerState
     duration: const Duration(milliseconds: 400),
   );
 
-  final Color _maroonPrimary = const Color(0xFF800020);
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
 
   // Action button hover states
   bool _editHovered = false;

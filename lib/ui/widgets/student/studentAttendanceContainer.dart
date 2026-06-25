@@ -1,4 +1,5 @@
 import 'package:eschool_saas_staff/data/models/student/studentAttendance.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/data/models/student/studentDetails.dart';
 import 'package:eschool_saas_staff/ui/widgets/student/studentAttendanceItemContainer.dart';
 import 'package:eschool_saas_staff/utils/system/constants.dart';
@@ -54,8 +55,8 @@ class _StudentAttendanceContainerState extends State<StudentAttendanceContainer>
   }).toList();
 
   // Colors for the maroon theme to match teacherAddAttendanceSubjectScreen.dart
-  final Color _maroonPrimary = const Color(0xFF800020);
-  final Color _maroonLight = const Color(0xFFAA6976);
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
+  Color get _maroonLight => AppColorPalette.secondaryMaroon;
 
   // Animation controller for interactive elements
   late AnimationController _animationController;

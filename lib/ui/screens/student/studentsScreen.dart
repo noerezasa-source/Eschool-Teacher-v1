@@ -1,5 +1,6 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:eschool_saas_staff/app/routes.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/academics/classesAndSessionYearsCubit.dart';
 import 'package:eschool_saas_staff/cubits/student/studentsCubit.dart';
 import 'package:eschool_saas_staff/data/models/academic/classSection.dart';
@@ -61,9 +62,9 @@ class _StudentsScreenState extends State<StudentsScreen>
   late final Animation<double> _scaleAnimation;
 
   // Define theme colors
-  static const Color maroonPrimary = Color(0xFF8B1F41);
-  static const Color maroonLight = Color(0xFFAC3B5C);
-  static const Color bgColor = Color(0xFFFAF6F2);
+  static Color get maroonPrimary => AppColorPalette.primaryMaroon;
+  static Color get maroonLight => AppColorPalette.secondaryMaroon;
+  static Color get bgColor => AppColorPalette.accentPink;
   final Color cardColor = Colors.white;
   static const Color textDarkColor = Color(0xFF2D2D2D);
   static const Color textMediumColor = Color(0xFF717171);
@@ -362,7 +363,7 @@ class _StudentsScreenState extends State<StudentsScreen>
                               ),
                             ),
                             if (isSelected)
-                              const Icon(
+                              Icon(
                                 Icons.check_circle_rounded,
                                 color: maroonPrimary,
                                 size: 24,
@@ -484,7 +485,7 @@ class _StudentsScreenState extends State<StudentsScreen>
                                     ),
                                   ),
                                   if (isDefault)
-                                    const Text(
+                                    Text(
                                       "Tahun Ajaran Saat Ini",
                                       style: TextStyle(
                                         fontFamily: 'Poppins',
@@ -496,7 +497,7 @@ class _StudentsScreenState extends State<StudentsScreen>
                               ),
                             ),
                             if (isSelected)
-                              const Icon(
+                              Icon(
                                 Icons.check_circle_rounded,
                                 color: maroonPrimary,
                                 size: 24,
@@ -653,7 +654,7 @@ class _StudentsScreenState extends State<StudentsScreen>
               ),
             ),
             if (isSelected)
-              const Icon(
+              Icon(
                 Icons.check_circle_rounded,
                 color: maroonPrimary,
                 size: 24,
@@ -702,7 +703,7 @@ class _StudentsScreenState extends State<StudentsScreen>
                               color: textMediumColor,
                               fontFamily: 'Poppins',
                             ),
-                            prefixIcon: const Icon(
+                            prefixIcon: Icon(
                               Icons.search,
                               color: maroonPrimary,
                             ),
@@ -826,7 +827,7 @@ class _StudentsScreenState extends State<StudentsScreen>
                                   const EdgeInsets.symmetric(horizontal: 24),
                               child: Row(
                                 children: [
-                                  const Icon(
+                                  Icon(
                                     Icons.people_alt_rounded,
                                     color: maroonPrimary,
                                     size: 20,
@@ -857,7 +858,7 @@ class _StudentsScreenState extends State<StudentsScreen>
                                     ),
                                     child: Text(
                                       "${state.students.length} Siswa",
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         color: maroonPrimary,
                                         fontWeight: FontWeight.w600,
                                         fontSize: 12,
@@ -895,10 +896,10 @@ class _StudentsScreenState extends State<StudentsScreen>
                                       ),
                                     );
                                   }
-                                  return const Center(
+                                  return Center(
                                     child: Padding(
                                       padding:
-                                          EdgeInsets.symmetric(vertical: 20),
+                                          const EdgeInsets.symmetric(vertical: 20),
                                       child: CustomCircularProgressIndicator(
                                         indicatorColor: maroonPrimary,
                                       ),
@@ -971,7 +972,7 @@ class _StudentsScreenState extends State<StudentsScreen>
                         onRetry: () {
                           getStudents();
                         },
-                        primaryColor: const Color(0xFF8B1F41),
+                        primaryColor: AppColorPalette.primaryMaroon,
                       ),
                     ),
                   );
@@ -1487,7 +1488,7 @@ class _StudentsScreenState extends State<StudentsScreen>
                       .read<ClassesAndSessionYearsCubit>()
                       .getClassesAndSessionYears();
                 },
-                primaryColor: const Color(0xFF8B1F41),
+                primaryColor: AppColorPalette.primaryMaroon,
               ));
             }
 

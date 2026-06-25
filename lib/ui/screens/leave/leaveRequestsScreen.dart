@@ -1,5 +1,6 @@
 ﻿// filepath: d:\UBIG\eSchool\eschool_saas_staff\lib\ui\screens\leaveRequestsScreen.dart
 import 'package:eschool_saas_staff/cubits/leave/approveOrRejectLeaveRequestCubit.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/leave/approveOrRejectStudentLeaveRequestCubit.dart';
 import 'package:eschool_saas_staff/cubits/leave/leaveRequestsCubit.dart';
 import 'package:eschool_saas_staff/cubits/leave/studentLeaveRequestsCubit.dart';
@@ -77,7 +78,7 @@ class _LeaveRequestsScreenState extends State<LeaveRequestsScreen>
   int _currentPageIndex = 0;
 
   // Fresh Soft Maroon Palette - Consistent with allowancesAndDeductionsScreen
-  final Color _maroonPrimary = const Color(0xFF8B4A5B);
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
   final Color _maroonLight = const Color(0xFFA6677A);
   final Color _neutralBg = const Color(0xFFFBFAFA);
   final Color _cardBg = const Color(0xFFFFFFFF);
@@ -1456,7 +1457,7 @@ class LeaveRequestDetailsBottomsheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasAttachments = leaveRequest.attachments?.isNotEmpty ?? false;
-    const Color maroonPrimary = Color(0xFF8B4A5B);
+    final maroonPrimary = AppColorPalette.primaryMaroon;
 
     return CustomBottomsheet(
         titleLabelKey: leaveDetailsKey,
@@ -1638,7 +1639,7 @@ class LeaveRequestDetailsBottomsheet extends StatelessWidget {
       bool isStaffLeave,
       BoxConstraints boxConstraints,
       bool hasAttachments) {
-    const Color maroonPrimary = Color(0xFF8B4A5B);
+    final maroonPrimary = AppColorPalette.primaryMaroon;
     final bool isInProgress =
         (isStaffLeave && state is ApproveOrRejectLeaveRequestInProgress) ||
             (!isStaffLeave &&

@@ -1,6 +1,7 @@
 import 'package:eschool_saas_staff/cubits/teacherAcademics/gradeLevelCubit.dart';
 import 'package:eschool_saas_staff/data/models/academic/gradeLevel.dart';
 import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/student/studentsByClassSectionCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/exam/examCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/exam/submitExamMarksCubit.dart';
@@ -126,10 +127,10 @@ class _TeacherExamResultScreenState extends State<TeacherExamResultScreen>
   late AnimationController _appBarAnimationController;
 
   // Theme colors - Softer Maroon palette
-  static const Color _primaryColor = Color(0xFF7A1E23); // Softer deep maroon
-  static const Color _accentColor = Color(0xFF9D3C3C); // Softer medium maroon
-  static const Color _energyColor = Color(0xFFCE6D6D); // Softer light maroon
-  static const Color _glowColor = Color(0xFFAF4F4F); // Softer rich maroon
+  static Color get _primaryColor => AppColorPalette.primaryMaroon; // Softer deep maroon
+  static Color get _accentColor => AppColorPalette.secondaryMaroon; // Softer medium maroon
+  static Color get _energyColor => AppColorPalette.lightMaroon; // Softer light maroon
+  static Color get _glowColor => AppColorPalette.secondaryMaroon; // Softer rich maroon
   @override
   void initState() {
     bulkMarksController = TextEditingController();
@@ -407,11 +408,11 @@ class _TeacherExamResultScreenState extends State<TeacherExamResultScreen>
         ),
         child: TextField(
           controller: searchController,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             hintText: 'Cari siswa...',
             prefixIcon: Icon(Icons.search, color: _primaryColor),
             border: InputBorder.none,
-            contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           ),
           onChanged: (value) {
             // Implement search functionality here
@@ -446,10 +447,10 @@ class _TeacherExamResultScreenState extends State<TeacherExamResultScreen>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Row(
+                    Row(
                       children: [
                         Icon(Icons.filter_alt_rounded, color: _primaryColor),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Text(
                           'Filter Hasil Ujian',
                           style: TextStyle(
@@ -471,7 +472,7 @@ class _TeacherExamResultScreenState extends State<TeacherExamResultScreen>
                           context.read<ClassesCubit>().getClasses();
                         });
                       },
-                      child: const Text(
+                      child: Text(
                         'Reset',
                         style: TextStyle(color: _primaryColor),
                       ),
@@ -628,7 +629,7 @@ class _TeacherExamResultScreenState extends State<TeacherExamResultScreen>
         labelText: label,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: _primaryColor),
+          borderSide: BorderSide(color: _primaryColor),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -636,7 +637,7 @@ class _TeacherExamResultScreenState extends State<TeacherExamResultScreen>
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: _primaryColor),
+          borderSide: BorderSide(color: _primaryColor),
         ),
       ),
       items: items,
@@ -681,7 +682,7 @@ class _TeacherExamResultScreenState extends State<TeacherExamResultScreen>
                     color: _primaryColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.assignment_turned_in_rounded,
                     color: _primaryColor,
                     size: 20,
@@ -736,7 +737,7 @@ class _TeacherExamResultScreenState extends State<TeacherExamResultScreen>
                     height: 50,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
+                      gradient: LinearGradient(
                         colors: [_primaryColor, _accentColor],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -987,7 +988,7 @@ class _TeacherExamResultScreenState extends State<TeacherExamResultScreen>
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly
                               ],
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
                                 color: _primaryColor,
@@ -1131,15 +1132,15 @@ class _TeacherExamResultScreenState extends State<TeacherExamResultScreen>
                     return Container(
                       height: 60,
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
+                        gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
                             _primaryColor,
                             _accentColor,
-                            Color(0xFF8A2A2A),
+                            const Color(0xFF8A2A2A),
                           ],
-                          stops: [0.0, 0.6, 1.0],
+                          stops: const [0.0, 0.6, 1.0],
                         ),
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
@@ -1591,7 +1592,7 @@ class _TeacherExamResultScreenState extends State<TeacherExamResultScreen>
                             color: _primaryColor.withValues(alpha: 0.1),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.people_alt_outlined,
                             color: _primaryColor,
                             size: 16,
@@ -1601,7 +1602,7 @@ class _TeacherExamResultScreenState extends State<TeacherExamResultScreen>
                         RichText(
                           text: TextSpan(
                             children: [
-                              const TextSpan(
+                              TextSpan(
                                 text: "Daftar Siswa ",
                                 style: TextStyle(
                                   fontSize: 16,

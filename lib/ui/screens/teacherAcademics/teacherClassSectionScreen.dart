@@ -1,5 +1,6 @@
-﻿import 'dart:ui';
+import 'dart:ui';
 import 'dart:math';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/teacherClassSectionDetailsCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/gradeLevelCubit.dart';
 import 'package:eschool_saas_staff/data/models/academic/subjectTeacher.dart';
@@ -353,10 +354,10 @@ class _TeacherClassSectionScreenState extends State<TeacherClassSectionScreen>
                   controller: _searchController,
                   decoration: InputDecoration(
                     hintText: 'Cari kelas...',
-                    prefixIcon: const Icon(Icons.search,
+                    prefixIcon: Icon(Icons.search,
                         color: AppColorPalette.secondaryMaroon),
                     suffixIcon: IconButton(
-                      icon: const Icon(Icons.close,
+                      icon: Icon(Icons.close,
                           color: AppColorPalette.secondaryMaroon),
                       onPressed: () {
                         setState(() {
@@ -425,7 +426,7 @@ class _TeacherClassSectionScreenState extends State<TeacherClassSectionScreen>
 
                 // Enhanced no classes text
                 ShaderMask(
-                  shaderCallback: (bounds) => const LinearGradient(
+                  shaderCallback: (bounds) => LinearGradient(
                     colors: [
                       AppColorPalette.primaryMaroon,
                       AppColorPalette.secondaryMaroon,
@@ -1169,7 +1170,7 @@ class ClassSubjectsBottomsheet extends StatelessWidget {
                                     // Teacher info - elegant and simple
                                     Row(
                                       children: [
-                                        const Icon(
+                                        Icon(
                                           Icons.person_outline,
                                           size: 18,
                                           color:
@@ -1349,11 +1350,4 @@ class EnhancedCurvedBottomClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
-class AppColorPalette {
-  static const Color primaryMaroon = Color(0xFF8B1F41);
-  static const Color secondaryMaroon = Color(0xFFA84B5C);
-  static const Color lightMaroon = Color(0xFFE7C8CD);
-  static const Color accentPink = Color(0xFFF4D0D9);
-  static const Color warmBeige = Color(0xFFF5E6E8);
-  static const Color shadowColor = Color(0x298B1F41);
-}
+

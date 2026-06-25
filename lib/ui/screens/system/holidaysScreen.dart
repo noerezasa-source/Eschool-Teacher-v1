@@ -1,5 +1,6 @@
-﻿import 'package:eschool_saas_staff/data/models/system/holiday.dart';
+import 'package:eschool_saas_staff/data/models/system/holiday.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/holidayContainer.dart';
 import 'package:eschool_saas_staff/utils/system/constants.dart';
 import 'package:eschool_saas_staff/utils/system/labelKeys.dart';
@@ -30,14 +31,7 @@ class HolidaysScreen extends StatefulWidget {
   State<HolidaysScreen> createState() => _HolidaysScreenState();
 }
 
-class AppColorPalette {
-  static const Color primaryMaroon = Color(0xFF8B1F41);
-  static const Color secondaryMaroon = Color(0xFFA84B5C);
-  static const Color lightMaroon = Color(0xFFE7C8CD);
-  static const Color accentPink = Color(0xFFF4D0D9);
-  static const Color warmBeige = Color(0xFFF5E6E8);
-  static const Color shadowColor = Color(0x298B1F41);
-}
+
 
 class _HolidaysScreenState extends State<HolidaysScreen>
     with SingleTickerProviderStateMixin {
@@ -189,8 +183,7 @@ class _HolidaysScreenState extends State<HolidaysScreen>
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Icon(
-                                        FontAwesomeIcons.calendarXmark,
+                                      FaIcon(FontAwesomeIcons.calendarXmark,
                                         size: 60,
                                         color: Colors.grey[400],
                                       ),

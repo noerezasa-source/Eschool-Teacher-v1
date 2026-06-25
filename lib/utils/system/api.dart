@@ -88,8 +88,9 @@ class Api {
     if (statusCode == 400) return "Permintaan tidak valid (Bad Request)";
     if (statusCode == 401) return "Sesi habis, silakan login kembali";
     if (statusCode == 422) return "Data tidak valid atau kurang lengkap";
-    if (statusCode == 500)
+    if (statusCode == 500) {
       return "Terjadi kesalahan pada server (Internal Server Error)";
+    }
     if (statusCode == 404) return "Data atau file tidak ditemukan";
 
     return fallbackCode ?? "Terjadi kesalahan, silakan coba lagi";
@@ -237,7 +238,7 @@ class Api {
   static String get getUsers => "${databaseUrl}users";
   static String get getUserChatHistory => "${databaseUrl}users/chat/history";
 
-  static String get recapDownload => "${baseUrl}/recap-download";
+  static String get recapDownload => "$baseUrl/recap-download";
 
   //-------------
 

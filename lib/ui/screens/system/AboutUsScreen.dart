@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -38,7 +39,7 @@ class _AboutUsScreenState extends State<AboutUsScreen>
   late AnimationController _controller;
   late AnimationController _fabAnimationController;
   final ScrollController _scrollController = ScrollController();
-  final Color _maroonPrimary = AppColorPalette.primaryMaroon;
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
 
   @override
   void initState() {
@@ -184,7 +185,7 @@ class _AboutUsScreenState extends State<AboutUsScreen>
                           height: size.height * 0.4,
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            gradient: const LinearGradient(
+                            gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
@@ -256,7 +257,7 @@ class _AboutUsScreenState extends State<AboutUsScreen>
                                         child: ShaderMask(
                                           blendMode: BlendMode.srcIn,
                                           shaderCallback: (bounds) =>
-                                              const LinearGradient(
+                                              LinearGradient(
                                             colors: [
                                               AppColorPalette.primaryMaroon,
                                               AppColorPalette.secondaryMaroon,
@@ -577,13 +578,7 @@ class _AboutUsScreenState extends State<AboutUsScreen>
   }
 }
 
-class AppColorPalette {
-  static const Color primaryMaroon = Color(0xFF8B1F41);
-  static const Color secondaryMaroon = Color(0xFFA84B5C);
-  static const Color lightMaroon = Color(0xFFE7C8CD);
-  static const Color accentPink = Color(0xFFF4D0D9);
-  static const Color warmBeige = Color(0xFFF5E6E8);
-}
+
 
 class BackgroundPainter extends CustomPainter {
   final Color color;

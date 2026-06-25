@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customRoundedButton.dart';
 
 class RejectReasonDialog extends StatefulWidget {
@@ -92,7 +93,7 @@ class _RejectReasonDialogState extends State<RejectReasonDialog>
 
   @override
   Widget build(BuildContext context) {
-    const Color maroonPrimary = Color(0xFF800020);
+    final maroonPrimary = AppColorPalette.primaryMaroon;
 
     return PopScope(
       canPop: false,
@@ -140,7 +141,7 @@ class _RejectReasonDialogState extends State<RejectReasonDialog>
                                 color: maroonPrimary.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.cancel_outlined,
                                 color: maroonPrimary,
                                 size: 24,
@@ -212,7 +213,7 @@ class _RejectReasonDialogState extends State<RejectReasonDialog>
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide:
-                                  const BorderSide(color: maroonPrimary, width: 2),
+                                  BorderSide(color: maroonPrimary, width: 2),
                             ),
                             errorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),

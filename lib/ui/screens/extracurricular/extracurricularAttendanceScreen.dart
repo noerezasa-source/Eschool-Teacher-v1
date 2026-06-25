@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import 'package:eschool_saas_staff/cubits/extracurricularAttendance/extracurricularAttendanceCubit.dart';
@@ -53,8 +54,8 @@ class _ExtracurricularAttendanceScreenState
   late final ScrollController _scrollController = ScrollController();
 
   // Theme colors
-  final Color _maroonPrimary = const Color(0xFF8B1F41);
-  final Color _maroonLight = const Color(0xFFAC3B5C);
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
+  Color get _maroonLight => AppColorPalette.secondaryMaroon;
 
   @override
   void initState() {

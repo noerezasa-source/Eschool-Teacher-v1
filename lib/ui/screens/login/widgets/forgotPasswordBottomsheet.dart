@@ -1,5 +1,6 @@
 ﻿import 'package:eschool_saas_staff/cubits/authentication/sendPasswordResetEmailCubit.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customBottomsheet.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/utils/system/constants.dart';
 import 'package:eschool_saas_staff/utils/system/labelKeys.dart';
 import 'package:eschool_saas_staff/utils/system/utils.dart';
@@ -29,7 +30,7 @@ class _ForgotPasswordBottomsheetState extends State<ForgotPasswordBottomsheet>
   bool _isEmailValid = true;
 
   // Skema warna maroon
-  final Color _primaryMaroon = const Color(0xFF800020);
+  Color get _primaryMaroon => AppColorPalette.primaryMaroon;
   final Color _lightMaroon = const Color(0xFFE0C0C0);
   final Color _darkMaroon = const Color(0xFF5A0016);
   final Color _accentColor = const Color(0xFFFF9E80);

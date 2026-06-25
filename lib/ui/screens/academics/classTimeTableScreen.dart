@@ -1,5 +1,6 @@
 ﻿import 'package:eschool_saas_staff/cubits/academics/classTimetableCubit.dart';
 import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/data/models/academic/classSection.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customErrorWidget.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/filterSelectionBottomsheet.dart';
@@ -51,8 +52,8 @@ class _ClassTimeTableScreenState extends State<ClassTimeTableScreen>
   final ScrollController _scrollController = ScrollController();
 
   // Theme colors
-  final Color _maroonPrimary = const Color(0xFF800020);
-  final Color _maroonLight = const Color(0xFFAA6976);
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
+  Color get _maroonLight => AppColorPalette.secondaryMaroon;
   @override
   void initState() {
     super.initState();

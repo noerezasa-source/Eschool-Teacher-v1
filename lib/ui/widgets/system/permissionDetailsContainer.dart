@@ -1,8 +1,9 @@
-﻿import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
+import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
 import 'package:eschool_saas_staff/cubits/leave/approveOrRejectStudentPermissionCubit.dart';
 import 'package:eschool_saas_staff/data/models/auth/permissionDetails.dart';
 import 'package:eschool_saas_staff/ui/widgets/leave/rejectReasonDialog.dart';
 import 'package:eschool_saas_staff/utils/system/constants.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/utils/system/labelKeys.dart';
 import 'package:eschool_saas_staff/utils/system/utils.dart';
 import 'package:flutter/material.dart';
@@ -40,12 +41,12 @@ class _PermissionDetailsContainerState extends State<PermissionDetailsContainer>
   int? _optimisticStatus;
   String? _optimisticRejectionReason;
 
-  // Refined maroon color palette with added accent colors
-  final Color _maroonPrimary = const Color(0xFF7D2027);
-  final Color _maroonLight = const Color(0xFFBF8A8D);
-  final Color _maroonDark = const Color(0xFF5A171C);
-  final Color _maroonAccent = const Color(0xFFE5C6C8);
-  final Color _goldAccent = const Color(0xFFE6D2AA);
+  // Refined color palette - now dynamic based on theme
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
+  Color get _maroonLight => AppColorPalette.secondaryMaroon;
+  Color get _maroonDark => _maroonPrimary.withValues(alpha: 0.85);
+  Color get _maroonAccent => _maroonPrimary.withValues(alpha: 0.15);
+  Color get _goldAccent => const Color(0xFFE6D2AA);
 
   @override
   void initState() {

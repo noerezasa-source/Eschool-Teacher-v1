@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customErrorWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -118,14 +119,14 @@ class _BankSoalSelectionScreenState extends State<BankSoalSelectionScreen>
   late AnimationController _searchExpandController;
 
   late Animation<double> _pulseAnimation;
-  static const Color _primaryColor = Color(0xFF7A1E23);
-  static const Color _accentColor = Color(0xFF9D3C3C);
-  static const Color _highlightColor = Color(0xFFB84D4D);
+  static Color get _primaryColor => AppColorPalette.primaryMaroon;
+  static Color get _accentColor => AppColorPalette.secondaryMaroon;
+  static Color get _highlightColor => AppColorPalette.secondaryMaroon;
   final List<Color> _cardGradients = [
     const Color(0xFF7A2828),
-    const Color(0xFF9D3C3C),
-    const Color(0xFFAF4F4F),
-    const Color(0xFFB84D4D),
+    AppColorPalette.secondaryMaroon,
+    AppColorPalette.secondaryMaroon,
+    AppColorPalette.secondaryMaroon,
     const Color(0xFFC65454),
     const Color(0xFFAA3939),
     const Color(0xFF8F2D2D),
@@ -237,11 +238,11 @@ class _BankSoalSelectionScreenState extends State<BankSoalSelectionScreen>
         child: TextField(
           controller: _searchController,
           onChanged: (query) => _filterBanks(query, banks),
-          style: const TextStyle(color: _primaryColor),
+          style: TextStyle(color: _primaryColor),
           decoration: InputDecoration(
             hintText: 'Cari bank soal...',
             hintStyle: TextStyle(color: Colors.grey[600]),
-            prefixIcon: const Icon(Icons.search, color: _primaryColor),
+            prefixIcon: Icon(Icons.search, color: _primaryColor),
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           ),
@@ -305,7 +306,7 @@ class _BankSoalSelectionScreenState extends State<BankSoalSelectionScreen>
           const SizedBox(height: 20),
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w500,
               color: _primaryColor,
@@ -314,7 +315,7 @@ class _BankSoalSelectionScreenState extends State<BankSoalSelectionScreen>
           const SizedBox(height: 10),
           Text(
             subtitle,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               color: _accentColor,
             ),

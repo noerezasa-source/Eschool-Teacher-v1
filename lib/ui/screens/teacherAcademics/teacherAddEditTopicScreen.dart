@@ -19,6 +19,7 @@ import 'package:eschool_saas_staff/ui/widgets/system/filterSelectionBottomsheet.
 import 'package:eschool_saas_staff/utils/system/labelKeys.dart';
 import 'package:eschool_saas_staff/utils/system/utils.dart';
 import 'package:eschool_saas_staff/utils/system/optimized_file_compression_mixin.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -95,8 +96,8 @@ class _TeacherAddEditTopicScreenState extends State<TeacherAddEditTopicScreen>
       _fabAnimationController; // Added for CustomModernAppBar
 
   // Theme colors - Softer Maroon palette
-  static const Color _primaryColor = Color(0xFF7A1E23); // Softer deep maroon
-  static const Color _accentColor = Color(0xFF9D3C3C); // Softer medium maroon
+  static Color get _primaryColor => AppColorPalette.primaryMaroon; // Softer deep maroon
+  static Color get _accentColor => AppColorPalette.secondaryMaroon; // Softer medium maroon
 
   //This will determine if need to refresh the previous page
   //topics data. If teacher remove the the any study material

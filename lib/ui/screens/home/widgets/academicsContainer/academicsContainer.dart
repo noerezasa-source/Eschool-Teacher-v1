@@ -1,5 +1,6 @@
-﻿import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eschool_saas_staff/cubits/authentication/authCubit.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/userDetails/staffAllowedPermissionsAndModulesCubit.dart';
 import 'package:eschool_saas_staff/ui/screens/home/widgets/academicsContainer/widgets/staffAcademicsContainer.dart';
 import 'package:eschool_saas_staff/ui/screens/home/widgets/academicsContainer/widgets/teacherAcademicsContainer.dart';
@@ -139,10 +140,10 @@ class _AcademicsContainerState extends State<AcademicsContainer>
     // Get profile image from AuthCubit
     final profileImage = context.read<AuthCubit>().getUserDetails().image ?? "";
 
-    // Maroon color palette matching the homeContainerAppbar
-    const Color maroonPrimary = Color(0xFF800020); // Deep maroon
-    const Color maroonLight = Color(0xFFAA6976); // Light maroon
-    const Color maroonDark = Color.fromARGB(255, 124, 9, 31); // Darker variant
+    final maroonPrimary = AppColorPalette.primaryMaroon; // Deep maroon
+    final maroonLight = AppColorPalette.secondaryMaroon; // Light maroon
+    final maroonDark = maroonPrimary.withValues(alpha: 0.8); // Darker variant
+    final maroonMiddle = maroonPrimary.withValues(alpha: 0.9); // Middle variant
 
     return Stack(
       children: [
@@ -207,7 +208,7 @@ class _AcademicsContainerState extends State<AcademicsContainer>
                       colors: [
                         maroonDark,
                         maroonPrimary,
-                        const Color(0xFF9A1E3C),
+                        maroonMiddle,
                         maroonLight,
                       ],
                       stops: [0.0, 0.3, 0.6, 1.0],
@@ -429,7 +430,7 @@ class _AcademicsContainerState extends State<AcademicsContainer>
                                                   imageUrl: profileImage,
                                                   fit: BoxFit.contain,
                                                   placeholder: (context, url) =>
-                                                      const Center(
+                                                      Center(
                                                     child:
                                                         CircularProgressIndicator(
                                                       valueColor:
@@ -440,7 +441,7 @@ class _AcademicsContainerState extends State<AcademicsContainer>
                                                   ),
                                                   errorWidget:
                                                       (context, url, error) =>
-                                                          const Center(
+                                                          Center(
                                                     child: Icon(
                                                       Icons.error,
                                                       color: maroonPrimary,
@@ -448,7 +449,7 @@ class _AcademicsContainerState extends State<AcademicsContainer>
                                                     ),
                                                   ),
                                                 )
-                                              : const Center(
+                                              : Center(
                                                   child: Icon(
                                                     Icons.person,
                                                     color: maroonPrimary,
@@ -496,7 +497,7 @@ class _AcademicsContainerState extends State<AcademicsContainer>
                           child: Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              gradient: const LinearGradient(
+                              gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [maroonPrimary, maroonDark],
@@ -519,7 +520,7 @@ class _AcademicsContainerState extends State<AcademicsContainer>
                                     )
                                   : null,
                               child: profileImage.isEmpty
-                                  ? const Icon(
+                                  ? Icon(
                                       Icons.person,
                                       color: maroonPrimary,
                                       size: 30,
@@ -568,7 +569,7 @@ class _AcademicsContainerState extends State<AcademicsContainer>
                               width: 48,
                               height: 48,
                               decoration: BoxDecoration(
-                                gradient: const LinearGradient(
+                                gradient: LinearGradient(
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                   colors: [maroonPrimary, maroonDark],
@@ -669,7 +670,9 @@ class DramaticCurvedGradientPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant DramaticCurvedGradientPainter oldDelegate) {
+    return colors != oldDelegate.colors || stops != oldDelegate.stops;
+  }
 }
 
 // Enhanced wave pattern for more visual impact
@@ -744,7 +747,9 @@ class EnhancedWavePatternPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant EnhancedWavePatternPainter oldDelegate) {
+    return color1 != oldDelegate.color1 || color2 != oldDelegate.color2;
+  }
 }
 
 // Enhanced custom painter for animated decorative elements in the app bar
@@ -898,6 +903,7 @@ class AnimatedAppBarDecorationPainter extends CustomPainter {
   bool shouldRepaint(covariant AnimatedAppBarDecorationPainter oldDelegate) {
     return oldDelegate.glowValue != glowValue ||
         oldDelegate.pulseValue != pulseValue ||
-        oldDelegate.rotationValue != rotationValue;
+        oldDelegate.rotationValue != rotationValue ||
+        oldDelegate.color != color;
   }
 }

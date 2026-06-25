@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/cubits/settings/appConfigurationCubit.dart';
+import 'package:eschool_saas_staff/cubits/settings/appConfigurationCubit.dart';
 import 'package:eschool_saas_staff/cubits/authentication/authCubit.dart';
 import 'package:eschool_saas_staff/cubits/chat/socketSettingsCubit.dart';
 import 'package:eschool_saas_staff/cubits/settings/homeScreenDataCubit.dart';
@@ -17,6 +17,8 @@ import 'package:eschool_saas_staff/ui/widgets/system/animatedBottomNavigation.da
 import 'package:eschool_saas_staff/utils/system/labelKeys.dart';
 import 'package:eschool_saas_staff/utils/system/systemModulesAndPermissions.dart';
 import 'package:eschool_saas_staff/utils/system/utils.dart';
+import 'package:eschool_saas_staff/cubits/settings/appThemeCubit.dart';
+import 'package:eschool_saas_staff/ui/widgets/system/modern_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -113,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       right: 0,
       child: Container(
         width: MediaQuery.of(context).size.width,
-        height: 140 + MediaQuery.of(context).padding.bottom * (0.5),
+        alignment: Alignment.bottomCenter,
         color: Colors.transparent,
         child: AnimatedBottomNavigation(
           items: _bottomNavItems,
@@ -126,79 +128,85 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: context.read<AppConfigurationCubit>().appUnderMaintenance()
-          ? const AppUnderMaintenanceContainer()
-          : BlocConsumer<StaffAllowedPermissionsAndModulesCubit,
-              StaffAllowedPermissionsAndModulesState>(
-              listener: (context, state) {
-                if (state is StaffAllowedPermissionsAndModulesFetchSuccess) {
-                  final chatModuleEnabled = context
-                      .read<StaffAllowedPermissionsAndModulesCubit>()
-                      .isModuleEnabled(moduleId: chatModuleId.toString());
+    return BlocBuilder<AppThemeCubit, AppThemeState>(
+      builder: (context, themeState) {
+        return Scaffold(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          body: ModernBackground(
+            child: context.read<AppConfigurationCubit>().appUnderMaintenance()
+                ? const AppUnderMaintenanceContainer()
+                : BlocConsumer<StaffAllowedPermissionsAndModulesCubit,
+                    StaffAllowedPermissionsAndModulesState>(
+                    listener: (context, state) {
+                      if (state is StaffAllowedPermissionsAndModulesFetchSuccess) {
+                        final chatModuleEnabled = context
+                            .read<StaffAllowedPermissionsAndModulesCubit>()
+                            .isModuleEnabled(moduleId: chatModuleId.toString());
 
-                  if (chatModuleEnabled) {
-                    final userId =
-                        context.read<AuthCubit>().getUserDetails().id ?? 0;
+                        if (chatModuleEnabled) {
+                          final userId =
+                              context.read<AuthCubit>().getUserDetails().id ?? 0;
 
-                    context.read<SocketSettingCubit>().init(userId: userId);
-                  } else {
-                    setState(() {
-                      _bottomNavItems.removeWhere((e) => e.title == chatKey);
-                    });
-                  }
-                }
-              },
-              builder: (context, state) {
-                return Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 120),
-                        child: IndexedStack(
-                          index: _currentSelectedBottomNavIndex,
-                          children: [
-                            //two different containers for 2 different user types
-                            if (context.read<AuthCubit>().isTeacher()) ...[
-                              const TeacherHomeContainer(),
-                            ] else ...[
-                              HomeContainer(key: HomeContainer.widgetKey),
-                            ],
-                            const AcademicsContainer(),
-                            const ProfileContainer(),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    if (state is StaffAllowedPermissionsAndModulesFetchSuccess)
-                      _buildBottomNavigationContainer(),
-
-                    //Check forece update here
-                    context.read<AppConfigurationCubit>().forceUpdate()
-                        ? FutureBuilder<bool>(
-                            future: Utils.forceUpdate(
-                              context
-                                  .read<AppConfigurationCubit>()
-                                  .getAppVersion(),
+                          context.read<SocketSettingCubit>().init(userId: userId);
+                        } else {
+                          setState(() {
+                            _bottomNavItems.removeWhere((e) => e.title == chatKey);
+                          });
+                        }
+                      }
+                    },
+                    builder: (context, state) {
+                      return Stack(
+                        children: [
+                          Align(
+                            alignment: Alignment.topCenter,
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 120),
+                              child: IndexedStack(
+                                index: _currentSelectedBottomNavIndex,
+                                children: [
+                                  //two different containers for 2 different user types
+                                  if (context.read<AuthCubit>().isTeacher()) ...[
+                                    const TeacherHomeContainer(),
+                                  ] else ...[
+                                    HomeContainer(key: HomeContainer.widgetKey),
+                                  ],
+                                  const AcademicsContainer(),
+                                  const ProfileContainer(),
+                                ],
+                              ),
                             ),
-                            builder: (context, snaphsot) {
-                              if (snaphsot.hasData) {
-                                return (snaphsot.data ?? false)
-                                    ? const ForceUpdateDialogContainer()
-                                    : const SizedBox();
-                              }
+                          ),
 
-                              return const SizedBox();
-                            },
-                          )
-                        : const SizedBox(),
-                  ],
-                );
-              },
-            ),
+                          if (state is StaffAllowedPermissionsAndModulesFetchSuccess)
+                            _buildBottomNavigationContainer(),
+
+                          //Check forece update here
+                          context.read<AppConfigurationCubit>().forceUpdate()
+                              ? FutureBuilder<bool>(
+                                  future: Utils.forceUpdate(
+                                    context
+                                        .read<AppConfigurationCubit>()
+                                        .getAppVersion(),
+                                  ),
+                                  builder: (context, snaphsot) {
+                                    if (snaphsot.hasData) {
+                                      return (snaphsot.data ?? false)
+                                          ? const ForceUpdateDialogContainer()
+                                          : const SizedBox();
+                                    }
+
+                                    return const SizedBox();
+                                  },
+                                )
+                              : const SizedBox(),
+                        ],
+                      );
+                    },
+                  ),
+          ),
+        );
+      },
     );
   }
 }

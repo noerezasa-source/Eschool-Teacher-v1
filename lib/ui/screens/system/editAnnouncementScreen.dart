@@ -1,5 +1,6 @@
 ﻿import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
 import 'package:eschool_saas_staff/cubits/announcement/editGeneralAnnouncementCubit.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/data/models/announcement/announcement.dart';
 import 'package:eschool_saas_staff/data/models/academic/classSection.dart';
 import 'package:eschool_saas_staff/data/models/academic/studyMaterial.dart';
@@ -54,8 +55,8 @@ class _EditAnnouncementScreenState extends State<EditAnnouncementScreen>
   List<ClassSection> _selectedClassSections = [];
 
   // Define the maroon color palette
-  final Color _maroonPrimary = const Color(0xFF800020);
-  final Color _maroonLight = const Color(0xFFAA6976);
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
+  Color get _maroonLight => AppColorPalette.secondaryMaroon;
 
   late final TextEditingController _titleTextEditingController =
       TextEditingController(text: widget.announcement.title ?? "");

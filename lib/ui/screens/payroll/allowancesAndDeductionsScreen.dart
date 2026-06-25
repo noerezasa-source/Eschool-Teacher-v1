@@ -1,5 +1,6 @@
 ﻿import 'package:eschool_saas_staff/cubits/payRoll/allowancesAndDeductionsCubit.dart';
 import 'package:eschool_saas_staff/ui/widgets/skeleton/skeleton_widgets.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
 
 import 'package:flutter/material.dart';
@@ -37,7 +38,7 @@ class _AllowancesAndDeductionsScreenState
   int _currentPageIndex = 0;
 
   // Fresh Soft Maroon Palette - Complete redesign
-  final Color _maroonPrimary = const Color(0xFF8B4A5B);
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
   final Color _maroonLight = const Color(0xFFA6677A);
   final Color _maroonSoft = const Color(0xFFE8D5DA);
   final Color _maroonDeep = const Color(0xFF6B3A47);

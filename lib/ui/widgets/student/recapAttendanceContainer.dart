@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/data/models/academic/classSection.dart';
+import 'package:eschool_saas_staff/data/models/academic/classSection.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -150,7 +150,7 @@ class RecapAttendanceContainer extends StatelessWidget {
                   color: AppColorPalette.primaryMaroon.withValues(alpha: 0.5),
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   'Data Rekap Belum Tersedia',
                   style: TextStyle(
                     fontSize: 24,
@@ -161,7 +161,7 @@ class RecapAttendanceContainer extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   'Tahun $selectedYear',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     color: AppColorPalette.secondaryMaroon,
                   ),
@@ -201,7 +201,7 @@ class RecapAttendanceContainer extends StatelessWidget {
                   color: AppColorPalette.primaryMaroon.withValues(alpha: 0.5),
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   'Pilih Bulan dan Tahun',
                   style: TextStyle(
                     fontSize: 24,
@@ -210,7 +210,7 @@ class RecapAttendanceContainer extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
+                Text(
                   'Silakan pilih bulan dan tahun untuk melihat rekap absensi',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -253,7 +253,7 @@ class RecapAttendanceContainer extends StatelessWidget {
                   color: Colors.orange[700],
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   'Data Belum Tersedia',
                   style: TextStyle(
                     fontSize: 24,
@@ -265,7 +265,7 @@ class RecapAttendanceContainer extends StatelessWidget {
                 Text(
                   'Rekap absensi untuk ${_getMonthName(selectedMonth!)} $selectedYear belum tersedia',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     color: AppColorPalette.secondaryMaroon,
                   ),
@@ -319,7 +319,7 @@ class RecapAttendanceContainer extends StatelessWidget {
   Widget _buildMonthHeader(int monthIndex) {
     return Container(
       padding: const EdgeInsets.all(24),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
             AppColorPalette.primaryMaroon,
@@ -328,7 +328,7 @@ class RecapAttendanceContainer extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: Row(
         children: [
@@ -382,7 +382,7 @@ class RecapAttendanceContainer extends StatelessWidget {
       child: Column(
         children: [
           // Header kolom diubah menjadi lebih sesuai dengan layout baru
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
@@ -396,7 +396,7 @@ class RecapAttendanceContainer extends StatelessWidget {
               ),
             ],
           ),
-          const Divider(
+          Divider(
             color: AppColorPalette.lightMaroon,
             thickness: 1,
             height: 32,

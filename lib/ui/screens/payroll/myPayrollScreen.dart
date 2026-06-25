@@ -1,5 +1,6 @@
 ﻿import 'package:eschool_saas_staff/cubits/academics/sessionYearsCubit.dart';
 import 'package:eschool_saas_staff/cubits/payRoll/downloadPayRollSlipCubit.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/payRoll/myPayRollCubit.dart';
 import 'package:eschool_saas_staff/data/models/payroll/payRoll.dart';
 import 'package:eschool_saas_staff/data/models/academic/sessionYear.dart';
@@ -47,8 +48,8 @@ class _MyPayrollScreenState extends State<MyPayrollScreen>
   SessionYear? _selectedSessionYear;
 
   // Color scheme for maroon theme
-  final Color _maroonPrimary = const Color(0xFF800020);
-  final Color _maroonLight = const Color(0xFFAA6976);
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
+  Color get _maroonLight => AppColorPalette.secondaryMaroon;
 
   // Animation controller for various animated elements
   late AnimationController _fabAnimationController;

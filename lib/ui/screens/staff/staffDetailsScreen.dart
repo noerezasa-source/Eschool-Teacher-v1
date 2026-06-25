@@ -1,5 +1,6 @@
 ﻿import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eschool_saas_staff/data/models/auth/userDetails.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/profileImageContainer.dart';
 import 'package:eschool_saas_staff/utils/system/labelKeys.dart';
@@ -33,8 +34,8 @@ class StaffDetailsScreen extends StatefulWidget {
 class _StaffDetailsScreenState extends State<StaffDetailsScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
-  final Color primaryMaroonColor = const Color(0xFF800020);
-  final Color lightMaroonColor = const Color(0xFFAA6976);
+  Color get primaryMaroonColor => AppColorPalette.primaryMaroon;
+  Color get lightMaroonColor => AppColorPalette.secondaryMaroon;
 
   // Kamus terjemahan Bahasa Indonesia
   final Map<String, String> _translations = {

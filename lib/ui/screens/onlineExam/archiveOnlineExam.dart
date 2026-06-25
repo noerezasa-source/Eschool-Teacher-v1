@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/errorContainer.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 
 class ArchiveOnlineExam extends StatefulWidget {
   const ArchiveOnlineExam({super.key});
@@ -45,8 +46,8 @@ class _ArchiveOnlineExamState extends State<ArchiveOnlineExam>
   late Animation<double> _pulseAnimation;
 
   // Theme colors - matching onlineExamScreen
-  static const Color _primaryColor = Color(0xFF7A1E23); // Softer deep maroon
-  static const Color _accentColor = Color(0xFF9D3C3C); // Softer medium maroon
+  static Color get _primaryColor => AppColorPalette.primaryMaroon; // Softer deep maroon
+  static Color get _accentColor => AppColorPalette.secondaryMaroon; // Softer medium maroon
   @override
   void initState() {
     super.initState();
@@ -117,12 +118,12 @@ class _ArchiveOnlineExamState extends State<ArchiveOnlineExam>
                     ),
                   ),
                   // Judul
-                  const Text(
+                  Text(
                     'Filter Ujian Arsip',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF8B0000),
+                      color: AppColorPalette.primaryMaroon,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -224,7 +225,7 @@ class _ArchiveOnlineExamState extends State<ArchiveOnlineExam>
                         Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF8B0000),
+                        backgroundColor: AppColorPalette.primaryMaroon,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 24, vertical: 12),
                       ),
@@ -443,10 +444,10 @@ class _ArchiveOnlineExamState extends State<ArchiveOnlineExam>
                       Flexible(
                         child: Text(
                           exam.title,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF8B0000),
+                            color: AppColorPalette.primaryMaroon,
                             overflow: TextOverflow.visible,
                           ),
                         ),

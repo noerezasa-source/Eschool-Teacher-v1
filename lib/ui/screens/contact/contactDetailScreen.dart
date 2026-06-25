@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/contact/contactDetailCubit.dart';
 import 'package:eschool_saas_staff/cubits/authentication/authCubit.dart';
 import 'package:eschool_saas_staff/models/contact.dart';
@@ -26,8 +27,8 @@ class _ContactDetailScreenState extends State<ContactDetailScreen>
   late ScrollController _scrollController;
   bool _hasReplied = false; // Track if user has sent a reply
 
-  final Color _primaryColor = const Color(0xFF800020);
-  final Color _lightColor = const Color(0xFFAA6976);
+  Color get _primaryColor => AppColorPalette.primaryMaroon;
+  Color get _lightColor => AppColorPalette.secondaryMaroon;
 
   @override
   void initState() {

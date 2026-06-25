@@ -1,4 +1,5 @@
 import 'package:eschool_saas_staff/app/routes.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/assignmentSubmissions/assignmentSubmissionsCubit.dart';
 import 'package:eschool_saas_staff/data/models/academic/assignment.dart';
 import 'package:eschool_saas_staff/data/models/academic/assignmentSubmission.dart';
@@ -96,25 +97,25 @@ class _TeacherManageAssignmentSubmissionScreenState
     final List<Color> statusGradient = _getStatusGradient(status.color);
 
     // Menentukan warna border card berdasarkan status submission
-    Color borderColor = const Color(0xFFEADADA);
+    Color borderColor = AppColorPalette.lightMaroon;
     Color highlightColor = Colors.transparent;
     double borderWidth = 1.0;
 
     // Customize border for different statuses
     if (status.typeStatusId == 1) {
       // Submitted
-      borderColor = const Color(0xFF6A1B31).withValues(alpha: 0.3);
-      highlightColor = const Color(0xFF6A1B31).withValues(alpha: 0.03);
+      borderColor = AppColorPalette.primaryMaroon.withValues(alpha: 0.3);
+      highlightColor = AppColorPalette.primaryMaroon.withValues(alpha: 0.03);
       borderWidth = 1.5;
     } else if (status.typeStatusId == 2) {
       // Evaluated
-      borderColor = const Color(0xFF9A4156).withValues(alpha: 0.3);
-      highlightColor = const Color(0xFF9A4156).withValues(alpha: 0.03);
+      borderColor = AppColorPalette.secondaryMaroon.withValues(alpha: 0.3);
+      highlightColor = AppColorPalette.secondaryMaroon.withValues(alpha: 0.03);
       borderWidth = 1.5;
     } else if (status.typeStatusId == 3) {
       // Resubmission Request
-      borderColor = const Color(0xFFAA6976).withValues(alpha: 0.3);
-      highlightColor = const Color(0xFFAA6976).withValues(alpha: 0.03);
+      borderColor = AppColorPalette.secondaryMaroon.withValues(alpha: 0.3);
+      highlightColor = AppColorPalette.secondaryMaroon.withValues(alpha: 0.03);
       borderWidth = 1.5;
     }
 
@@ -125,7 +126,7 @@ class _TeacherManageAssignmentSubmissionScreenState
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF6A1B31).withValues(alpha: 0.08),
+            color: AppColorPalette.primaryMaroon.withValues(alpha: 0.08),
             blurRadius: 12,
             spreadRadius: 0,
             offset: const Offset(0, 4),
@@ -142,7 +143,7 @@ class _TeacherManageAssignmentSubmissionScreenState
           end: Alignment.bottomRight,
           colors: [
             Colors.white,
-            const Color(0xFFF9F5F6).withValues(alpha: 0.5),
+            AppColorPalette.accentPink.withValues(alpha: 0.5),
           ],
           stops: const [0.4, 1.0],
         ),
@@ -177,7 +178,7 @@ class _TeacherManageAssignmentSubmissionScreenState
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF6A1B31).withValues(alpha: 0.15),
+                    color: AppColorPalette.primaryMaroon.withValues(alpha: 0.15),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),
@@ -196,24 +197,24 @@ class _TeacherManageAssignmentSubmissionScreenState
                         errorWidget: (context, url, error) => Container(
                           decoration: BoxDecoration(
                             color:
-                                const Color(0xFF6A1B31).withValues(alpha: 0.1),
+                                AppColorPalette.primaryMaroon.withValues(alpha: 0.1),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.person,
-                            color: Color(0xFF6A1B31),
+                            color: AppColorPalette.primaryMaroon,
                             size: 24,
                           ),
                         ),
                       )
                     : Container(
                         decoration: BoxDecoration(
-                          color: const Color(0xFF6A1B31).withValues(alpha: 0.1),
+                          color: AppColorPalette.primaryMaroon.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.person,
-                          color: Color(0xFF6A1B31),
+                          color: AppColorPalette.primaryMaroon,
                           size: 24,
                         ),
                       ),
@@ -250,10 +251,10 @@ class _TeacherManageAssignmentSubmissionScreenState
                   Expanded(
                     child: Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.calendar_today_rounded,
                           size: 16,
-                          color: Color(0xFF6A1B31),
+                          color: AppColorPalette.primaryMaroon,
                         ),
                         const SizedBox(width: 6),
                         Expanded(
@@ -265,7 +266,7 @@ class _TeacherManageAssignmentSubmissionScreenState
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
-                                  color: const Color(0xFF6A1B31)
+                                  color: AppColorPalette.primaryMaroon
                                       .withValues(alpha: 0.8),
                                 ),
                               ),
@@ -352,7 +353,7 @@ class _TeacherManageAssignmentSubmissionScreenState
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF6A1B31).withValues(alpha: 0.04),
+                color: AppColorPalette.primaryMaroon.withValues(alpha: 0.04),
                 blurRadius: 6,
                 offset: const Offset(0, 2),
               ),
@@ -366,12 +367,12 @@ class _TeacherManageAssignmentSubmissionScreenState
               // Section header
               Container(
                 margin: const EdgeInsets.only(bottom: 12),
-                child: const Text(
+                child: Text(
                   "Detail Tugas",
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF6A1B31),
+                    color: AppColorPalette.primaryMaroon,
                     letterSpacing: 0.2,
                   ),
                 ),
@@ -386,12 +387,12 @@ class _TeacherManageAssignmentSubmissionScreenState
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: const Color(0xFFEADADA),
+                      color: AppColorPalette.lightMaroon,
                       width: 1,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF800020).withValues(alpha: 0.03),
+                        color: AppColorPalette.primaryMaroon.withValues(alpha: 0.03),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -409,18 +410,18 @@ class _TeacherManageAssignmentSubmissionScreenState
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [
-                                  const Color(0xFF6A1B31)
+                                  AppColorPalette.primaryMaroon
                                       .withValues(alpha: 0.08),
-                                  const Color(0xFF6A1B31)
+                                  AppColorPalette.primaryMaroon
                                       .withValues(alpha: 0.12),
                                 ],
                               ),
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.grade_rounded,
                               size: 22,
-                              color: Color(0xFF6A1B31),
+                              color: AppColorPalette.primaryMaroon,
                             ),
                           )
                               .animate(
@@ -442,7 +443,7 @@ class _TeacherManageAssignmentSubmissionScreenState
                                   style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.w600,
-                                    color: const Color(0xFF800020)
+                                    color: AppColorPalette.primaryMaroon
                                         .withValues(alpha: 0.8),
                                     letterSpacing: 0.2,
                                   ),
@@ -454,10 +455,10 @@ class _TeacherManageAssignmentSubmissionScreenState
                                       TextSpan(
                                         text: assignmentSubmission.points
                                             .toString(),
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.w700,
-                                          color: Color(0xFF6A1B31),
+                                          color: AppColorPalette.primaryMaroon,
                                         ),
                                       ),
                                       TextSpan(
@@ -532,7 +533,7 @@ class _TeacherManageAssignmentSubmissionScreenState
                           Container(
                             height: 8,
                             decoration: BoxDecoration(
-                              color: const Color(0xFFEADADA),
+                              color: AppColorPalette.lightMaroon,
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -615,12 +616,12 @@ class _TeacherManageAssignmentSubmissionScreenState
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: const Color(0xFFEADADA),
+                      color: AppColorPalette.lightMaroon,
                       width: 1,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF6A1B31).withValues(alpha: 0.03),
+                        color: AppColorPalette.primaryMaroon.withValues(alpha: 0.03),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -638,18 +639,18 @@ class _TeacherManageAssignmentSubmissionScreenState
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [
-                                  const Color(0xFF6A1B31)
+                                  AppColorPalette.primaryMaroon
                                       .withValues(alpha: 0.08),
-                                  const Color(0xFF6A1B31)
+                                  AppColorPalette.primaryMaroon
                                       .withValues(alpha: 0.12),
                                 ],
                               ),
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.comment_rounded,
                               size: 22,
-                              color: Color(0xFF6A1B31),
+                              color: AppColorPalette.primaryMaroon,
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -663,7 +664,7 @@ class _TeacherManageAssignmentSubmissionScreenState
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w600,
-                                      color: const Color(0xFF6A1B31)
+                                      color: AppColorPalette.primaryMaroon
                                           .withValues(alpha: 0.8),
                                       letterSpacing: 0.2,
                                     ),
@@ -678,10 +679,10 @@ class _TeacherManageAssignmentSubmissionScreenState
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF9F5F6).withValues(alpha: 0.5),
+                          color: AppColorPalette.accentPink.withValues(alpha: 0.5),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: const Color(0xFFEADADA),
+                            color: AppColorPalette.lightMaroon,
                             width: 1,
                           ),
                           boxShadow: [
@@ -702,14 +703,14 @@ class _TeacherManageAssignmentSubmissionScreenState
                                   height: 24,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: const Color(0xFF800020)
+                                    color: AppColorPalette.primaryMaroon
                                         .withValues(alpha: 0.1),
                                   ),
-                                  child: const Center(
+                                  child: Center(
                                     child: Icon(
                                       Icons.format_quote,
                                       size: 14,
-                                      color: Color(0xFF6A1B31),
+                                      color: AppColorPalette.primaryMaroon,
                                     ),
                                   ),
                                 ),
@@ -751,12 +752,12 @@ class _TeacherManageAssignmentSubmissionScreenState
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: const Color(0xFFEADADA),
+                      color: AppColorPalette.lightMaroon,
                       width: 1,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF800020).withValues(alpha: 0.03),
+                        color: AppColorPalette.primaryMaroon.withValues(alpha: 0.03),
                         blurRadius: 6,
                         spreadRadius: 0,
                         offset: const Offset(0, 2),
@@ -771,14 +772,14 @@ class _TeacherManageAssignmentSubmissionScreenState
                           Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF800020)
+                              color: AppColorPalette.primaryMaroon
                                   .withValues(alpha: 0.08),
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.attachment_rounded,
                               size: 22,
-                              color: Color(0xFF6A1B31),
+                              color: AppColorPalette.primaryMaroon,
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -787,7 +788,7 @@ class _TeacherManageAssignmentSubmissionScreenState
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
-                              color: const Color(0xFF6A1B31)
+                              color: AppColorPalette.primaryMaroon
                                   .withValues(alpha: 0.8),
                             ),
                           ),
@@ -796,16 +797,16 @@ class _TeacherManageAssignmentSubmissionScreenState
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF6A1B31)
+                              color: AppColorPalette.primaryMaroon
                                   .withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
                               "${assignmentSubmission.file.length}",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF6A1B31),
+                                color: AppColorPalette.primaryMaroon,
                               ),
                             ),
                           ),
@@ -826,11 +827,11 @@ class _TeacherManageAssignmentSubmissionScreenState
                                     margin: const EdgeInsets.only(bottom: 8),
                                     padding: const EdgeInsets.all(10),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFF9F5F6)
+                                      color: AppColorPalette.accentPink
                                           .withValues(alpha: 0.7),
                                       borderRadius: BorderRadius.circular(10),
                                       border: Border.all(
-                                        color: const Color(0xFFEADADA),
+                                        color: AppColorPalette.lightMaroon,
                                         width: 1,
                                       ),
                                     ),
@@ -840,14 +841,14 @@ class _TeacherManageAssignmentSubmissionScreenState
                                           width: 42,
                                           height: 42,
                                           decoration: BoxDecoration(
-                                            color: const Color(0xFF6A1B31)
+                                            color: AppColorPalette.primaryMaroon
                                                 .withValues(alpha: 0.1),
                                             borderRadius: BorderRadius.circular(8),
                                           ),
                                           child: Center(
                                             child: Icon(
                                               _getFileIcon(fileItem.fileName),
-                                              color: const Color(0xFF6A1B31),
+                                              color: AppColorPalette.primaryMaroon,
                                               size: 24,
                                             ),
                                           ),
@@ -882,14 +883,14 @@ class _TeacherManageAssignmentSubmissionScreenState
                                         Container(
                                           padding: const EdgeInsets.all(8),
                                           decoration: BoxDecoration(
-                                            color: const Color(0xFF6A1B31)
+                                            color: AppColorPalette.primaryMaroon
                                                 .withValues(alpha: 0.1),
                                             shape: BoxShape.circle,
                                           ),
-                                          child: const Icon(
+                                          child: Icon(
                                             Icons.download_rounded,
                                             size: 16,
-                                            color: Color(0xFF6A1B31),
+                                            color: AppColorPalette.primaryMaroon,
                                           ),
                                         ),
                                       ],
@@ -963,13 +964,13 @@ class _TeacherManageAssignmentSubmissionScreenState
                         boxShadow: [
                           BoxShadow(
                             color:
-                                const Color(0xFF6A1B31).withValues(alpha: 0.08),
+                                AppColorPalette.primaryMaroon.withValues(alpha: 0.08),
                             blurRadius: 15,
                             offset: const Offset(0, 5),
                           ),
                         ],
                         border: Border.all(
-                          color: const Color(0xFFEADADA),
+                          color: AppColorPalette.lightMaroon,
                           width: 1.5,
                         ),
                       ),
@@ -978,19 +979,19 @@ class _TeacherManageAssignmentSubmissionScreenState
                         children: [
                           Container(
                             padding: const EdgeInsets.all(16),
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               gradient: RadialGradient(
                                 colors: [
-                                  Color(0xFFF9F5F6),
-                                  Color(0xFFEADADA),
+                                  AppColorPalette.accentPink,
+                                  AppColorPalette.lightMaroon,
                                 ],
                               ),
                             ),
                             child: Icon(
                               Icons.assignment_late_outlined,
                               size: 60,
-                              color: const Color(0xFF6A1B31)
+                              color: AppColorPalette.primaryMaroon
                                   .withValues(alpha: 0.7),
                             ),
                           ).animate().fadeIn(duration: 600.ms).scale(
@@ -1000,10 +1001,10 @@ class _TeacherManageAssignmentSubmissionScreenState
                           CustomTextContainer(
                             textKey: Utils.getTranslatedLabel(
                                 noAssignmentSubmissionKey),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF6A1B31),
+                              color: AppColorPalette.primaryMaroon,
                             ),
                           ).animate().fadeIn(duration: 600.ms, delay: 200.ms),
                         ],
@@ -1025,7 +1026,7 @@ class _TeacherManageAssignmentSubmissionScreenState
                   borderRadius: BorderRadius.circular(22),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF800020).withValues(alpha: 0.05),
+                      color: AppColorPalette.primaryMaroon.withValues(alpha: 0.05),
                       blurRadius: 20,
                       spreadRadius: 0,
                       offset: const Offset(0, 4),
@@ -1050,20 +1051,20 @@ class _TeacherManageAssignmentSubmissionScreenState
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            const Color(0xFF6A1B31).withValues(alpha: 0.12),
-                            const Color(0xFF9A4156).withValues(alpha: 0.06),
+                            AppColorPalette.primaryMaroon.withValues(alpha: 0.12),
+                            AppColorPalette.secondaryMaroon.withValues(alpha: 0.06),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
                           color:
-                              const Color(0xFF6A1B31).withValues(alpha: 0.18),
+                              AppColorPalette.primaryMaroon.withValues(alpha: 0.18),
                           width: 1,
                         ),
                         boxShadow: [
                           BoxShadow(
                             color:
-                                const Color(0xFF800020).withValues(alpha: 0.05),
+                                AppColorPalette.primaryMaroon.withValues(alpha: 0.05),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -1077,14 +1078,14 @@ class _TeacherManageAssignmentSubmissionScreenState
                               color: Colors.white.withValues(alpha: 0.7),
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
-                                color: const Color(0xFF800020)
+                                color: AppColorPalette.primaryMaroon
                                     .withValues(alpha: 0.15),
                                 width: 1,
                               ),
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.assignment_turned_in,
-                              color: Color(0xFF800020),
+                              color: AppColorPalette.primaryMaroon,
                               size: 20,
                             ),
                           ),
@@ -1093,14 +1094,14 @@ class _TeacherManageAssignmentSubmissionScreenState
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const CustomTextContainer(
+                                CustomTextContainer(
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   textKey: assignmentSubmissionListKey,
                                   style: TextStyle(
                                     fontSize: 15.0,
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0xFF800020),
+                                    color: AppColorPalette.primaryMaroon,
                                     letterSpacing: 0.2,
                                   ),
                                 ),
@@ -1192,7 +1193,7 @@ class _TeacherManageAssignmentSubmissionScreenState
               icon: Icons.assignment_rounded,
               fabAnimationController: _fabAnimationController,
               primaryColor:
-                  const Color(0xFF6A1B31), // Soft dark maroon yang lebih tajam
+                  AppColorPalette.primaryMaroon, // Soft dark maroon yang lebih tajam
               lightColor: const Color(
                   0xFF9A4156), // Lighter maroon shade yang lebih tajam
               onBackPressed: () => Get.back(),
@@ -1230,30 +1231,30 @@ class _TeacherManageAssignmentSubmissionScreenState
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF800020).withValues(alpha: 0.1),
+                    color: AppColorPalette.primaryMaroon.withValues(alpha: 0.1),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),
                 ],
                 border: Border.all(
-                  color: const Color(0xFF800020).withValues(alpha: 0.15),
+                  color: AppColorPalette.primaryMaroon.withValues(alpha: 0.15),
                   width: 1,
                 ),
               ),
               child: Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.filter_list_rounded,
-                    color: Color(0xFF800020),
+                    color: AppColorPalette.primaryMaroon,
                     size: 20,
                   ),
                   const SizedBox(width: 10),
-                  const CustomTextContainer(
+                  CustomTextContainer(
                     textKey: filterByKey,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: Color(0xFF800020),
+                      color: AppColorPalette.primaryMaroon,
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -1261,20 +1262,20 @@ class _TeacherManageAssignmentSubmissionScreenState
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF800020).withValues(alpha: 0.1),
+                      color: AppColorPalette.primaryMaroon.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: const Color(0xFF800020).withValues(alpha: 0.3),
+                        color: AppColorPalette.primaryMaroon.withValues(alpha: 0.3),
                         width: 1,
                       ),
                     ),
                     child: CustomTextContainer(
                       textKey:
                           selectedAssignmentSubmissionFilterStatus.titleKey,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF800020),
+                        color: AppColorPalette.primaryMaroon,
                       ),
                     ),
                   ),
@@ -1301,40 +1302,40 @@ class _TeacherManageAssignmentSubmissionScreenState
       ];
     } else if (baseColor == Colors.orange || baseColor == Colors.amber) {
       return [
-        const Color(0xFF9A4156), // Medium Maroon
+        AppColorPalette.secondaryMaroon, // Medium Maroon
         const Color(0xFF7D3546), // Darker Medium Maroon
       ];
     } else if (baseColor == Colors.red) {
       return [
-        const Color(0xFF470F1F), // Very Dark Maroon
-        const Color(0xFF380D19), // Even Darker Maroon
+        AppColorPalette.primaryMaroon, // Very Dark Maroon
+        AppColorPalette.primaryMaroon, // Even Darker Maroon
       ];
     } else if (baseColor == Colors.blue) {
       return [
-        const Color(0xFFAA6976), // Secondary Maroon
+        AppColorPalette.secondaryMaroon, // Secondary Maroon
         const Color(0xFF8F5461), // Darker Secondary Maroon
       ];
     }
 
     // Default gradient for other colors - maroon themed
-    return [const Color(0xFF6A1B31), const Color(0xFF57152A)];
+    return [AppColorPalette.primaryMaroon, AppColorPalette.primaryMaroon];
   }
 
   // Helper method untuk mendapatkan warna grade berdasarkan nilai siswa dengan tema maroon
   Color _getGradeColor(double points, double totalPoints) {
     double percentage = (points / totalPoints) * 100;
     if (percentage >= 90) {
-      return const Color(0xFF6A1B31); // Dark Maroon (main theme color)
+      return AppColorPalette.primaryMaroon; // Dark Maroon (main theme color)
     } else if (percentage >= 80) {
-      return const Color(0xFF9A4156); // Medium Maroon
+      return AppColorPalette.secondaryMaroon; // Medium Maroon
     } else if (percentage >= 70) {
-      return const Color(0xFFBE7685); // Light Maroon
+      return AppColorPalette.secondaryMaroon; // Light Maroon
     } else if (percentage >= 60) {
-      return const Color(0xFFD1919D); // Lighter Maroon
+      return AppColorPalette.secondaryMaroon; // Lighter Maroon
     } else if (percentage >= 50) {
-      return const Color(0xFFAA6976); // Secondary Maroon
+      return AppColorPalette.secondaryMaroon; // Secondary Maroon
     } else {
-      return const Color(0xFF470F1F); // Very Dark Maroon
+      return AppColorPalette.primaryMaroon; // Very Dark Maroon
     }
   }
 

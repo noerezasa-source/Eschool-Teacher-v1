@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 
 import 'package:eschool_saas_staff/ui/widgets/system/errorContainer.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/no_search_results_widget.dart';
@@ -18,6 +18,7 @@ import '../../../app/routes.dart';
 
 import '../../../ui/widgets/system/customModernAppBar.dart';
 import 'package:eschool_saas_staff/ui/widgets/skeleton/skeleton_widgets.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 
 // Light rays painter
 import 'package:eschool_saas_staff/ui/screens/teacherAcademics/painters/bankQuestionPainters.dart';
@@ -46,8 +47,8 @@ class _BankQuestionScreenState extends State<BankQuestionScreen>
   bool _showSearch = false;
 
   // Theme colors - Softer Maroon palette
-  static const Color _primaryColor = Color(0xFF7A1E23); // Softer deep maroon
-  static const Color _accentColor = Color(0xFF9D3C3C); // Softer medium maroon
+  static Color get _primaryColor => AppColorPalette.primaryMaroon; // Softer deep maroon
+  static Color get _accentColor => AppColorPalette.secondaryMaroon; // Softer medium maroon
 
   // Animation controllers
   late AnimationController _backgroundAnimationController;
@@ -139,7 +140,7 @@ class _BankQuestionScreenState extends State<BankQuestionScreen>
     // Setup animations
 
     // Set system UI style for immersive experience
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
       systemNavigationBarColor: _primaryColor,
@@ -442,7 +443,7 @@ class _BankQuestionScreenState extends State<BankQuestionScreen>
                     },
                     decoration: InputDecoration(
                       hintText: 'Cari soal...',
-                      prefixIcon: const Icon(
+                      prefixIcon: Icon(
                         Icons.search,
                         color: _primaryColor,
                       ),
@@ -536,9 +537,9 @@ class _BankQuestionScreenState extends State<BankQuestionScreen>
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.swipe, color: _primaryColor),
+                            Icon(Icons.swipe, color: _primaryColor),
                             const SizedBox(width: 12.0),
-                            const Flexible(
+                            Flexible(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
@@ -550,8 +551,8 @@ class _BankQuestionScreenState extends State<BankQuestionScreen>
                                       color: _primaryColor,
                                     ),
                                   ),
-                                  SizedBox(height: 4.0),
-                                  Text(
+                                  const SizedBox(height: 4.0),
+                                  const Text(
                                     "Geser kartu ke kiri/kanan untuk melihat versi soal sebelumnya",
                                     style: TextStyle(fontSize: 12.0),
                                   ),

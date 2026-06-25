@@ -1,5 +1,6 @@
 ﻿import 'package:eschool_saas_staff/cubits/teacherAcademics/classSectionsAndSubjects.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/lesson/createLessonCubit.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/lesson/editLessonCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/gradeLevelCubit.dart';
 import 'package:eschool_saas_staff/data/models/academic/classSection.dart';
@@ -134,8 +135,8 @@ class _TeacherAddEditLessonScreenState extends State<TeacherAddEditLessonScreen>
         appBar: CustomModernAppBar(
           title: widget.lesson != null ? 'Edit Pelajaran' : 'Tambah Pelajaran',
           icon: Icons.book_rounded,
-          primaryColor: const Color(0xFF800020),
-          lightColor: const Color(0xFFAA6976),
+          primaryColor: AppColorPalette.primaryMaroon,
+          lightColor: AppColorPalette.secondaryMaroon,
           fabAnimationController: _fabAnimationController,
           onBackPressed: () => Navigator.of(context).pop(),
           showAddButton: false,

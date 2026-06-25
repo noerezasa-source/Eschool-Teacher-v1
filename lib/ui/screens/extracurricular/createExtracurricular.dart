@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eschool_saas_staff/cubits/extracurricular/extracurricularCubit.dart';
 import 'package:eschool_saas_staff/data/models/auth/user.dart';
@@ -27,8 +28,8 @@ class _CreateExtracurricularState extends State<CreateExtracurricular>
   late AnimationController _animationController;
   late AnimationController _pulseController;
 
-  static const Color _primaryColor = Color(0xFF7A1E23);
-  static const Color _highlightColor = Color(0xFFB84D4D);
+  static Color get _primaryColor => AppColorPalette.primaryMaroon;
+  static Color get _highlightColor => AppColorPalette.secondaryMaroon;
 
   @override
   void initState() {
@@ -110,7 +111,7 @@ class _CreateExtracurricularState extends State<CreateExtracurricular>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Informasi Dasar',
               style: TextStyle(
                 fontSize: 18,
@@ -159,7 +160,7 @@ class _CreateExtracurricularState extends State<CreateExtracurricular>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Pembina',
               style: TextStyle(
                 fontSize: 18,
@@ -179,9 +180,9 @@ class _CreateExtracurricularState extends State<CreateExtracurricular>
               },
               builder: (context, state) {
                 if (state is TeachersStaffLoading) {
-                  return const Center(
+                  return Center(
                     child: Padding(
-                      padding: EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(20),
                       child: CircularProgressIndicator(color: _primaryColor),
                     ),
                   );
@@ -231,10 +232,10 @@ class _CreateExtracurricularState extends State<CreateExtracurricular>
                         ),
                         child: Row(
                           children: [
-                            const CircleAvatar(
+                            CircleAvatar(
                               radius: 20,
                               backgroundColor: _primaryColor,
-                              child: Icon(Icons.person,
+                              child: const Icon(Icons.person,
                                   color: Colors.white, size: 20),
                             ),
                             const SizedBox(width: 12),
@@ -251,7 +252,7 @@ class _CreateExtracurricularState extends State<CreateExtracurricular>
                                   ),
                                   Text(
                                     selectedCoachName ?? '',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: _primaryColor,
@@ -498,7 +499,7 @@ class _CreateExtracurricularState extends State<CreateExtracurricular>
                           color: _primaryColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.person_search_rounded,
                           color: _primaryColor,
                           size: 28,
@@ -509,7 +510,7 @@ class _CreateExtracurricularState extends State<CreateExtracurricular>
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               'Pilih Pembina',
                               style: TextStyle(
                                 fontSize: 22,
@@ -601,7 +602,7 @@ class _CreateExtracurricularState extends State<CreateExtracurricular>
                                   color: _primaryColor.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: const Icon(
+                                child: Icon(
                                   Icons.search_rounded,
                                   color: _primaryColor,
                                   size: 20,
@@ -679,7 +680,7 @@ class _CreateExtracurricularState extends State<CreateExtracurricular>
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.people_rounded,
                                 color: _primaryColor,
                                 size: 16,
@@ -687,7 +688,7 @@ class _CreateExtracurricularState extends State<CreateExtracurricular>
                               const SizedBox(width: 8),
                               Text(
                                 '${filteredUsers.length} pembina',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: _primaryColor,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
@@ -875,7 +876,7 @@ class _CreateExtracurricularState extends State<CreateExtracurricular>
                                                     padding:
                                                         const EdgeInsets.all(8),
                                                     decoration:
-                                                        const BoxDecoration(
+                                                        BoxDecoration(
                                                       color: _primaryColor,
                                                       shape: BoxShape.circle,
                                                     ),
@@ -935,7 +936,7 @@ class _CreateExtracurricularState extends State<CreateExtracurricular>
         fillColor: Colors.grey.shade50,
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: _primaryColor, width: 2),
+          borderSide: BorderSide(color: _primaryColor, width: 2),
         ),
       ),
     );
@@ -948,7 +949,7 @@ class _CreateExtracurricularState extends State<CreateExtracurricular>
         width: double.infinity,
         height: 55,
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             colors: [_primaryColor, _highlightColor],
           ),
           borderRadius: BorderRadius.circular(15),
@@ -1014,7 +1015,7 @@ class _CreateExtracurricularState extends State<CreateExtracurricular>
                     ),
                   ],
                 ),
-                child: const Column(
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     SizedBox(
@@ -1022,13 +1023,13 @@ class _CreateExtracurricularState extends State<CreateExtracurricular>
                       height: 50,
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(
-                          Color(0xFF7A1E23),
+                          AppColorPalette.primaryMaroon,
                         ),
                         strokeWidth: 4,
                       ),
                     ),
-                    SizedBox(height: 24),
-                    Text(
+                    const SizedBox(height: 24),
+                    const Text(
                       'Membuat Ekstrakurikuler...',
                       style: TextStyle(
                         fontSize: 16,
@@ -1080,7 +1081,7 @@ class _CreateExtracurricularState extends State<CreateExtracurricular>
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text(
+                  Text(
                     'Berhasil!',
                     style: TextStyle(
                       fontSize: 24,

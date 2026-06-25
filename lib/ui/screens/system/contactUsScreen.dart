@@ -41,8 +41,8 @@ class _ContactUsScreenState extends State<ContactUsScreen>
   // Changed from SingleTickerProviderStateMixin to TickerProviderStateMixin  late AnimationController _controller;
   late AnimationController _fabAnimationController;
   final ScrollController _scrollController = ScrollController();
-  final Color _maroonPrimary = AppColorPalette.primaryMaroon;
-  final Color _maroonLight = AppColorPalette.secondaryMaroon;
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
+  Color get _maroonLight => AppColorPalette.secondaryMaroon;
   String? cachedData;
   @override
   void initState() {
@@ -259,7 +259,7 @@ class _ContactUsScreenState extends State<ContactUsScreen>
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [

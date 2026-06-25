@@ -1,5 +1,6 @@
-﻿import 'package:eschool_saas_staff/data/models/system/holiday.dart';
+import 'package:eschool_saas_staff/data/models/system/holiday.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customBottomsheet.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customTextContainer.dart';
 import 'package:eschool_saas_staff/utils/system/constants.dart';
 import 'package:eschool_saas_staff/utils/system/labelKeys.dart';
@@ -35,8 +36,8 @@ class _HolidayContainerState extends State<HolidayContainer> {
     final holidayEndDate = widget.holiday.endDate != null
         ? DateTime.parse(widget.holiday.endDate!)
         : holidayStartDate;
-    const maroonColor = Color(0xFF800020);
-    const maroonLight = Color(0xFFAA6976);
+    final maroonColor = AppColorPalette.primaryMaroon;
+    final maroonLight = AppColorPalette.secondaryMaroon;
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -73,7 +74,7 @@ class _HolidayContainerState extends State<HolidayContainer> {
                 children: [
                   Container(
                     width: 110,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -88,8 +89,7 @@ class _HolidayContainerState extends State<HolidayContainer> {
                         Positioned(
                           top: -5,
                           right: -5,
-                          child: Icon(
-                            FontAwesomeIcons.calendar,
+                          child: FaIcon(FontAwesomeIcons.calendar,
                             size: 30,
                             color: Colors.white.withValues(alpha: 0.1),
                           ),
@@ -164,8 +164,7 @@ class _HolidayContainerState extends State<HolidayContainer> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(top: 3.0),
-                                child: Icon(
-                                  FontAwesomeIcons.tag,
+                                child: FaIcon(FontAwesomeIcons.tag,
                                   size: 14,
                                   color: Colors.grey.shade600,
                                 ),
@@ -191,8 +190,7 @@ class _HolidayContainerState extends State<HolidayContainer> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Icon(
-                                  FontAwesomeIcons.calendar,
+                                FaIcon(FontAwesomeIcons.calendar,
                                   size: 12,
                                   color: Colors.grey.shade600,
                                 ),
@@ -212,7 +210,7 @@ class _HolidayContainerState extends State<HolidayContainer> {
                               ],
                             ),
                           const Spacer(),
-                          const Row(
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Text(
@@ -223,7 +221,7 @@ class _HolidayContainerState extends State<HolidayContainer> {
                                   fontSize: 12,
                                 ),
                               ),
-                              SizedBox(width: 4),
+                              const SizedBox(width: 4),
                               Icon(
                                 Icons.arrow_forward_ios,
                                 size: 10,
@@ -254,7 +252,7 @@ class HolidayDetailsBottomsheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const maroonColor = Color(0xFF800020);
+    final maroonColor = AppColorPalette.primaryMaroon;
     final holidayStartDate = DateTime.parse(holiday.startDate ?? "");
     final holidayEndDate = holiday.endDate != null
         ? DateTime.parse(holiday.endDate!)
@@ -295,10 +293,10 @@ class HolidayDetailsBottomsheet extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          gradient: const LinearGradient(
+                          gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: [maroonColor, Color(0xFFAA6976)],
+                            colors: [maroonColor, AppColorPalette.secondaryMaroon],
                           ),
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -349,7 +347,7 @@ class HolidayDetailsBottomsheet extends StatelessWidget {
                             const SizedBox(height: 4),
                             Text(
                               holiday.title ?? "",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 color: maroonColor,
@@ -373,8 +371,7 @@ class HolidayDetailsBottomsheet extends StatelessWidget {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Icon(
-                              FontAwesomeIcons.calendarDay,
+                            FaIcon(FontAwesomeIcons.calendarDay,
                               size: 16,
                               color: maroonColor,
                             ),
@@ -409,8 +406,7 @@ class HolidayDetailsBottomsheet extends StatelessWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(
-                        FontAwesomeIcons.circleInfo,
+                      FaIcon(FontAwesomeIcons.circleInfo,
                         size: 16,
                         color: maroonColor,
                       ),

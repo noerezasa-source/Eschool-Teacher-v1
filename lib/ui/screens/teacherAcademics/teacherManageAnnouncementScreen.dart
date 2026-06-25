@@ -1,4 +1,5 @@
 import 'package:eschool_saas_staff/app/routes.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/announcement/teacherAnnouncementsCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/announcement/teacherDeleteAnnouncementCubit.dart';
 import 'package:eschool_saas_staff/cubits/teacherAcademics/classSectionsAndSubjects.dart';
@@ -27,11 +28,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
 
 // Define our theme colors
-const Color maroonPrimary = Color(0xFF8B1F41);
-const Color maroonLight = Color(0xFFAC3B5C);
+Color get maroonPrimary => AppColorPalette.primaryMaroon;
+Color get maroonLight => AppColorPalette.secondaryMaroon;
 const Color maroonDark = Color(0xFF6A0F2A);
-const Color accentColor = Color(0xFFF5EBE0);
-const Color bgColor = Color(0xFFFAF6F2);
+Color get accentColor => AppColorPalette.lightMaroon;
+Color get bgColor => AppColorPalette.accentPink;
 const Color cardColor = Colors.white;
 const Color textDarkColor = Color(0xFF2D2D2D);
 const Color textMediumColor = Color(0xFF717171);
@@ -201,7 +202,7 @@ class _TeacherManageAnnouncementScreenState
                 // Header with title
                 Container(
                   padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [maroonPrimary, maroonLight],
                       begin: Alignment.centerLeft,
@@ -282,7 +283,7 @@ class _TeacherManageAnnouncementScreenState
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.calendar_today_outlined,
                                 size: 14,
                                 color: maroonPrimary,
@@ -613,7 +614,7 @@ class _TeacherManageAnnouncementScreenState
                             child: Container(
                               height: 6,
                               decoration: BoxDecoration(
-                                gradient: const LinearGradient(
+                                gradient: LinearGradient(
                                   colors: [maroonPrimary, maroonLight],
                                   begin: Alignment.centerLeft,
                                   end: Alignment.centerRight,
@@ -672,7 +673,7 @@ class _TeacherManageAnnouncementScreenState
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            const Icon(
+                                            Icon(
                                               Icons.calendar_today_outlined,
                                               size: 14,
                                               color: maroonPrimary,
@@ -958,7 +959,7 @@ class _TeacherManageAnnouncementScreenState
                                             ),
                                             child: state
                                                     is TeacherDeleteAnnouncementInProgress
-                                                ? const Center(
+                                                ? Center(
                                                     child: SizedBox(
                                                       width: 20,
                                                       height: 20,
@@ -969,7 +970,7 @@ class _TeacherManageAnnouncementScreenState
                                                       ),
                                                     ),
                                                   )
-                                                : const Icon(
+                                                : Icon(
                                                     Icons.more_vert_rounded,
                                                     color: maroonPrimary,
                                                     size: 22,
@@ -1009,7 +1010,7 @@ class _TeacherManageAnnouncementScreenState
                                     color: maroonPrimary.withValues(alpha: 0.08),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.description_outlined,
                                     color: maroonPrimary,
                                     size: 18,
@@ -1113,7 +1114,7 @@ class _TeacherManageAnnouncementScreenState
                                       color: maroonPrimary.withValues(alpha: 0.08),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
-                                    child: const Icon(
+                                    child: Icon(
                                       Icons.attach_file_rounded,
                                       color: maroonPrimary,
                                       size: 18,
@@ -1278,7 +1279,7 @@ class _TeacherManageAnnouncementScreenState
                                                         BorderRadius.circular(
                                                             14),
                                                   ),
-                                                  child: const Icon(
+                                                  child: Icon(
                                                     Icons.download_rounded,
                                                     color: maroonPrimary,
                                                     size: 20,
@@ -1464,7 +1465,7 @@ class _TeacherManageAnnouncementScreenState
                           color: Colors.grey.shade100,
                           borderRadius: BorderRadius.circular(40),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.campaign_outlined,
                           size: 40,
                           color: maroonPrimary,
@@ -1650,7 +1651,7 @@ class _TeacherManageAnnouncementScreenState
                                           ),
                                         ],
                                       ),
-                                      child: const Icon(
+                                      child: Icon(
                                         Icons.add_rounded,
                                         color: maroonPrimary,
                                         size: 20,
@@ -1718,8 +1719,8 @@ class _TeacherManageAnnouncementScreenState
         onTap: () {
           if (gradeLevelState.gradeLevels.isEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text("Tidak ada tingkatan yang tersedia"),
+              SnackBar(
+                content: const Text("Tidak ada tingkatan yang tersedia"),
                 backgroundColor: maroonPrimary,
                 behavior: SnackBarBehavior.floating,
               ),
@@ -1814,8 +1815,8 @@ class _TeacherManageAnnouncementScreenState
         onTap: () {
           if (state.subjects.isEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
+              SnackBar(
+                content: const Text(
                     "Tidak ada mata pelajaran yang tersedia untuk guru ini"),
                 backgroundColor: maroonPrimary,
                 behavior: SnackBarBehavior.floating,

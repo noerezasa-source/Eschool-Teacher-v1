@@ -1,5 +1,6 @@
 ﻿import 'dart:async';
 import 'dart:math' as math;
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 
 import 'package:eschool_saas_staff/app/routes.dart';
 import 'package:eschool_saas_staff/cubits/staff/staffsCubit.dart';
@@ -53,7 +54,7 @@ class _StaffsScreenState extends State<StaffsScreen>
   Timer? waitForNextSearchRequestTimer;
 
   // Warna tema maroon yang digunakan dalam aplikasi
-  final Color maroonPrimary = const Color(0xFF8B1F41);
+  Color get maroonPrimary => AppColorPalette.primaryMaroon;
   final Color maroonSecondary = const Color(0xFFA84B5C);
   final Color maroonLight = const Color(0xFFE7C8CD);
   final Color accentPink = const Color(0xFFF4D0D9);

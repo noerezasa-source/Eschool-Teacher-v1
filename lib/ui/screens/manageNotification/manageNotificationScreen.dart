@@ -1,5 +1,6 @@
 ﻿import 'package:eschool_saas_staff/app/routes.dart';
 import 'package:eschool_saas_staff/cubits/announcement/notificationsCubit.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/userDetails/staffAllowedPermissionsAndModulesCubit.dart';
 import 'package:eschool_saas_staff/data/models/system/notificationDetails.dart';
 import 'package:eschool_saas_staff/ui/screens/manageNotification/widgets/adminNotificationDetailsContainer.dart';
@@ -48,8 +49,8 @@ class ManageNotificationScreenState extends State<ManageNotificationScreen>
     ..addListener(scrollListener);
 
   late AnimationController _fabAnimationController;
-  final Color _maroonPrimary = const Color(0xFF800020);
-  final Color _maroonLight = const Color(0xFFAA6976);
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
+  Color get _maroonLight => AppColorPalette.secondaryMaroon;
   bool _isSearchActive = false;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";

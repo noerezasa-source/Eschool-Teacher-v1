@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
+import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
 import 'package:eschool_saas_staff/cubits/announcement/sendGeneralAnnouncementCubit.dart';
 import 'package:eschool_saas_staff/data/models/academic/classSection.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/uploadImageOrFileButton.dart';
@@ -11,6 +11,8 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
+
 
 class AddAnnouncementScreen extends StatefulWidget {
   const AddAnnouncementScreen({super.key});
@@ -50,7 +52,7 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen>
   // Animation controllers for the UI elements
   late AnimationController _animationController; // For the AppBar
   late AnimationController _pulseController; // For pulsing effects
-  static const Color _highlightColor = Color(0xFFB84D4D);
+  static Color get _highlightColor => AppColorPalette.secondaryMaroon;
 
   @override
   void initState() {
@@ -155,8 +157,8 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen>
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.school_rounded,
-                            color: Color(0xFF8B0000)),
+                        Icon(Icons.school_rounded,
+                            color: AppColorPalette.primaryMaroon),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
@@ -218,13 +220,13 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen>
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Color(0xFF8B0000), Color(0xFFB84D4D)],
+                      colors: [AppColorPalette.primaryMaroon, AppColorPalette.secondaryMaroon],
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                     ),
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20),
                     ),
@@ -285,16 +287,16 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen>
                                 _selectedClassSections.length == classes.length
                                     ? Icons.check_circle
                                     : Icons.select_all,
-                                color: const Color(0xFF8B0000),
+                                color: AppColorPalette.primaryMaroon,
                                 size: 24,
                               ),
                               const SizedBox(width: 12),
-                              const Text(
+                              Text(
                                 'Pilih Semua',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 16,
-                                  color: Color(0xFF8B0000),
+                                  color: AppColorPalette.primaryMaroon,
                                 ),
                               ),
                               const Spacer(),
@@ -302,14 +304,14 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen>
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF8B0000)
+                                  color: AppColorPalette.primaryMaroon
                                       .withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Text(
                                   '${classes.length} Kelas',
-                                  style: const TextStyle(
-                                    color: Color(0xFF8B0000),
+                                  style: TextStyle(
+                                    color: AppColorPalette.primaryMaroon,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -373,12 +375,12 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen>
                                               shape: BoxShape.circle,
                                               border: Border.all(
                                                 color: isSelected
-                                                    ? const Color(0xFF8B0000)
+                                                    ? AppColorPalette.primaryMaroon
                                                     : Colors.grey.shade400,
                                                 width: 2,
                                               ),
                                               color: isSelected
-                                                  ? const Color(0xFF8B0000)
+                                                  ? AppColorPalette.primaryMaroon
                                                   : Colors.transparent,
                                             ),
                                             padding: const EdgeInsets.all(2),
@@ -398,7 +400,7 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen>
                                                     ? FontWeight.w600
                                                     : FontWeight.normal,
                                                 color: isSelected
-                                                    ? const Color(0xFF8B0000)
+                                                    ? AppColorPalette.primaryMaroon
                                                     : Colors.black87,
                                               ),
                                             ),
@@ -438,23 +440,23 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen>
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF8B0000)
+                              color: AppColorPalette.primaryMaroon
                                   .withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.check_circle_outline,
                                   size: 18,
-                                  color: Color(0xFF8B0000),
+                                  color: AppColorPalette.primaryMaroon,
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
                                   '${_selectedClassSections.length} dari ${classes.length} kelas dipilih',
-                                  style: const TextStyle(
-                                    color: Color(0xFF8B0000),
+                                  style: TextStyle(
+                                    color: AppColorPalette.primaryMaroon,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -490,7 +492,7 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen>
                             child: ElevatedButton(
                               onPressed: () => Navigator.of(context).pop(),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF8B0000),
+                                backgroundColor: AppColorPalette.primaryMaroon,
                                 elevation: 0,
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 12),
@@ -872,7 +874,7 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen>
         title: 'Tambah Pengumuman',
         icon: Icons.campaign,
         fabAnimationController: _animationController,
-        primaryColor: const Color(0xFF7A1E23),
+        primaryColor: AppColorPalette.primaryMaroon,
         lightColor: _highlightColor,
         onBackPressed: () => Navigator.of(context).pop(),
       ),

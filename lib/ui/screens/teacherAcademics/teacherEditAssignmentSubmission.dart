@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/cubits/teacherAcademics/assignmentSubmissions/editAssignmetSubmissionCubit.dart';
+import 'package:eschool_saas_staff/cubits/teacherAcademics/assignmentSubmissions/editAssignmetSubmissionCubit.dart';
 import 'package:eschool_saas_staff/data/models/academic/assignmentSubmission.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
 import 'package:eschool_saas_staff/utils/system/labelKeys.dart';
@@ -11,6 +11,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 
 class TeacherEditAssignmentSubmissionScreen extends StatefulWidget {
   final AssignmentSubmission assignmentSubmission;
@@ -923,7 +924,7 @@ class _TeacherEditAssignmentSubmissionScreenState
           title: "Tinjau Pengumpulan",
           icon: Icons.assignment_outlined,
           fabAnimationController: _appBarAnimationController,
-          primaryColor: const Color(0xFF7A1E23),
+          primaryColor: AppColorPalette.primaryMaroon,
           lightColor: const Color(0xFF5A2223),
           onBackPressed: () {
             HapticFeedback.mediumImpact();

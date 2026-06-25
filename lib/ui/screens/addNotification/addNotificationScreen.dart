@@ -1,4 +1,5 @@
-﻿import 'package:eschool_saas_staff/app/routes.dart';
+import 'package:eschool_saas_staff/app/routes.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/announcement/sendNotificationCubit.dart';
 import 'package:eschool_saas_staff/cubits/settings/rolesCubit.dart';
 import 'package:eschool_saas_staff/data/models/auth/userDetails.dart';
@@ -104,10 +105,10 @@ class _AddNotificationScreenState extends State<AddNotificationScreen>
   late AnimationController _pulseController;
 
   // Tema warna - Palette maroon yang lebih lembut - sesuai dengan createOnlineExam
-  static const Color _primaryColor =
-      Color(0xFF7A1E23); // Maroon dalam yang lebih lembut
-  static const Color _accentColor =
-      Color(0xFF9D3C3C); // Maroon medium yang lebih lembut
+  static Color get _primaryColor =>
+      AppColorPalette.primaryMaroon; // Maroon dalam yang lebih lembut
+  static Color get _accentColor =>
+      AppColorPalette.secondaryMaroon; // Maroon medium yang lebih lembut
 
   @override
   void initState() {
@@ -411,9 +412,9 @@ class _AddNotificationScreenState extends State<AddNotificationScreen>
         ),
         child: Row(
           children: [
-            const Icon(
+            Icon(
               Icons.people,
-              color: Color(0xFF8B0000),
+              color: AppColorPalette.primaryMaroon,
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -473,9 +474,9 @@ class _AddNotificationScreenState extends State<AddNotificationScreen>
             ),
             child: Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.assignment_ind,
-                  color: Color(0xFF8B0000),
+                  color: AppColorPalette.primaryMaroon,
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -522,7 +523,7 @@ class _AddNotificationScreenState extends State<AddNotificationScreen>
                         children: [
                           Text(
                             role,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 12,
                               color: _primaryColor,
                             ),
@@ -533,7 +534,7 @@ class _AddNotificationScreenState extends State<AddNotificationScreen>
                               _selectedRoles.remove(role);
                               setState(() {});
                             },
-                            child: const Icon(
+                            child: Icon(
                               Icons.close_rounded,
                               size: 16,
                               color: _primaryColor,
@@ -577,9 +578,9 @@ class _AddNotificationScreenState extends State<AddNotificationScreen>
             ),
             child: Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.person_add,
-                  color: Color(0xFF8B0000),
+                  color: AppColorPalette.primaryMaroon,
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -627,7 +628,7 @@ class _AddNotificationScreenState extends State<AddNotificationScreen>
                         children: [
                           Text(
                             user.fullName ?? "-",
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 12,
                               color: _accentColor,
                             ),
@@ -640,7 +641,7 @@ class _AddNotificationScreenState extends State<AddNotificationScreen>
                               );
                               setState(() {});
                             },
-                            child: const Icon(
+                            child: Icon(
                               Icons.close_rounded,
                               size: 16,
                               color: _accentColor,
@@ -682,14 +683,14 @@ class _AddNotificationScreenState extends State<AddNotificationScreen>
                 width: 1,
               ),
             ),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
                   Icons.file_upload_outlined,
                   color: _primaryColor,
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Text(
                   "Upload Gambar",
                   style: TextStyle(
@@ -715,7 +716,7 @@ class _AddNotificationScreenState extends State<AddNotificationScreen>
                 ),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.image_outlined,
                       color: _accentColor,
                       size: 20,

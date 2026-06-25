@@ -1,5 +1,6 @@
 ﻿import 'package:eschool_saas_staff/cubits/leave/generalPermissionCubit.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customTextContainer.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customErrorWidget.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/permissionDetailsContainer.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
@@ -34,8 +35,8 @@ class GeneralPermissionScreen extends StatefulWidget {
 class _GeneralPermissionScreenState extends State<GeneralPermissionScreen>
     with TickerProviderStateMixin {
   DateTime _selectedDateTime = DateTime.now();
-  final Color _maroonPrimary = const Color(0xFF800020);
-  final Color _maroonLight = const Color(0xFFAA6976);
+  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
+  Color get _maroonLight => AppColorPalette.secondaryMaroon;
 
   late AnimationController _fabAnimationController;
   final ScrollController _scrollController = ScrollController();

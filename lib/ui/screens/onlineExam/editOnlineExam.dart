@@ -10,6 +10,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
+import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'dart:math';
 
 class EditOnlineExam extends StatefulWidget {
@@ -76,8 +77,8 @@ class _EditOnlineExamState extends State<EditOnlineExam>
   TimeOfDay? startTime;
 
   // Theme colors - Softer Maroon palette
-  static const Color _primaryColor = Color(0xFF7A1E23); // Softer deep maroon
-  static const Color _accentColor = Color(0xFF9D3C3C); // Softer medium maroon
+  static Color get _primaryColor => AppColorPalette.primaryMaroon; // Softer deep maroon
+  static Color get _accentColor => AppColorPalette.secondaryMaroon; // Softer medium maroon
 
   @override
   void initState() {
@@ -373,7 +374,7 @@ class _EditOnlineExamState extends State<EditOnlineExam>
                 });
               },
               tooltip: 'Generate Kunci Ujian',
-              color: const Color(0xFF8B0000),
+              color: AppColorPalette.primaryMaroon,
             ),
           ),
         ],
@@ -439,7 +440,7 @@ class _EditOnlineExamState extends State<EditOnlineExam>
               DropdownButtonFormField<String>(
                 initialValue: selectedTingkatan,
                 decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.layers, color: Color(0xFF8B0000)),
+                  prefixIcon: Icon(Icons.layers, color: AppColorPalette.primaryMaroon),
                   labelText: 'Pilih Tingkatan',
                   filled: true,
                   fillColor: Colors.grey.shade50,
@@ -464,7 +465,7 @@ class _EditOnlineExamState extends State<EditOnlineExam>
                 DropdownButtonFormField<String>(
                   initialValue: selectedKelas,
                   decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.class_, color: Color(0xFF8B0000)),
+                    prefixIcon: Icon(Icons.class_, color: AppColorPalette.primaryMaroon),
                     labelText: 'Pilih Kelas',
                     filled: true,
                     fillColor: Colors.grey.shade50,
@@ -499,7 +500,7 @@ class _EditOnlineExamState extends State<EditOnlineExam>
                 DropdownButtonFormField<String>(
                   initialValue: selectedMapel,
                   decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.menu_book, color: Color(0xFF8B0000)),
+                    prefixIcon: Icon(Icons.menu_book, color: AppColorPalette.primaryMaroon),
                     labelText: 'Pilih Mata Pelajaran',
                     filled: true,
                     fillColor: Colors.grey.shade50,
