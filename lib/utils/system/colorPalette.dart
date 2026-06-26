@@ -12,9 +12,8 @@ class AppColorPalette {
     }
   }
 
-  // Primary Maroon / Violet / Dark / Indonesia
-  static Color get primaryMaroon {
-    final theme = currentTheme;
+  // Reactive version for theme construction
+  static Color getPrimaryColor(String theme) {
     if (theme == 'violet') {
       return const Color(0xFF6D28D9); // Violet
     } else if (theme == 'dark') {
@@ -26,9 +25,7 @@ class AppColorPalette {
     }
   }
 
-  // Secondary Maroon / Violet / Dark / Indonesia
-  static Color get secondaryMaroon {
-    final theme = currentTheme;
+  static Color getSecondaryColor(String theme) {
     if (theme == 'violet') {
       return const Color(0xFF8B5CF6); // Violet light
     } else if (theme == 'dark') {
@@ -40,9 +37,7 @@ class AppColorPalette {
     }
   }
 
-  // Light Maroon / Indonesia
-  static Color get lightMaroon {
-    final theme = currentTheme;
+  static Color getLightColor(String theme) {
     if (theme == 'violet') {
       return const Color(0xFFEDE9FE); // Very light violet
     } else if (theme == 'dark') {
@@ -54,9 +49,7 @@ class AppColorPalette {
     }
   }
 
-  // Accent Pink / Indonesia
-  static Color get accentPink {
-    final theme = currentTheme;
+  static Color getAccentColor(String theme) {
     if (theme == 'violet') {
       return const Color(0xFFF3E8FF); // Accent violet/purple
     } else if (theme == 'dark') {
@@ -68,9 +61,7 @@ class AppColorPalette {
     }
   }
 
-  // Warm Beige / Indonesia
-  static Color get warmBeige {
-    final theme = currentTheme;
+  static Color getWarmBeigeColor(String theme) {
     if (theme == 'violet') {
       return const Color(0xFFF5F3FF); // Warm beige for violet
     } else if (theme == 'dark') {
@@ -82,9 +73,7 @@ class AppColorPalette {
     }
   }
 
-  // Shadow Color / Indonesia
-  static Color get shadowColor {
-    final theme = currentTheme;
+  static Color getShadowColor(String theme) {
     if (theme == 'violet') {
       return const Color(0x296D28D9); // Violet shadow
     } else if (theme == 'dark') {
@@ -95,4 +84,12 @@ class AppColorPalette {
       return const Color(0x298B1F41); // Light maroon shadow
     }
   }
+
+  // Legacy static getters for backward compatibility
+  static Color get primaryMaroon => getPrimaryColor(currentTheme);
+  static Color get secondaryMaroon => getSecondaryColor(currentTheme);
+  static Color get lightMaroon => getLightColor(currentTheme);
+  static Color get accentPink => getAccentColor(currentTheme);
+  static Color get warmBeige => getWarmBeigeColor(currentTheme);
+  static Color get shadowColor => getShadowColor(currentTheme);
 }

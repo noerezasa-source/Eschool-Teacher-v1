@@ -171,27 +171,31 @@ class _ProfileContainerState extends State<ProfileContainer>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthCubit, AuthState>(
-      builder: (context, authstate) {
-        return Stack(
-          children: [
-            // Animated Background Pattern
-            AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, child) {
-                return CustomPaint(
-                  size: Size(MediaQuery.of(context).size.width,
-                      MediaQuery.of(context).size.height),
-                  painter: BackgroundPatternPainter(
-                    animation: _animation,
-                    primaryColor:
-                        AppColorPalette.primaryMaroon.withValues(alpha: 0.03),
-                    accentColor:
-                        AppColorPalette.secondaryMaroon.withValues(alpha: 0.02),
-                  ),
-                );
-              },
-            ),
+    return BlocBuilder<AppThemeCubit, AppThemeState>(
+      builder: (context, themeState) {
+        final currentTheme = themeState.themeMode;
+        final maroonPrimary = AppColorPalette.getPrimaryColor(currentTheme);
+        final maroonLight = AppColorPalette.getSecondaryColor(currentTheme);
+
+        return BlocBuilder<AuthCubit, AuthState>(
+          builder: (context, authstate) {
+            return Stack(
+              children: [
+                // Animated Background Pattern
+                AnimatedBuilder(
+                  animation: _animationController,
+                  builder: (context, child) {
+                    return CustomPaint(
+                      size: Size(MediaQuery.of(context).size.width,
+                          MediaQuery.of(context).size.height),
+                      painter: BackgroundPatternPainter(
+                        animation: _animation,
+                        primaryColor: maroonPrimary.withValues(alpha: 0.03),
+                        accentColor: maroonLight.withValues(alpha: 0.02),
+                      ),
+                    );
+                  },
+                ),
 
             // Main Content
             AnimationLimiter(
@@ -223,8 +227,7 @@ class _ProfileContainerState extends State<ProfileContainer>
                         context: context,
                         title: "Pengaturan Personal",
                         icon: Icons.person_outline,
-                        iconColor:
-                            AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
+                        iconColor: maroonPrimary.withValues(alpha: 0.9),
                         index: 0,
                         menus: [
                           _buildMenuItem(
@@ -276,8 +279,7 @@ class _ProfileContainerState extends State<ProfileContainer>
                         context: context,
                         title: "Cuti",
                         icon: Icons.event_available,
-                        iconColor:
-                            AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
+                        iconColor: maroonPrimary.withValues(alpha: 0.9),
                         index: 1,
                         menus: [
                           _buildMenuItem(
@@ -303,8 +305,7 @@ class _ProfileContainerState extends State<ProfileContainer>
                         context: context,
                         title: "Penggajian",
                         icon: Icons.account_balance_wallet,
-                        iconColor:
-                            AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
+                        iconColor: maroonPrimary.withValues(alpha: 0.9),
                         index: 2,
                         menus: [
                           _buildMenuItem(
@@ -329,8 +330,7 @@ class _ProfileContainerState extends State<ProfileContainer>
                         context: context,
                         title: "Informasi",
                         icon: Icons.info_outline,
-                        iconColor:
-                            AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
+                        iconColor: maroonPrimary.withValues(alpha: 0.9),
                         index: 3,
                         menus: [
                           _buildMenuItem(
@@ -377,8 +377,7 @@ class _ProfileContainerState extends State<ProfileContainer>
                         context: context,
                         title: "Sekolah",
                         icon: Icons.school_outlined,
-                        iconColor:
-                            AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
+                        iconColor: maroonPrimary.withValues(alpha: 0.9),
                         index: 4,
                         menus: [
                           _buildMenuItem(
@@ -399,7 +398,7 @@ class _ProfileContainerState extends State<ProfileContainer>
                                       child: CircularProgressIndicator(
                                         valueColor:
                                             AlwaysStoppedAnimation<Color>(
-                                          AppColorPalette.primaryMaroon,
+                                          maroonPrimary,
                                         ),
                                       ),
                                     ),
@@ -503,6 +502,8 @@ class _ProfileContainerState extends State<ProfileContainer>
         );
       },
     );
+      },
+    );
   }
 
   // Widget _buildWelcomeSection(BuildContext context) {
@@ -585,6 +586,7 @@ class _ProfileContainerState extends State<ProfileContainer>
     required int index,
     required List<Widget> menus,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return AnimationConfiguration.staggeredList(
       position: index,
       duration: const Duration(milliseconds: 400),
@@ -597,10 +599,15 @@ class _ProfileContainerState extends State<ProfileContainer>
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Colors.white,
-                  Colors.white.withValues(alpha: 0.95),
-                ],
+                colors: isDark
+                    ? [
+                        AppColorPalette.getLightColor(context.read<AppThemeCubit>().state.themeMode),
+                        AppColorPalette.getLightColor(context.read<AppThemeCubit>().state.themeMode).withValues(alpha: 0.95),
+                      ]
+                    : [
+                        Colors.white,
+                        Colors.white.withValues(alpha: 0.95),
+                      ],
               ),
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
@@ -611,7 +618,7 @@ class _ProfileContainerState extends State<ProfileContainer>
                 ),
               ],
               border: Border.all(
-                color: iconColor.withValues(alpha: 0.05),
+                color: iconColor.withValues(alpha: isDark ? 0.2 : 0.05),
                 width: 1,
               ),
             ),
@@ -654,7 +661,7 @@ class _ProfileContainerState extends State<ProfileContainer>
                         style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
-                          color: Colors.black, // Changed to black
+                          color: isDark ? Colors.white : Colors.black,
                         ),
                       ),
                     ],
@@ -694,6 +701,10 @@ class _ProfileContainerState extends State<ProfileContainer>
     final isHovered = _hoveredMenuIndex == index;
 
     return StatefulBuilder(builder: (context, setState) {
+      final isDark = Theme.of(context).brightness == Brightness.dark;
+      final themeMode = context.read<AppThemeCubit>().state.themeMode;
+      final maroonPrimary = AppColorPalette.getPrimaryColor(themeMode);
+      final maroonLight = AppColorPalette.getSecondaryColor(themeMode);
       return MouseRegion(
         onEnter: (_) => this.setState(() => _hoveredMenuIndex = index),
         onExit: (_) => this.setState(() => _hoveredMenuIndex = -1),
@@ -707,15 +718,15 @@ class _ProfileContainerState extends State<ProfileContainer>
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                     colors: [
-                      AppColorPalette.primaryMaroon.withValues(alpha: 0.05),
-                      AppColorPalette.secondaryMaroon.withValues(alpha: 0.1),
+                      maroonPrimary.withValues(alpha: 0.05),
+                      maroonLight.withValues(alpha: 0.1),
                     ],
                   )
                 : null,
             borderRadius: BorderRadius.circular(16),
             border: isHovered
                 ? Border.all(
-                    color: AppColorPalette.primaryMaroon.withValues(alpha: 0.1),
+                    color: maroonPrimary.withValues(alpha: 0.1),
                     width: 1,
                   )
                 : null,
@@ -725,7 +736,7 @@ class _ProfileContainerState extends State<ProfileContainer>
             child: InkWell(
               borderRadius: BorderRadius.circular(16),
               onTap: onTap,
-              splashColor: AppColorPalette.primaryMaroon.withValues(alpha: 0.1),
+              splashColor: maroonPrimary.withValues(alpha: 0.1),
               highlightColor: Colors.transparent,
               child: Padding(
                 padding:
@@ -737,15 +748,16 @@ class _ProfileContainerState extends State<ProfileContainer>
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: isHovered
-                            ? AppColorPalette.primaryMaroon
-                                .withValues(alpha: 0.1)
-                            : AppColorPalette.warmBeige.withValues(alpha: 0.5),
+                            ? maroonPrimary.withValues(alpha: 0.1)
+                            : (isDark
+                                ? AppColorPalette.getLightColor(themeMode)
+                                : AppColorPalette.getWarmBeigeColor(themeMode)
+                                    .withValues(alpha: 0.5)),
                         shape: BoxShape.circle,
                         boxShadow: isHovered
                             ? [
                                 BoxShadow(
-                                  color: AppColorPalette.primaryMaroon
-                                      .withValues(alpha: 0.1),
+                                  color: maroonPrimary.withValues(alpha: 0.1),
                                   blurRadius: 8,
                                   offset: const Offset(0, 2),
                                 ),
@@ -755,8 +767,8 @@ class _ProfileContainerState extends State<ProfileContainer>
                       child: Icon(
                         icon,
                         color: isHovered
-                            ? AppColorPalette.primaryMaroon
-                            : AppColorPalette.secondaryMaroon,
+                            ? maroonPrimary
+                            : (isDark ? Colors.white70 : maroonLight),
                         size: 20,
                       ),
                     ),
@@ -768,10 +780,13 @@ class _ProfileContainerState extends State<ProfileContainer>
                           fontSize: 16,
                           fontWeight:
                               isHovered ? FontWeight.w600 : FontWeight.w500,
-                          color: isHovered
-                              ? Colors.black
-                              : Colors.black
-                                  .withValues(alpha: 0.8), // Changed to black
+                          color: isDark
+                              ? (isHovered
+                                  ? Colors.white
+                                  : Colors.white.withValues(alpha: 0.8))
+                              : (isHovered
+                                  ? Colors.black
+                                  : Colors.black.withValues(alpha: 0.8)),
                         ),
                       ),
                     ),
@@ -782,9 +797,10 @@ class _ProfileContainerState extends State<ProfileContainer>
                       child: Icon(
                         Icons.arrow_forward_ios,
                         color: isHovered
-                            ? AppColorPalette.primaryMaroon
-                            : AppColorPalette.secondaryMaroon
-                                .withValues(alpha: 0.5),
+                            ? maroonPrimary
+                            : (isDark
+                                ? Colors.white30
+                                : maroonLight.withValues(alpha: 0.5)),
                         size: 16,
                       ),
                     ),
@@ -804,9 +820,9 @@ class _ProfileContainerState extends State<ProfileContainer>
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -817,7 +833,7 @@ class _ProfileContainerState extends State<ProfileContainer>
               style: GoogleFonts.poppins(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: AppColorPalette.primaryMaroon,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 24),
@@ -865,13 +881,16 @@ class _ProfileContainerState extends State<ProfileContainer>
   }) {
     final currentTheme = context.read<AppThemeCubit>().state.themeMode;
     final isSelected = currentTheme == themeValue;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       child: Material(
         color: isSelected
             ? color.withValues(alpha: 0.1)
-            : Colors.grey.withValues(alpha: 0.05),
+            : (isDark
+                ? Colors.white.withValues(alpha: 0.05)
+                : Colors.grey.withValues(alpha: 0.05)),
         borderRadius: BorderRadius.circular(16),
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
@@ -891,7 +910,11 @@ class _ProfileContainerState extends State<ProfileContainer>
                     style: GoogleFonts.poppins(
                       fontSize: 16,
                       fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                      color: isSelected ? color : Colors.black87,
+                      color: isSelected
+                          ? color
+                          : (isDark
+                              ? Colors.white
+                              : Colors.black87),
                     ),
                   ),
                 ),
@@ -908,6 +931,9 @@ class _ProfileContainerState extends State<ProfileContainer>
   void _showNotificationSettingsBottomSheet(BuildContext context) {
     final settingsRepository = SettingsRepository();
     bool vibrationEnabled = settingsRepository.getVibrationEnabled();
+    final themeMode = context.read<AppThemeCubit>().state.themeMode;
+    final maroonPrimary = AppColorPalette.getPrimaryColor(themeMode);
+    final maroonLight = AppColorPalette.getSecondaryColor(themeMode);
 
     showModalBottomSheet(
       context: context,
@@ -916,11 +942,12 @@ class _ProfileContainerState extends State<ProfileContainer>
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
+            final isDark = Theme.of(context).brightness == Brightness.dark;
             return Container(
               padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
                 ),
@@ -933,7 +960,7 @@ class _ProfileContainerState extends State<ProfileContainer>
                     children: [
                       Icon(
                         Icons.notifications_active_outlined,
-                        color: AppColorPalette.primaryMaroon,
+                        color: Theme.of(context).colorScheme.primary,
                         size: 28,
                       ),
                       const SizedBox(width: 12),
@@ -942,7 +969,7 @@ class _ProfileContainerState extends State<ProfileContainer>
                         style: GoogleFonts.poppins(
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
-                          color: AppColorPalette.primaryMaroon,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ],
@@ -951,18 +978,28 @@ class _ProfileContainerState extends State<ProfileContainer>
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: AppColorPalette.warmBeige.withValues(alpha: 0.3),
+                      color: isDark
+                          ? Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHighest
+                              .withValues(alpha: 0.3)
+                          : AppColorPalette.getWarmBeigeColor(themeMode)
+                              .withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: AppColorPalette.primaryMaroon
-                            .withValues(alpha: 0.1),
+                        color: isDark
+                            ? Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant
+                                .withValues(alpha: 0.2)
+                            : maroonPrimary.withValues(alpha: 0.1),
                       ),
                     ),
                     child: Row(
                       children: [
                         Icon(
                           Icons.vibration,
-                          color: AppColorPalette.primaryMaroon,
+                          color: Theme.of(context).colorScheme.primary,
                           size: 24,
                         ),
                         const SizedBox(width: 12),
@@ -975,7 +1012,8 @@ class _ProfileContainerState extends State<ProfileContainer>
                                 style: GoogleFonts.poppins(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
-                                  color: AppColorPalette.primaryMaroon,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -983,7 +1021,9 @@ class _ProfileContainerState extends State<ProfileContainer>
                                 'Aktifkan getaran saat menerima notifikasi baru',
                                 style: GoogleFonts.poppins(
                                   fontSize: 12,
-                                  color: Colors.grey[600],
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
                                 ),
                               ),
                             ],
@@ -997,9 +1037,9 @@ class _ProfileContainerState extends State<ProfileContainer>
                             });
                             await settingsRepository.setVibrationEnabled(value);
                           },
-                          activeThumbColor: AppColorPalette.primaryMaroon,
-                          activeTrackColor: AppColorPalette.secondaryMaroon
-                              .withValues(alpha: 0.5),
+                          activeThumbColor: maroonPrimary,
+                          activeTrackColor:
+                              maroonLight.withValues(alpha: 0.5),
                         ),
                       ],
                     ),
@@ -1010,7 +1050,7 @@ class _ProfileContainerState extends State<ProfileContainer>
                     child: ElevatedButton(
                       onPressed: () => Navigator.of(context).pop(),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColorPalette.primaryMaroon,
+                        backgroundColor: maroonPrimary,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
@@ -1036,6 +1076,8 @@ class _ProfileContainerState extends State<ProfileContainer>
   }
 
   Widget _buildLogoutButton(BuildContext context) {
+    final themeMode = context.read<AppThemeCubit>().state.themeMode;
+    final maroonPrimary = AppColorPalette.getPrimaryColor(themeMode);
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
@@ -1054,7 +1096,7 @@ class _ProfileContainerState extends State<ProfileContainer>
         },
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
-          backgroundColor: AppColorPalette.primaryMaroon,
+          backgroundColor: maroonPrimary,
           padding: const EdgeInsets.symmetric(vertical: 14),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -1081,237 +1123,255 @@ class _ProfileContainerState extends State<ProfileContainer>
   }
 
   Widget _buildDramaticCurvedAppBar({required BuildContext context}) {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: SizedBox(
-        height: 210 +
-            MediaQuery.of(context)
-                .padding
-                .top, // Increased height to accommodate profile info
-        width: MediaQuery.of(context).size.width,
-        child: Stack(
-          fit: StackFit.expand,
-          clipBehavior: Clip.none,
-          children: [
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: CustomPaint(
-                painter: DramaticCurvedGradientPainter(
-                  colors: [
-                    maroonDark,
-                    maroonPrimary,
-                    maroonMiddle,
-                    maroonLight,
-                  ],
-                  stops: [0.0, 0.3, 0.6, 1.0],
+    return BlocBuilder<AppThemeCubit, AppThemeState>(
+      builder: (context, themeState) {
+        final isDark = themeState.themeMode == 'dark';
+        
+        final maroonPrimary = AppColorPalette.getPrimaryColor(themeState.themeMode);
+        final maroonLight = AppColorPalette.getSecondaryColor(themeState.themeMode);
+        final maroonDark = maroonPrimary.withValues(alpha: 0.8);
+        final maroonMiddle = maroonPrimary.withValues(alpha: 0.9);
+
+        // Set system UI overlay style for status bar
+        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light, // Always light for dark background
+          statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+        ));
+
+        return Align(
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            height: 210 + MediaQuery.of(context).padding.top,
+            width: MediaQuery.of(context).size.width,
+            child: Stack(
+              fit: StackFit.expand,
+              clipBehavior: Clip.none,
+              children: [
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: CustomPaint(
+                    painter: DramaticCurvedGradientPainter(
+                      colors: [
+                        maroonDark,
+                        maroonPrimary,
+                        maroonMiddle,
+                        maroonLight,
+                      ],
+                      stops: const [0.0, 0.3, 0.6, 1.0],
+                    ),
+                  ),
                 ),
-              ),
-            ),
 
-            // Decorative design elements with enhanced animations
-            Positioned.fill(
-              child: AnimatedBuilder(
-                animation: Listenable.merge([
-                  _glowAnimationController,
-                  _pulseAnimationController,
-                  _rotationAnimationController,
-                ]),
-                builder: (context, _) {
-                  return CustomPaint(
-                    painter: AnimatedAppBarDecorationPainter(
-                      color: Colors.white.withValues(
-                          alpha: 0.07 + (_glowAnimation.value * 0.05)),
-                      glowValue: _glowAnimation.value,
-                      pulseValue: _pulseAnimation.value,
-                      rotationValue: _rotationAnimation.value,
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            // Refined animated glowing effect - more subtle and elegant
-            AnimatedBuilder(
-              animation: Listenable.merge([
-                _glowAnimationController,
-                _pulseAnimationController,
-              ]),
-              builder: (context, _) {
-                return Stack(
-                  children: [
-                    // Primary glow circle - softer movement
-                    Positioned(
-                      top: MediaQuery.of(context).padding.top -
-                          100 +
-                          (sin(_glowAnimation.value * 2 * pi) * 5),
-                      right: -60 + (cos(_glowAnimation.value * 2 * pi) * 3),
-                      child: Transform.scale(
-                        scale: 0.95 + (_pulseAnimation.value * 0.1),
-                        child: Container(
-                          width: 180,
-                          height: 180,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: RadialGradient(
-                              colors: [
-                                Colors.white.withValues(
-                                    alpha:
-                                        0.15 + (_glowAnimation.value * 0.05)),
-                                Colors.white.withValues(
-                                    alpha:
-                                        0.08 + (_glowAnimation.value * 0.03)),
-                                Colors.white.withValues(alpha: 0.0),
-                              ],
-                              stops: const [0.0, 0.6, 1.0],
-                            ),
-                          ),
+                // Decorative design elements with enhanced animations
+                Positioned.fill(
+                  child: AnimatedBuilder(
+                    animation: Listenable.merge([
+                      _glowAnimationController,
+                      _pulseAnimationController,
+                      _rotationAnimationController,
+                    ]),
+                    builder: (context, _) {
+                      return CustomPaint(
+                        painter: AnimatedAppBarDecorationPainter(
+                          color: Colors.white.withValues(
+                              alpha: 0.07 + (_glowAnimation.value * 0.05)),
+                          glowValue: _glowAnimation.value,
+                          pulseValue: _pulseAnimation.value,
+                          rotationValue: _rotationAnimation.value,
                         ),
-                      ),
-                    ),
+                      );
+                    },
+                  ),
+                ),
 
-                    // Secondary glow circle - gentle floating
-                    Positioned(
-                      top: MediaQuery.of(context).padding.top -
-                          70 +
-                          (sin(_glowAnimation.value * 2 * pi + 1.5) * 4),
-                      left:
-                          -30 + (cos(_glowAnimation.value * 2 * pi + 1.5) * 2),
-                      child: Transform.scale(
-                        scale: 1.0 + (sin(_pulseAnimation.value * pi) * 0.05),
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: RadialGradient(
-                              colors: [
-                                Colors.white.withValues(
-                                    alpha:
-                                        0.12 + (_glowAnimation.value * 0.04)),
-                                Colors.white.withValues(
-                                    alpha:
-                                        0.06 + (_glowAnimation.value * 0.02)),
-                                Colors.white.withValues(alpha: 0.0),
-                              ],
-                              stops: const [0.0, 0.7, 1.0],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // Tertiary glow circle - micro floating animation
-                    Positioned(
-                      top: MediaQuery.of(context).padding.top +
-                          25 +
-                          (sin(_glowAnimation.value * 2 * pi + 3) * 3),
-                      right: -15 + (cos(_glowAnimation.value * 2 * pi + 3) * 2),
-                      child: Transform.rotate(
-                        angle: _rotationAnimation.value * 0.3,
-                        child: Transform.scale(
-                          scale: 0.9 +
-                              (sin(_pulseAnimation.value * pi + 2) * 0.08),
-                          child: Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: RadialGradient(
-                                colors: [
-                                  Colors.white.withValues(
-                                      alpha:
-                                          0.08 + (_glowAnimation.value * 0.03)),
-                                  Colors.white.withValues(
-                                      alpha: 0.04 +
-                                          (_glowAnimation.value * 0.015)),
-                                  Colors.white.withValues(alpha: 0.0),
-                                ],
-                                stops: const [0.0, 0.8, 1.0],
+                // Refined animated glowing effect - more subtle and elegant
+                AnimatedBuilder(
+                  animation: Listenable.merge([
+                    _glowAnimationController,
+                    _pulseAnimationController,
+                  ]),
+                  builder: (context, _) {
+                    return Stack(
+                      children: [
+                        // Primary glow circle - softer movement
+                        Positioned(
+                          top: MediaQuery.of(context).padding.top -
+                              100 +
+                              (sin(_glowAnimation.value * 2 * pi) * 5),
+                          right: -60 + (cos(_glowAnimation.value * 2 * pi) * 3),
+                          child: Transform.scale(
+                            scale: 0.95 + (_pulseAnimation.value * 0.1),
+                            child: Container(
+                              width: 180,
+                              height: 180,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: RadialGradient(
+                                  colors: [
+                                    Colors.white.withValues(
+                                        alpha:
+                                            0.15 + (_glowAnimation.value * 0.05)),
+                                    Colors.white.withValues(
+                                        alpha:
+                                            0.08 + (_glowAnimation.value * 0.03)),
+                                    Colors.white.withValues(alpha: 0.0),
+                                  ],
+                                  stops: const [0.0, 0.6, 1.0],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
+
+                        // Secondary glow circle - gentle floating
+                        Positioned(
+                          top: MediaQuery.of(context).padding.top -
+                              70 +
+                              (sin(_glowAnimation.value * 2 * pi + 1.5) * 4),
+                          left:
+                              -30 + (cos(_glowAnimation.value * 2 * pi + 1.5) * 2),
+                          child: Transform.scale(
+                            scale: 1.0 + (sin(_pulseAnimation.value * pi) * 0.05),
+                            child: Container(
+                              width: 100,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: RadialGradient(
+                                  colors: [
+                                    Colors.white.withValues(
+                                        alpha:
+                                            0.12 + (_glowAnimation.value * 0.04)),
+                                    Colors.white.withValues(
+                                        alpha:
+                                            0.06 + (_glowAnimation.value * 0.02)),
+                                    Colors.white.withValues(alpha: 0.0),
+                                  ],
+                                  stops: const [0.0, 0.7, 1.0],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        // Tertiary glow circle - micro floating animation
+                        Positioned(
+                          top: MediaQuery.of(context).padding.top +
+                              25 +
+                              (sin(_glowAnimation.value * 2 * pi + 3) * 3),
+                          right: -15 + (cos(_glowAnimation.value * 2 * pi + 3) * 2),
+                          child: Transform.rotate(
+                            angle: _rotationAnimation.value * 0.3,
+                            child: Transform.scale(
+                              scale: 0.9 +
+                                  (sin(_pulseAnimation.value * pi + 2) * 0.08),
+                              child: Container(
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  gradient: RadialGradient(
+                                    colors: [
+                                      Colors.white.withValues(
+                                          alpha:
+                                              0.08 + (_glowAnimation.value * 0.03)),
+                                      Colors.white.withValues(
+                                          alpha: 0.04 +
+                                              (_glowAnimation.value * 0.015)),
+                                      Colors.white.withValues(alpha: 0.0),
+                                    ],
+                                    stops: const [0.0, 0.8, 1.0],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+
+                // Enhanced static wave pattern
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: CustomPaint(
+                    painter: EnhancedWavePatternPainter(
+                      color1: Colors.white.withValues(alpha: 0.1),
+                      color2: Colors.white.withValues(alpha: 0.07),
                     ),
-                  ],
-                );
-              },
-            ),
-
-            // Enhanced static wave pattern
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: CustomPaint(
-                painter: EnhancedWavePatternPainter(
-                  color1: Colors.white.withValues(alpha: 0.1),
-                  color2: Colors.white.withValues(alpha: 0.07),
-                ),
-                child: SizedBox(
-                  height: 80,
-                  width: MediaQuery.of(context).size.width,
-                ),
-              ),
-            ),
-
-            // App bar title
-            Positioned(
-              top: MediaQuery.of(context).padding.top + 15,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Text(
-                  "Profil",
-                  style: GoogleFonts.poppins(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    child: SizedBox(
+                      height: 80,
+                      width: MediaQuery.of(context).size.width,
+                    ),
                   ),
                 ),
-              ),
-            ),
 
-            // Profile card
-            Positioned(
-              bottom: 15,
-              left: 16,
-              right: 16,
-              child: Container(
-                height: 120,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: maroonPrimary.withValues(alpha: 0.3),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
-                      spreadRadius: 0,
+                // App bar title
+                Positioned(
+                  top: MediaQuery.of(context).padding.top + 15,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Text(
+                      "Profil",
+                      style: GoogleFonts.poppins(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
-                    BoxShadow(
-                      color: maroonLight.withValues(alpha: 0.15),
-                      blurRadius: 25,
-                      offset: const Offset(0, 10),
-                      spreadRadius: 0,
-                    ),
-                  ],
+                  ),
                 ),
-                child: _buildProfileInfo(context),
-              ),
+
+                // Profile card
+                Positioned(
+                  bottom: 15,
+                  left: 16,
+                  right: 16,
+                  child: Container(
+                    height: 120,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: maroonPrimary.withValues(alpha: 0.3),
+                          blurRadius: 15,
+                          offset: const Offset(0, 5),
+                          spreadRadius: 0,
+                        ),
+                        BoxShadow(
+                          color: maroonLight.withValues(alpha: 0.15),
+                          blurRadius: 25,
+                          offset: const Offset(0, 10),
+                          spreadRadius: 0,
+                        ),
+                      ],
+                    ),
+                    child: _buildProfileInfo(context,
+                        maroonPrimary: maroonPrimary, maroonDark: maroonDark),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildProfileInfo(BuildContext context) {
+  Widget _buildProfileInfo(BuildContext context,
+      {required Color maroonPrimary, required Color maroonDark}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       children: [
         // Profile image with tap to zoom
@@ -1379,7 +1439,7 @@ class _ProfileContainerState extends State<ProfileContainer>
                                   Icons.close,
                                   color: Colors.white,
                                   size: 24,
-                                ),
+                                  ),
                               ),
                             ),
                           ),
@@ -1409,7 +1469,7 @@ class _ProfileContainerState extends State<ProfileContainer>
             ),
             padding: const EdgeInsets.all(2),
             child: CircleAvatar(
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               radius: 35,
               backgroundImage:
                   (context.read<AuthCubit>().getUserDetails().image ?? "")
@@ -1449,7 +1509,9 @@ class _ProfileContainerState extends State<ProfileContainer>
                     style: GoogleFonts.poppins(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: maroonPrimary,
+                      color: isDark
+                          ? Colors.white
+                          : maroonPrimary,
                       height: 1.3,
                     ),
                     maxLines: 1,
@@ -1465,13 +1527,17 @@ class _ProfileContainerState extends State<ProfileContainer>
                   Container(
                     padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
-                      color: maroonPrimary.withValues(alpha: 0.1),
+                      color: isDark
+                          ? Colors.white.withValues(alpha: 0.1)
+                          : maroonPrimary.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
                       Icons.school_outlined,
                       size: 14,
-                      color: maroonPrimary,
+                      color: isDark
+                          ? Colors.white70
+                          : maroonPrimary,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -1481,7 +1547,9 @@ class _ProfileContainerState extends State<ProfileContainer>
                           "Belum ada sekolah",
                       style: GoogleFonts.poppins(
                         fontSize: 13,
-                        color: Colors.black87,
+                        color: isDark
+                            ? Colors.white70
+                            : Colors.black87,
                         fontWeight: FontWeight.w500,
                         height: 1.2,
                       ),
@@ -1499,13 +1567,17 @@ class _ProfileContainerState extends State<ProfileContainer>
                   Container(
                     padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
-                      color: maroonPrimary.withValues(alpha: 0.1),
+                      color: isDark
+                          ? Colors.white.withValues(alpha: 0.1)
+                          : maroonPrimary.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
                       Icons.email_outlined,
                       size: 14,
-                      color: maroonPrimary,
+                      color: isDark
+                          ? Colors.white70
+                          : maroonPrimary,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -1515,7 +1587,9 @@ class _ProfileContainerState extends State<ProfileContainer>
                           "Belum ada email",
                       style: GoogleFonts.poppins(
                         fontSize: 13,
-                        color: Colors.black87,
+                        color: isDark
+                            ? Colors.white70
+                            : Colors.black87,
                         fontWeight: FontWeight.w500,
                         height: 1.2,
                       ),
@@ -1626,6 +1700,10 @@ class LogoutConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeMode = context.read<AppThemeCubit>().state.themeMode;
+    final maroonPrimary = AppColorPalette.getPrimaryColor(themeMode);
+
     return Dialog(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -1638,15 +1716,24 @@ class LogoutConfirmationDialog extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                Colors.white,
-                AppColorPalette.warmBeige.withValues(alpha: 0.9),
-              ],
+              colors: isDark
+                  ? [
+                      Theme.of(context).colorScheme.surface,
+                      Theme.of(context)
+                          .colorScheme
+                          .surface
+                          .withValues(alpha: 0.9),
+                    ]
+                  : [
+                      Colors.white,
+                      AppColorPalette.getWarmBeigeColor(themeMode)
+                          .withValues(alpha: 0.9),
+                    ],
             ),
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: AppColorPalette.primaryMaroon.withValues(alpha: 0.1),
+                color: maroonPrimary.withValues(alpha: 0.1),
                 blurRadius: 20,
                 spreadRadius: 5,
                 offset: const Offset(0, 10),
@@ -1664,7 +1751,7 @@ class LogoutConfirmationDialog extends StatelessWidget {
                 child: Icon(
                   Icons.logout_rounded,
                   size: 60,
-                  color: AppColorPalette.primaryMaroon,
+                  color: isDark ? Colors.white : maroonPrimary,
                 ),
               ),
 
@@ -1674,7 +1761,7 @@ class LogoutConfirmationDialog extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: AppColorPalette.primaryMaroon,
+                  color: isDark ? Colors.white : maroonPrimary,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -1686,7 +1773,7 @@ class LogoutConfirmationDialog extends StatelessWidget {
                 "Apakah Anda yakin ingin keluar dari aplikasi?",
                 style: GoogleFonts.poppins(
                   fontSize: 16,
-                  color: Colors.black87,
+                  color: isDark ? Colors.white70 : Colors.black87,
                   height: 1.5,
                 ),
                 textAlign: TextAlign.center,
@@ -1702,13 +1789,17 @@ class LogoutConfirmationDialog extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () => Get.back(result: false),
                       style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.black87,
-                        backgroundColor: Colors.white,
+                        foregroundColor: isDark ? Colors.white : Colors.black87,
+                        backgroundColor: isDark
+                            ? AppColorPalette.getLightColor(themeMode)
+                            : Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                           side: BorderSide(
-                            color: Colors.grey.withValues(alpha: 0.3),
+                            color: isDark
+                                ? Colors.white.withValues(alpha: 0.1)
+                                : Colors.grey.withValues(alpha: 0.3),
                             width: 1,
                           ),
                         ),
@@ -1732,7 +1823,7 @@ class LogoutConfirmationDialog extends StatelessWidget {
                       onPressed: () => Get.back(result: true),
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
-                        backgroundColor: AppColorPalette.primaryMaroon,
+                        backgroundColor: maroonPrimary,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),

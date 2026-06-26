@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/cubits/academics/classTimetableCubit.dart';
+import 'package:eschool_saas_staff/cubits/academics/classTimetableCubit.dart';
 import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
 import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/data/models/academic/classSection.dart';
@@ -314,6 +314,8 @@ class _ClassTimeTableScreenState extends State<ClassTimeTableScreen>
               ),
             );
           }
+          final bool isToday = dayIndex == (DateTime.now().weekday - 1);
+
           return Align(
               alignment: Alignment.topCenter,
               child: SingleChildScrollView(
@@ -338,6 +340,10 @@ class _ClassTimeTableScreenState extends State<ClassTimeTableScreen>
                               subjectName: timeTableSlot.subject
                                       ?.getSybjectNameWithType() ??
                                   "-",
+                              isActive: isToday &&
+                                  Utils.isCurrentTimeWithinSlot(
+                                      timeTableSlot.startTime ?? "",
+                                      timeTableSlot.endTime ?? ""),
                             ))
                         .toList(),
                   ),

@@ -42,11 +42,18 @@ class _PermissionDetailsContainerState extends State<PermissionDetailsContainer>
   String? _optimisticRejectionReason;
 
   // Refined color palette - now dynamic based on theme
+  bool get _isDark => Theme.of(context).brightness == Brightness.dark;
   Color get _maroonPrimary => AppColorPalette.primaryMaroon;
   Color get _maroonLight => AppColorPalette.secondaryMaroon;
-  Color get _maroonDark => _maroonPrimary.withValues(alpha: 0.85);
+  Color get _maroonDark => _isDark ? Colors.white.withValues(alpha: 0.9) : _maroonPrimary.withValues(alpha: 0.85);
   Color get _maroonAccent => _maroonPrimary.withValues(alpha: 0.15);
   Color get _goldAccent => const Color(0xFFE6D2AA);
+
+  Color get _surfaceColor => _isDark ? AppColorPalette.primaryMaroon : Colors.white;
+  Color get _innerBgColor => _isDark ? AppColorPalette.lightMaroon : Colors.grey.shade50;
+  Color get _innerBgWhiteColor => _isDark ? AppColorPalette.lightMaroon : Colors.white;
+  Color get _borderColor => _isDark ? AppColorPalette.secondaryMaroon : Colors.grey.shade200;
+  Color get _mainTextColor => _isDark ? Colors.white : Colors.black87;
 
   @override
   void initState() {
@@ -165,19 +172,20 @@ class _PermissionDetailsContainerState extends State<PermissionDetailsContainer>
     String translatedType;
     IconData iconData;
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     // Set defaults based on type
     if (type.toLowerCase() == 'sick') {
       translatedType = 'Sakit';
-      backgroundColor = Colors.red.shade50;
-      textColor = Colors.red.shade700;
-      shadowColor = Colors.red.shade200.withValues(alpha: 0.3);
+      backgroundColor = isDark ? const Color(0xFF4A1212) : Colors.red.shade50;
+      textColor = isDark ? Colors.red.shade300 : Colors.red.shade700;
+      shadowColor = isDark ? Colors.transparent : Colors.red.shade200.withValues(alpha: 0.3);
       iconData = Icons.healing;
     } else {
       // Default to Leave or any other type
       translatedType = 'Izin';
-      backgroundColor = Colors.blue.shade50;
-      textColor = Colors.blue.shade700;
-      shadowColor = Colors.blue.shade200.withValues(alpha: 0.3);
+      backgroundColor = isDark ? const Color(0xFF122C4A) : Colors.blue.shade50;
+      textColor = isDark ? Colors.blue.shade300 : Colors.blue.shade700;
+      shadowColor = isDark ? Colors.transparent : Colors.blue.shade200.withValues(alpha: 0.3);
       iconData = Icons.event_busy;
     }
 
@@ -740,7 +748,7 @@ class _PermissionDetailsContainerState extends State<PermissionDetailsContainer>
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
-          color: Colors.white,
+          color: _surfaceColor,
           boxShadow: [
             BoxShadow(
               color: _isHovering
@@ -912,10 +920,10 @@ class _PermissionDetailsContainerState extends State<PermissionDetailsContainer>
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 6),
                                 decoration: BoxDecoration(
-                                  color: Colors.grey.shade50,
+                                  color: _innerBgColor,
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(
-                                    color: Colors.grey.shade200,
+                                    color: _borderColor,
                                   ),
                                 ),
                                 child: Row(
@@ -930,9 +938,9 @@ class _PermissionDetailsContainerState extends State<PermissionDetailsContainer>
                                     Flexible(
                                       child: Text(
                                         'Kelas: ${getClassSectionName(widget.permissionDetails.classSectionId)}',
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 14,
-                                          color: Colors.black87,
+                                          color: _mainTextColor,
                                           fontWeight: FontWeight.w500,
                                         ),
                                         overflow: TextOverflow.ellipsis,
@@ -946,10 +954,10 @@ class _PermissionDetailsContainerState extends State<PermissionDetailsContainer>
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 6),
                                 decoration: BoxDecoration(
-                                  color: Colors.grey.shade50,
+                                  color: _innerBgColor,
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(
-                                    color: Colors.grey.shade200,
+                                    color: _borderColor,
                                   ),
                                 ),
                                 child: Row(
@@ -963,10 +971,10 @@ class _PermissionDetailsContainerState extends State<PermissionDetailsContainer>
                                     const SizedBox(width: 8),
                                     Text(
                                       'Absen: ${widget.permissionDetails.rollNumber}',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w500,
-                                        color: Colors.black87,
+                                        color: _mainTextColor,
                                       ),
                                     ),
                                   ],
@@ -1051,18 +1059,18 @@ class _PermissionDetailsContainerState extends State<PermissionDetailsContainer>
                             width: double.infinity,
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: _innerBgWhiteColor,
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: Colors.grey.shade200,
+                                color: _borderColor,
                               ),
                             ),
                             child: Text(
                               translateRole(safeLastLeave?.reason ?? ''),
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 15,
                                 height: 1.6,
-                                color: Colors.black87,
+                                color: _mainTextColor,
                                 letterSpacing: 0.2,
                               ),
                             ),

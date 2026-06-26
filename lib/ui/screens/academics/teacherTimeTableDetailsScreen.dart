@@ -908,39 +908,45 @@ class _TeacherTimeTableDetailsScreenState
                   );
                 }
 
-                return Align(
-                  alignment: Alignment.topCenter,
-                  child: SingleChildScrollView(
-                    controller: _scrollController,
-                    padding: EdgeInsets.only(
-                        bottom: 25,
-                        top:
-                            Utils.appContentTopScrollPadding(context: context) +
-                                150),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding:
-                          EdgeInsets.all(constants.appContentHorizontalPadding),
-                      color: Theme.of(context).colorScheme.surface,
-                      child: Column(
-                        children: slots
-                            .map((timeTableSlot) => TimetableSlotContainer(
-                                  note: timeTableSlot.note ?? "",
-                                  endTime: timeTableSlot.endTime ?? "",
-                                  isForClass: false,
-                                  classSectionName:
-                                      timeTableSlot.classSection?.fullName ??
-                                          "-",
-                                  startTime: timeTableSlot.startTime ?? "",
-                                  subjectName: timeTableSlot.subject
-                                          ?.getSybjectNameWithType() ??
-                                      "-",
-                                ))
-                            .toList(),
-                      ),
-                    ),
-                  ),
-                );
+                 final bool isToday = Utils.weekDays.indexOf(_selectedDayKey) == (DateTime.now().weekday - 1);
+
+                 return Align(
+                   alignment: Alignment.topCenter,
+                   child: SingleChildScrollView(
+                     controller: _scrollController,
+                     padding: EdgeInsets.only(
+                         bottom: 25,
+                         top:
+                             Utils.appContentTopScrollPadding(context: context) +
+                                 150),
+                     child: Container(
+                       width: MediaQuery.of(context).size.width,
+                       padding:
+                           EdgeInsets.all(constants.appContentHorizontalPadding),
+                       color: Theme.of(context).colorScheme.surface,
+                       child: Column(
+                         children: slots
+                             .map((timeTableSlot) => TimetableSlotContainer(
+                                   note: timeTableSlot.note ?? "",
+                                   endTime: timeTableSlot.endTime ?? "",
+                                   isForClass: false,
+                                   classSectionName:
+                                       timeTableSlot.classSection?.fullName ??
+                                           "-",
+                                   startTime: timeTableSlot.startTime ?? "",
+                                   subjectName: timeTableSlot.subject
+                                           ?.getSybjectNameWithType() ??
+                                       "-",
+                                   isActive: isToday &&
+                                       Utils.isCurrentTimeWithinSlot(
+                                           timeTableSlot.startTime ?? "",
+                                           timeTableSlot.endTime ?? ""),
+                                 ))
+                             .toList(),
+                       ),
+                     ),
+                   ),
+                 );
               }
 
               if (state is TimeTableOfTeacherFetchFailure) {

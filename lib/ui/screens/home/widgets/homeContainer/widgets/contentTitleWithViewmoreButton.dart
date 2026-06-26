@@ -1,4 +1,4 @@
-﻿import 'package:eschool_saas_staff/ui/widgets/system/customTextContainer.dart';
+import 'package:eschool_saas_staff/ui/widgets/system/customTextContainer.dart';
 import 'package:eschool_saas_staff/utils/system/constants.dart';
 import 'package:eschool_saas_staff/utils/system/labelKeys.dart';
 import 'package:eschool_saas_staff/utils/system/utils.dart';
@@ -25,6 +25,7 @@ class ContentTitleWithViewMoreButton extends StatelessWidget {
             textKey: contentTitleKey,
             style: TextStyle(
                 fontSize: Utils.getScaledValue(context, 15.5),
+                color: Theme.of(context).colorScheme.secondary,
                 fontWeight: FontWeight.w600),
           ),
           const Spacer(),

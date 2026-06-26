@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
+import 'package:eschool_saas_staff/cubits/settings/appThemeCubit.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
 import 'dart:math' as math;
@@ -165,52 +167,63 @@ class _CustomModernAppBarState extends State<CustomModernAppBar>
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).padding.top + widget.height,
-      child: Stack(
-        children: [
-          // Fancy gradient background with animated particles
-          Positioned.fill(
-            child: AnimatedBuilder(
-              animation: widget.fabAnimationController,
-              builder: (context, _) {
-                return ShaderMask(
-                  shaderCallback: (Rect bounds) {
-                    return LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        effectivePrimaryColor.withValues(alpha: 0.95),
-                        effectivePrimaryColor,
-                        effectiveLightColor.withValues(alpha: 0.95),
-                        effectiveLightColor,
-                      ],
-                      stops: const [0.0, 0.3, 0.6, 1.0],
-                      transform: GradientRotation(
-                          widget.fabAnimationController.value * 0.02),
-                    ).createShader(bounds);
+    return BlocBuilder<AppThemeCubit, AppThemeState>(
+      builder: (context, themeState) {
+        // Use reactive colors if theme changes
+        final primaryColor = widget.primaryColor == const Color(0xFF800020) || widget.primaryColor.toARGB32() == 0xFF800020
+            ? AppColorPalette.getPrimaryColor(themeState.themeMode)
+            : widget.primaryColor;
+            
+        final lightColor = widget.lightColor == const Color(0xFFAA6976) || widget.lightColor.toARGB32() == 0xFFAA6976
+            ? AppColorPalette.getSecondaryColor(themeState.themeMode)
+            : widget.lightColor;
+
+        return SizedBox(
+          height: MediaQuery.of(context).padding.top + widget.height,
+          child: Stack(
+            children: [
+              // Fancy gradient background with animated particles
+              Positioned.fill(
+                child: AnimatedBuilder(
+                  animation: widget.fabAnimationController,
+                  builder: (context, _) {
+                    return ShaderMask(
+                      shaderCallback: (Rect bounds) {
+                        return LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            primaryColor.withValues(alpha: 0.95),
+                            primaryColor,
+                            lightColor.withValues(alpha: 0.95),
+                            lightColor,
+                          ],
+                          stops: const [0.0, 0.3, 0.6, 1.0],
+                          transform: GradientRotation(
+                              widget.fabAnimationController.value * 0.02),
+                        ).createShader(bounds);
+                      },
+                      blendMode: BlendMode.srcATop,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              primaryColor,
+                              primaryColor.withValues(alpha: 0.85),
+                            ],
+                          ),
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30),
+                          ),
+                        ),
+                      ),
+                    );
                   },
-                  blendMode: BlendMode.srcATop,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          effectivePrimaryColor,
-                          effectivePrimaryColor.withValues(alpha: 0.85),
-                        ],
-                      ),
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+                ),
+              ),
 
           // Decorative design elements with enhanced animations
           Positioned.fill(
@@ -1458,6 +1471,8 @@ class _CustomModernAppBarState extends State<CustomModernAppBar>
           ),
         ],
       ),
+    );
+      },
     );
   }
 }

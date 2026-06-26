@@ -66,9 +66,10 @@ class ProfileImageContainer extends StatelessWidget {
           image: imageUrl.isEmpty
               ? null
               : DecorationImage(
-                  fit: imageFit, image: CachedNetworkImageProvider(imageUrl)),
-          color:
-              imageUrl.isEmpty ? Theme.of(context).colorScheme.surface : null,
+                  fit: imageFit,
+                  image: CachedNetworkImageProvider(imageUrl),
+                ),
+          color: imageUrl.isEmpty ? Theme.of(context).colorScheme.surface : null,
         ),
         child: imageUrl.isEmpty
             ? Center(
@@ -92,7 +93,9 @@ class ProfileImageContainer extends StatelessWidget {
         image: imageUrl.isEmpty
             ? null
             : DecorationImage(
-                fit: imageFit, image: CachedNetworkImageProvider(imageUrl)),
+                fit: imageFit,
+                image: CachedNetworkImageProvider(imageUrl),
+              ),
       ),
       child: imageUrl.isEmpty
           ? const Center(
@@ -105,4 +108,3 @@ class ProfileImageContainer extends StatelessWidget {
     );
   }
 }
-//"https://www.hollywoodreporter.com/wp-content/uploads/2024/02/sq110_s300_f206_2K_final-H-2024.jpg?w=1296"

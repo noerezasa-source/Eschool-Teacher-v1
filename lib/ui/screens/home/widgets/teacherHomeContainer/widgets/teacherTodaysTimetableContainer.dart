@@ -1,4 +1,4 @@
-﻿import 'dart:math';
+import 'dart:math';
 
 import 'package:eschool_saas_staff/app/routes.dart';
 import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
@@ -132,33 +132,7 @@ class _TeacherTodaysTimetableContainerState
     return "-";
   }
 
-  bool isCurrentTimeWithinSlot(String startTime, String endTime) {
-    DateTime now = DateTime.now();
-    DateTime start = DateFormat('HH:mm:ss').parse(startTime);
-    DateTime end = DateFormat('HH:mm:ss').parse(endTime);
 
-    // Convert start and end times to today's date
-    DateTime todayStart = DateTime(
-        now.year, now.month, now.day, start.hour, start.minute, start.second);
-    DateTime todayEnd = DateTime(
-        now.year, now.month, now.day, end.hour, end.minute, end.second);
-
-    debugPrint("Current time: $now");
-    debugPrint("Slot start time: $todayStart");
-    debugPrint("Slot end time: $todayEnd");
-
-    return now.isAfter(todayStart) && now.isBefore(todayEnd);
-  }
-
-  bool isCurrentTimeBeforeSlot(String startTime) {
-    DateTime now = DateTime.now();
-    DateTime start = DateFormat('HH:mm:ss').parse(startTime);
-
-    DateTime todayStart = DateTime(
-        now.year, now.month, now.day, start.hour, start.minute, start.second);
-
-    return now.isBefore(todayStart);
-  }
 
   // 2. Tambahkan fungsi untuk mendapatkan status waktu
   TimeSlotStatus getTimeSlotStatus(String startTime, String endTime) {
@@ -246,10 +220,10 @@ class _TeacherTodaysTimetableContainerState
                   const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
               padding: const EdgeInsets.all(20.0),
               decoration: BoxDecoration(
-                color: Colors.grey[50],
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(12.0),
                 border: Border.all(
-                  color: Colors.grey[200]!,
+                  color: Theme.of(context).dividerColor,
                   width: 1.0,
                 ),
                 boxShadow: [
@@ -266,7 +240,7 @@ class _TeacherTodaysTimetableContainerState
                   Icon(
                     Icons.calendar_today_outlined,
                     size: 48.0,
-                    color: Colors.grey[400],
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                   const SizedBox(height: 12.0),
                   Text(
@@ -274,7 +248,7 @@ class _TeacherTodaysTimetableContainerState
                     style: TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.w600,
-                      color: Colors.grey[800],
+                      color: Theme.of(context).colorScheme.onSurface,
                       letterSpacing: 0.2,
                     ),
                     textAlign: TextAlign.center,
@@ -284,7 +258,7 @@ class _TeacherTodaysTimetableContainerState
                     'Anda tidak memiliki jadwal mengajar untuk hari ini',
                     style: TextStyle(
                       fontSize: 14.0,
-                      color: Colors.grey[600],
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                       height: 1.5,
                     ),
                     textAlign: TextAlign.center,
@@ -311,7 +285,7 @@ class _TeacherTodaysTimetableContainerState
                         : slots.length,
                     (index) {
                       final timeTableSlot = slots[index];
-                      final isWithinSlot = isCurrentTimeWithinSlot(
+                      final isWithinSlot = Utils.isCurrentTimeWithinSlot(
                           timeTableSlot.startTime ?? "",
                           timeTableSlot.endTime ?? "");
 
@@ -357,9 +331,7 @@ class _TeacherTodaysTimetableContainerState
                           isForClass: false,
                           classSectionName:
                               getClassSectionName(timeTableSlot.classSectionId),
-                          backgroundColor: isWithinSlot
-                              ? Theme.of(context).scaffoldBackgroundColor
-                              : Colors.grey[300],
+                          isActive: isWithinSlot,
                         ),
                       );
                     },
@@ -380,7 +352,7 @@ class _TeacherTodaysTimetableContainerState
                             (index) {
                               final timeTableSlot =
                                   slots[index + itemsToShowWithoutExpansion];
-                              final isWithinSlot = isCurrentTimeWithinSlot(
+                              final isWithinSlot = Utils.isCurrentTimeWithinSlot(
                                   timeTableSlot.startTime ?? "",
                                   timeTableSlot.endTime ?? "");
 
@@ -450,7 +422,7 @@ class _TeacherTodaysTimetableContainerState
                                     );
                                   }
                                 },
-                                child: TimetableSlotContainer(
+                                 child: TimetableSlotContainer(
                                   note: timeTableSlot.note ?? "",
                                   endTime: timeTableSlot.endTime ?? "",
                                   startTime: timeTableSlot.startTime ?? "",
@@ -459,10 +431,7 @@ class _TeacherTodaysTimetableContainerState
                                   isForClass: false,
                                   classSectionName: getClassSectionName(
                                       timeTableSlot.classSectionId),
-                                  backgroundColor: isWithinSlot
-                                      ? Theme.of(context)
-                                          .scaffoldBackgroundColor
-                                      : Colors.grey[300],
+                                  isActive: isWithinSlot,
                                 ),
                               );
                             },

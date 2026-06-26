@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
+import 'package:eschool_saas_staff/cubits/settings/appThemeCubit.dart';
 
 class ModernBackground extends StatefulWidget {
   final Widget child;
@@ -35,31 +37,35 @@ class _ModernBackgroundState extends State<ModernBackground>
 
   @override
   Widget build(BuildContext context) {
-    final primaryMaroon = AppColorPalette.primaryMaroon;
-    const Color softMaroon = Color(0xFFD27D8F);
-    const Color goldAccent = Color(0xFFFFD700);
-    final themeName = AppColorPalette.currentTheme;
+    return BlocBuilder<AppThemeCubit, AppThemeState>(
+      builder: (context, themeState) {
+        final themeName = themeState.themeMode;
+        final primaryMaroon = AppColorPalette.getPrimaryColor(themeName);
+        const Color softMaroon = Color(0xFFD27D8F);
+        const Color goldAccent = Color(0xFFFFD700);
 
-    return Stack(
-      children: [
-        SizedBox.expand(
-          child: AnimatedBuilder(
-            animation: _controller,
-            builder: (context, child) {
-              return CustomPaint(
-                painter: ModernCurvePainter(
-                  animationValue: _controller.value,
-                  primaryColor: primaryMaroon,
-                  secondaryColor: softMaroon,
-                  accentColor: goldAccent,
-                  themeName: themeName,
-                ),
-              );
-            },
-          ),
-        ),
-        widget.child,
-      ],
+        return Stack(
+          children: [
+            SizedBox.expand(
+              child: AnimatedBuilder(
+                animation: _controller,
+                builder: (context, child) {
+                  return CustomPaint(
+                    painter: ModernCurvePainter(
+                      animationValue: _controller.value,
+                      primaryColor: primaryMaroon,
+                      secondaryColor: softMaroon,
+                      accentColor: goldAccent,
+                      themeName: themeName,
+                    ),
+                  );
+                },
+              ),
+            ),
+            widget.child,
+          ],
+        );
+      },
     );
   }
 }

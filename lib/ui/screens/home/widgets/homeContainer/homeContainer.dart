@@ -1,4 +1,5 @@
 import 'package:eschool_saas_staff/cubits/authentication/authCubit.dart';
+import 'package:eschool_saas_staff/cubits/settings/appThemeCubit.dart';
 import 'package:eschool_saas_staff/cubits/settings/homeScreenDataCubit.dart';
 import 'package:eschool_saas_staff/cubits/userDetails/staffAllowedPermissionsAndModulesCubit.dart';
 import 'package:eschool_saas_staff/ui/screens/home/widgets/homeContainer/widgets/holidaysContainer.dart';
@@ -54,96 +55,104 @@ class HomeContainerState extends State<HomeContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        BlocConsumer<StaffAllowedPermissionsAndModulesCubit,
-            StaffAllowedPermissionsAndModulesState>(
-          listener: (context, state) {
-            if (state is StaffAllowedPermissionsAndModulesFetchSuccess) {
-              getHomeScreenData();
-            }
-          },
-          builder: (context, state) {
-            if (state is StaffAllowedPermissionsAndModulesFetchSuccess) {
-              return BlocBuilder<HomeScreenDataCubit, HomeScreenDataState>(
-                  builder: (context, homeScreenDataState) {
-                if (homeScreenDataState is HomeScreenDataFetchSuccess) {
-                  return RefreshIndicator(
-                    color: Theme.of(context).colorScheme.primary,
-                    displacement: MediaQuery.of(context).padding.top + 100,
-                    onRefresh: () async {
-                      getHomeScreenData();
-                    },
-                    child: SingleChildScrollView(
-                      padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).padding.top + 80,
-                          bottom: 100),
-                      child: Column(
-                        children: [
-                          const HomeOverviewDetailsContainer(),
-                          context
-                                  .read<
-                                      StaffAllowedPermissionsAndModulesCubit>()
-                                  .isModuleEnabled(
-                                      moduleId: timetableManagementModuleId
-                                          .toString())
-                              ? const TeachersTimeTableContainer()
-                              : const SizedBox(),
-                          const LeavesContainer(),
-                          const HolidaysContainer()
-                        ],
-                      ),
-                    ),
-                  );
+    return BlocBuilder<AppThemeCubit, AppThemeState>(
+      builder: (context, themeState) {
+        final maroonPrimary =
+            AppColorPalette.getPrimaryColor(themeState.themeMode);
+
+        return Stack(
+          children: [
+            BlocConsumer<StaffAllowedPermissionsAndModulesCubit,
+                StaffAllowedPermissionsAndModulesState>(
+              listener: (context, state) {
+                if (state is StaffAllowedPermissionsAndModulesFetchSuccess) {
+                  getHomeScreenData();
                 }
-                if (homeScreenDataState is HomeScreenDataFetchFailure) {
-                  return Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height * (0.175)),
-                      child: CustomErrorWidget(
-                        message: homeScreenDataState.errorMessage,
-                        onRetry: () {
+              },
+              builder: (context, state) {
+                if (state is StaffAllowedPermissionsAndModulesFetchSuccess) {
+                  return BlocBuilder<HomeScreenDataCubit, HomeScreenDataState>(
+                      builder: (context, homeScreenDataState) {
+                    if (homeScreenDataState is HomeScreenDataFetchSuccess) {
+                      return RefreshIndicator(
+                        color: Theme.of(context).colorScheme.primary,
+                        displacement: MediaQuery.of(context).padding.top + 100,
+                        onRefresh: () async {
                           getHomeScreenData();
                         },
-                        primaryColor: AppColorPalette.primaryMaroon,
+                        child: SingleChildScrollView(
+                          padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).padding.top + 80,
+                              bottom: 100),
+                          child: Column(
+                            children: [
+                              const HomeOverviewDetailsContainer(),
+                              context
+                                      .read<
+                                          StaffAllowedPermissionsAndModulesCubit>()
+                                      .isModuleEnabled(
+                                          moduleId: timetableManagementModuleId
+                                              .toString())
+                                  ? const TeachersTimeTableContainer()
+                                  : const SizedBox(),
+                              const LeavesContainer(),
+                              const HolidaysContainer()
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                    if (homeScreenDataState is HomeScreenDataFetchFailure) {
+                      return Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height *
+                                  (0.175)),
+                          child: CustomErrorWidget(
+                            message: homeScreenDataState.errorMessage,
+                            onRetry: () {
+                              getHomeScreenData();
+                            },
+                            primaryColor: maroonPrimary,
+                          ),
+                        ),
+                      );
+                    }
+
+                    return Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * (0.1)),
+                        child: const SkeletonHomeContainer(),
                       ),
+                    );
+                  });
+                }
+                if (state is StaffAllowedPermissionsAndModulesFetchFailure) {
+                  return Center(
+                    child: CustomErrorWidget(
+                      message: state.errorMessage,
+                      onRetry: () {
+                        context
+                            .read<StaffAllowedPermissionsAndModulesCubit>()
+                            .getPermissionAndAllowedModules();
+                      },
+                      primaryColor: maroonPrimary,
                     ),
                   );
                 }
 
                 return Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * (0.1)),
-                    child: const SkeletonHomeContainer(),
+                  child: CustomCircularProgressIndicator(
+                    indicatorColor: Theme.of(context).colorScheme.primary,
                   ),
                 );
-              });
-            }
-            if (state is StaffAllowedPermissionsAndModulesFetchFailure) {
-              return Center(
-                child: CustomErrorWidget(
-                  message: state.errorMessage,
-                  onRetry: () {
-                    context
-                        .read<StaffAllowedPermissionsAndModulesCubit>()
-                        .getPermissionAndAllowedModules();
-                  },
-                  primaryColor: AppColorPalette.primaryMaroon,
-                ),
-              );
-            }
-
-            return Center(
-              child: CustomCircularProgressIndicator(
-                indicatorColor: Theme.of(context).colorScheme.primary,
-              ),
-            );
-          },
-        ),
-        _buildAppBar(),
-      ],
+              },
+            ),
+            _buildAppBar(),
+          ],
+        );
+      },
     );
   }
 }

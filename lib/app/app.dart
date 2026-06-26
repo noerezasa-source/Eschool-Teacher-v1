@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 
 import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/settings/appThemeCubit.dart';
@@ -14,7 +14,7 @@ import 'package:eschool_saas_staff/cubits/teacherAcademics/teacherMyTimetableCub
 import 'package:eschool_saas_staff/cubits/userDetails/staffAllowedPermissionsAndModulesCubit.dart';
 import 'package:eschool_saas_staff/data/repositories/system/settingsRepository.dart';
 import 'package:eschool_saas_staff/firebase_options.dart';
-import 'package:eschool_saas_staff/ui/styles/colors.dart';
+import 'package:eschool_saas_staff/ui/styles/themeExtensions/customColorsExtension.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/globalEnvFab.dart';
 import 'package:eschool_saas_staff/utils/system/app_config.dart';
 import 'package:eschool_saas_staff/utils/system/hiveBoxKeys.dart';
@@ -122,6 +122,7 @@ class _MyAppState extends State<MyApp> {
         ],
         child: BlocBuilder<AppThemeCubit, AppThemeState>(
           builder: (context, state) {
+            final String currentTheme = state.themeMode;
             return GetMaterialApp(
               builder: (context, child) {
                 return Stack(
@@ -135,18 +136,41 @@ class _MyAppState extends State<MyApp> {
               title: 'eSchool - Guru & Staff',
               debugShowCheckedModeBanner: false,
               translationsKeys: AppTranslation.translationsKeys,
-              theme: Theme.of(context).copyWith(
-                extensions: <ThemeExtension<dynamic>>[customColorsExtension],
-                textTheme:
-                    GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
-                scaffoldBackgroundColor: pageBackgroundColor,
-                colorScheme: ColorScheme.fromSeed(
-                  seedColor: AppColorPalette.primaryMaroon,
-                  primary: AppColorPalette.primaryMaroon,
-                  secondary: AppColorPalette.secondaryMaroon,
-                  surface: Colors.white,
-                  error: const Color(0xffBA1A1A),
-                )),
+              theme: (() {
+                final isDark = currentTheme == 'dark';
+                final baseTheme = isDark ? ThemeData.dark() : ThemeData.light();
+
+                // Get colors based on current theme
+                final primaryMaroon = AppColorPalette.getPrimaryColor(currentTheme);
+                final secondaryMaroon = AppColorPalette.getSecondaryColor(currentTheme);
+                final surfaceColor = isDark ? AppColorPalette.getLightColor(currentTheme) : Colors.white;
+                final bgColor = AppColorPalette.getWarmBeigeColor(currentTheme);
+
+                return baseTheme.copyWith(
+                  extensions: <ThemeExtension<dynamic>>[
+                    CustomColors(
+                      redColor: const Color(0xffBA1A1A),
+                      successColor: const Color(0xff56B35A),
+                      leaveRequestOverviewBackgroundColor: primaryMaroon.withValues(alpha: 0.8),
+                      totalStaffOverviewBackgroundColor: secondaryMaroon,
+                      totalStudentOverviewBackgroundColor: primaryMaroon.withValues(alpha: 0.7),
+                      totalTeacherOverviewBackgroundColor: primaryMaroon,
+                      sickBackgroundColor: const Color(0xff518EF4),
+                      permissionBackgroundColor: const Color(0xffff6e00),
+                    )
+                  ],
+                  textTheme: GoogleFonts.poppinsTextTheme(baseTheme.textTheme),
+                  scaffoldBackgroundColor: bgColor,
+                  colorScheme: ColorScheme.fromSeed(
+                    brightness: isDark ? Brightness.dark : Brightness.light,
+                    seedColor: primaryMaroon,
+                    primary: primaryMaroon,
+                    secondary: isDark ? Colors.white70 : secondaryMaroon,
+                    surface: surfaceColor,
+                    error: const Color(0xffBA1A1A),
+                  ),
+                );
+              }()),
               getPages: Routes.getPages,
               initialRoute: Routes.splashScreen,
               locale: context.read<AppLocalizationCubit>().state.language,

@@ -38,6 +38,7 @@ class _HolidayContainerState extends State<HolidayContainer> {
         : holidayStartDate;
     final maroonColor = AppColorPalette.primaryMaroon;
     final maroonLight = AppColorPalette.secondaryMaroon;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -62,7 +63,11 @@ class _HolidayContainerState extends State<HolidayContainer> {
             color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(16.0),
             border: Border.all(
-              color: _isHovered ? maroonLight : Colors.grey.shade200,
+              color: _isHovered
+                  ? maroonLight
+                  : (isDark
+                      ? AppColorPalette.secondaryMaroon
+                      : Colors.grey.shade200),
               width: 1.0,
             ),
           ),
@@ -166,7 +171,9 @@ class _HolidayContainerState extends State<HolidayContainer> {
                                 padding: const EdgeInsets.only(top: 3.0),
                                 child: FaIcon(FontAwesomeIcons.tag,
                                   size: 14,
-                                  color: Colors.grey.shade600,
+                                  color: isDark
+                                      ? Colors.white60
+                                      : Colors.grey.shade600,
                                 ),
                               ),
                               const SizedBox(width: 8),
@@ -176,7 +183,9 @@ class _HolidayContainerState extends State<HolidayContainer> {
                                   style: TextStyle(
                                     height: 1.2,
                                     fontSize: Utils.getScaledValue(context, 16),
-                                    color: Colors.grey.shade800,
+                                    color: isDark
+                                        ? Colors.white
+                                        : Colors.grey.shade800,
                                     fontWeight: FontWeight.w600,
                                   ),
                                   maxLines: 2,
@@ -192,7 +201,9 @@ class _HolidayContainerState extends State<HolidayContainer> {
                               children: [
                                 FaIcon(FontAwesomeIcons.calendar,
                                   size: 12,
-                                  color: Colors.grey.shade600,
+                                  color: isDark
+                                      ? Colors.white60
+                                      : Colors.grey.shade600,
                                 ),
                                 const SizedBox(width: 8),
                                 Flexible(
@@ -202,7 +213,9 @@ class _HolidayContainerState extends State<HolidayContainer> {
                                         : "${holidayEndDate.difference(holidayStartDate).inDays + 1} hari (sampai ${holidayEndDate.day} ${Utils.getMonthFullName(holidayEndDate.month)})",
                                     style: TextStyle(
                                       fontSize: 12,
-                                      color: Colors.grey.shade700,
+                                      color: isDark
+                                          ? Colors.white70
+                                          : Colors.grey.shade700,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -252,7 +265,10 @@ class HolidayDetailsBottomsheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final maroonColor = AppColorPalette.primaryMaroon;
+    final titleColor = isDark ? Colors.white : AppColorPalette.primaryMaroon;
+    final iconColor = isDark ? Colors.white70 : AppColorPalette.primaryMaroon;
     final holidayStartDate = DateTime.parse(holiday.startDate ?? "");
     final holidayEndDate = holiday.endDate != null
         ? DateTime.parse(holiday.endDate!)
@@ -339,7 +355,7 @@ class HolidayDetailsBottomsheet extends StatelessWidget {
                                   ? "${Utils.formatDate(holidayStartDate)} - ${Utils.formatDate(holidayEndDate)}"
                                   : Utils.formatDate(holidayStartDate),
                               style: TextStyle(
-                                color: Colors.grey[600],
+                                color: isDark ? Colors.white70 : Colors.grey[600],
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -350,7 +366,7 @@ class HolidayDetailsBottomsheet extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: maroonColor,
+                                color: titleColor,
                                 letterSpacing: 0.3,
                                 height: 1.2,
                               ),
@@ -363,7 +379,11 @@ class HolidayDetailsBottomsheet extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20.0),
                     child: Divider(
-                        height: 1, thickness: 1, color: Colors.grey[200]),
+                        height: 1,
+                        thickness: 1,
+                        color: isDark
+                            ? AppColorPalette.secondaryMaroon
+                            : Colors.grey[200]),
                   ),
                   if (isMultiDayHoliday)
                     Column(
@@ -373,7 +393,7 @@ class HolidayDetailsBottomsheet extends StatelessWidget {
                           children: [
                             FaIcon(FontAwesomeIcons.calendarDay,
                               size: 16,
-                              color: maroonColor,
+                              color: iconColor,
                             ),
                             const SizedBox(width: 10),
                             Expanded(
@@ -384,7 +404,7 @@ class HolidayDetailsBottomsheet extends StatelessWidget {
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
-                                      color: Colors.grey[800],
+                                      color: isDark ? Colors.white : Colors.grey[800],
                                     ),
                                   ),
                                   Text(
@@ -392,7 +412,7 @@ class HolidayDetailsBottomsheet extends StatelessWidget {
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.grey[700],
+                                      color: isDark ? Colors.white70 : Colors.grey[700],
                                     ),
                                   ),
                                 ],
@@ -408,7 +428,7 @@ class HolidayDetailsBottomsheet extends StatelessWidget {
                     children: [
                       FaIcon(FontAwesomeIcons.circleInfo,
                         size: 16,
-                        color: maroonColor,
+                        color: iconColor,
                       ),
                       const SizedBox(width: 10),
                       Expanded(
@@ -417,7 +437,7 @@ class HolidayDetailsBottomsheet extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w600,
-                            color: Colors.grey[800],
+                            color: isDark ? Colors.white : Colors.grey[800],
                           ),
                         ),
                       ),
@@ -427,16 +447,19 @@ class HolidayDetailsBottomsheet extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.grey[50],
+                      color: isDark ? AppColorPalette.lightMaroon : Colors.grey[50],
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey[200]!),
+                      border: Border.all(
+                          color: isDark
+                              ? AppColorPalette.secondaryMaroon
+                              : Colors.grey[200]!),
                     ),
                     child: CustomTextContainer(
                       textKey: holiday.description ?? "",
                       style: TextStyle(
                         height: 1.4,
                         fontSize: 14,
-                        color: Colors.grey[800],
+                        color: isDark ? Colors.white70 : Colors.grey[800],
                       ),
                     ),
                   ),

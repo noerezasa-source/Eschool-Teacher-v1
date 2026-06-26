@@ -28,7 +28,7 @@ class _AnimatedBottomNavigationState extends State<AnimatedBottomNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = AppColorPalette.currentTheme == 'dark';
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return SafeArea(
       bottom: true,

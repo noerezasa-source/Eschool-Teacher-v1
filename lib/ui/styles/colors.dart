@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 Color get primaryColor => AppColorPalette.primaryMaroon;
 Color get secondaryColor => AppColorPalette.secondaryMaroon;
 Color get pageBackgroundColor => AppColorPalette.warmBeige;
-Color get backgroundColor => Colors.white;
+Color get backgroundColor => AppColorPalette.currentTheme == 'dark' ? AppColorPalette.lightMaroon : Colors.white;
 Color get errorColor => const Color(0xffBA1A1A);
 Color get tertiaryColor => AppColorPalette.lightMaroon; //Border color define in design style
 

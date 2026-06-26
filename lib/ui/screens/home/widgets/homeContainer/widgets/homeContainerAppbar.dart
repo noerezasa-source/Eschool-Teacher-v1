@@ -3,6 +3,7 @@ import 'package:eschool_saas_staff/app/routes.dart';
 import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/authentication/authCubit.dart';
 import 'package:eschool_saas_staff/cubits/userDetails/staffAllowedPermissionsAndModulesCubit.dart';
+import 'package:eschool_saas_staff/cubits/settings/appThemeCubit.dart';
 import 'package:eschool_saas_staff/utils/system/labelKeys.dart';
 import 'package:eschool_saas_staff/utils/system/utils.dart';
 import 'package:flutter/material.dart';
@@ -134,474 +135,483 @@ class _HomeContainerAppbarState extends State<HomeContainerAppbar>
 
   @override
   Widget build(BuildContext context) {
-    // Set system UI overlay style to ensure status bar is properly handled
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-    ));
+    return BlocBuilder<AppThemeCubit, AppThemeState>(
+      builder: (context, themeState) {
+        final isDark = themeState.themeMode == 'dark';
 
-    final maroonPrimary = AppColorPalette.primaryMaroon; // Deep maroon
-    final maroonLight = AppColorPalette.secondaryMaroon; // Light maroon
-    final maroonDark = maroonPrimary.withValues(alpha: 0.8); // Darker variant
-    final maroonMiddle = maroonPrimary.withValues(alpha: 0.9); // Middle variant
+        // Set system UI overlay style to ensure status bar is properly handled
+        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: isDark ? Brightness.light : Brightness.light, // Keep light for maroon background
+          statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+        ));
 
-    return BlocBuilder<AuthCubit, AuthState>(builder: (context, state) {
-      return SizedBox(
-        height: 140 + MediaQuery.of(context).padding.top,
-        width: MediaQuery.of(context).size.width,
-        // Remove top padding here to allow full extension to status bar
-        child: Stack(
-          fit: StackFit.expand, // Ensure stack fills entire container
-          clipBehavior: Clip.none, // Allow content to overflow for curves
-          children: [
-            // Background with dramatically curved bottom that extends to the top edge
-            Positioned(
-              top: 0, // Start from very top
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: CustomPaint(
-                painter: DramaticCurvedGradientPainter(
-                  colors: [
-                    maroonDark,
-                    maroonPrimary,
-                    maroonMiddle,
-                    maroonLight,
-                  ],
-                  stops: [0.0, 0.3, 0.6, 1.0],
+        final maroonPrimary =
+            AppColorPalette.getPrimaryColor(themeState.themeMode);
+        final maroonLight =
+            AppColorPalette.getSecondaryColor(themeState.themeMode);
+        final maroonDark = maroonPrimary.withValues(alpha: 0.8);
+        final maroonMiddle = maroonPrimary.withValues(alpha: 0.9);
+
+        return BlocBuilder<AuthCubit, AuthState>(builder: (context, state) {
+          return SizedBox(
+            height: 140 + MediaQuery.of(context).padding.top,
+            width: MediaQuery.of(context).size.width,
+            // Remove top padding here to allow full extension to status bar
+            child: Stack(
+              fit: StackFit.expand, // Ensure stack fills entire container
+              clipBehavior: Clip.none, // Allow content to overflow for curves
+              children: [
+                // Background with dramatically curved bottom that extends to the top edge
+                Positioned(
+                  top: 0, // Start from very top
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: CustomPaint(
+                    painter: DramaticCurvedGradientPainter(
+                      colors: [
+                        maroonDark,
+                        maroonPrimary,
+                        maroonMiddle,
+                        maroonLight,
+                      ],
+                      stops: const [0.0, 0.3, 0.6, 1.0],
+                    ),
+                  ),
                 ),
-              ),
-            ),
 
-            // Decorative design elements with enhanced animations
-            Positioned.fill(
-              child: AnimatedBuilder(
-                animation: Listenable.merge([
-                  _glowAnimationController,
-                  _pulseAnimationController,
-                  _rotationAnimationController,
-                ]),
-                builder: (context, _) {
-                  return CustomPaint(
-                    painter: AnimatedAppBarDecorationPainter(
-                      color: Colors.white.withValues(
-                          alpha: 0.07 + (_glowAnimation.value * 0.05)),
-                      glowValue: _glowAnimation.value,
-                      pulseValue: _pulseAnimation.value,
-                      rotationValue: _rotationAnimation.value,
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            // Refined animated glowing effect - more subtle and elegant
-            AnimatedBuilder(
-              animation: Listenable.merge([
-                _glowAnimationController,
-                _pulseAnimationController,
-              ]),
-              builder: (context, _) {
-                return Stack(
-                  children: [
-                    // Primary glow circle - softer movement
-                    Positioned(
-                      top: MediaQuery.of(context).padding.top -
-                          100 +
-                          (math.sin(_glowAnimation.value * 2 * math.pi) * 5),
-                      right: -60 +
-                          (math.cos(_glowAnimation.value * 2 * math.pi) * 3),
-                      child: Transform.scale(
-                        scale: 0.95 + (_pulseAnimation.value * 0.1),
-                        child: Container(
-                          width: 180,
-                          height: 180,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: RadialGradient(
-                              colors: [
-                                Colors.white.withValues(
-                                    alpha:
-                                        0.15 + (_glowAnimation.value * 0.05)),
-                                Colors.white.withValues(
-                                    alpha:
-                                        0.08 + (_glowAnimation.value * 0.03)),
-                                Colors.white.withValues(alpha: 0.0),
-                              ],
-                              stops: const [0.0, 0.6, 1.0],
-                            ),
-                          ),
+                // Decorative design elements with enhanced animations
+                Positioned.fill(
+                  child: AnimatedBuilder(
+                    animation: Listenable.merge([
+                      _glowAnimationController,
+                      _pulseAnimationController,
+                      _rotationAnimationController,
+                    ]),
+                    builder: (context, _) {
+                      return CustomPaint(
+                        painter: AnimatedAppBarDecorationPainter(
+                          color: Colors.white.withValues(
+                              alpha: 0.07 + (_glowAnimation.value * 0.05)),
+                          glowValue: _glowAnimation.value,
+                          pulseValue: _pulseAnimation.value,
+                          rotationValue: _rotationAnimation.value,
                         ),
-                      ),
-                    ),
+                      );
+                    },
+                  ),
+                ),
 
-                    // Secondary glow circle - gentle floating
-                    Positioned(
-                      top: MediaQuery.of(context).padding.top -
-                          70 +
-                          (math.sin(_glowAnimation.value * 2 * math.pi + 1.5) *
-                              4),
-                      left: -30 +
-                          (math.cos(_glowAnimation.value * 2 * math.pi + 1.5) *
-                              2),
-                      child: Transform.scale(
-                        scale: 1.0 +
-                            (math.sin(_pulseAnimation.value * math.pi) * 0.05),
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: RadialGradient(
-                              colors: [
-                                Colors.white.withValues(
-                                    alpha:
-                                        0.12 + (_glowAnimation.value * 0.04)),
-                                Colors.white.withValues(
-                                    alpha:
-                                        0.06 + (_glowAnimation.value * 0.02)),
-                                Colors.white.withValues(alpha: 0.0),
-                              ],
-                              stops: const [0.0, 0.7, 1.0],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // Tertiary glow circle - micro floating animation
-                    Positioned(
-                      top: MediaQuery.of(context).padding.top +
-                          25 +
-                          (math.sin(_glowAnimation.value * 2 * math.pi + 3) *
-                              3),
-                      right: -15 +
-                          (math.cos(_glowAnimation.value * 2 * math.pi + 3) *
-                              2),
-                      child: Transform.rotate(
-                        angle: _rotationAnimation.value * 0.3,
-                        child: Transform.scale(
-                          scale: 0.9 +
-                              (math.sin(_pulseAnimation.value * math.pi + 2) *
-                                  0.08),
-                          child: Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: RadialGradient(
-                                colors: [
-                                  Colors.white.withValues(
-                                      alpha:
-                                          0.08 + (_glowAnimation.value * 0.03)),
-                                  Colors.white.withValues(
-                                      alpha: 0.04 +
-                                          (_glowAnimation.value * 0.015)),
-                                  Colors.white.withValues(alpha: 0.0),
-                                ],
-                                stops: const [0.0, 0.8, 1.0],
+                // Refined animated glowing effect - more subtle and elegant
+                AnimatedBuilder(
+                  animation: Listenable.merge([
+                    _glowAnimationController,
+                    _pulseAnimationController,
+                  ]),
+                  builder: (context, _) {
+                    return Stack(
+                      children: [
+                        // Primary glow circle - softer movement
+                        Positioned(
+                          top: MediaQuery.of(context).padding.top -
+                              100 +
+                              (math.sin(_glowAnimation.value * 2 * math.pi) * 5),
+                          right: -60 +
+                              (math.cos(_glowAnimation.value * 2 * math.pi) * 3),
+                          child: Transform.scale(
+                            scale: 0.95 + (_pulseAnimation.value * 0.1),
+                            child: Container(
+                              width: 180,
+                              height: 180,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: RadialGradient(
+                                  colors: [
+                                    Colors.white.withValues(
+                                        alpha:
+                                            0.15 + (_glowAnimation.value * 0.05)),
+                                    Colors.white.withValues(
+                                        alpha:
+                                            0.08 + (_glowAnimation.value * 0.03)),
+                                    Colors.white.withValues(alpha: 0.0),
+                                  ],
+                                  stops: const [0.0, 0.6, 1.0],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
 
-            // Enhanced static wave pattern
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: CustomPaint(
-                painter: EnhancedWavePatternPainter(
-                  color1: Colors.white.withValues(alpha: 0.1),
-                  color2: Colors.white.withValues(alpha: 0.07),
-                ),
-                child: SizedBox(
-                  height: 80,
-                  width: MediaQuery.of(context).size.width,
-                ),
-              ),
-            ),
+                        // Secondary glow circle - gentle floating
+                        Positioned(
+                          top: MediaQuery.of(context).padding.top -
+                              70 +
+                              (math.sin(_glowAnimation.value * 2 * math.pi + 1.5) *
+                                  4),
+                          left: -30 +
+                              (math.cos(_glowAnimation.value * 2 * math.pi + 1.5) *
+                                  2),
+                          child: Transform.scale(
+                            scale: 1.0 +
+                                (math.sin(_pulseAnimation.value * math.pi) * 0.05),
+                            child: Container(
+                              width: 100,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: RadialGradient(
+                                  colors: [
+                                    Colors.white.withValues(
+                                        alpha:
+                                            0.12 + (_glowAnimation.value * 0.04)),
+                                    Colors.white.withValues(
+                                        alpha:
+                                            0.06 + (_glowAnimation.value * 0.02)),
+                                    Colors.white.withValues(alpha: 0.0),
+                                  ],
+                                  stops: const [0.0, 0.7, 1.0],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
 
-            // Main content container - static without animations
-            Positioned(
-              bottom: 10,
-              left: 16,
-              right: 16,
-              child: Container(
-                height: 75,
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: maroonPrimary.withValues(alpha: 0.3),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
-                      spreadRadius: 0,
-                    ),
-                    BoxShadow(
-                      color: maroonLight.withValues(alpha: 0.15),
-                      blurRadius: 25,
-                      offset: const Offset(0, 10),
-                      spreadRadius: 0,
-                    ),
-                  ],
+                        // Tertiary glow circle - micro floating animation
+                        Positioned(
+                          top: MediaQuery.of(context).padding.top +
+                              25 +
+                              (math.sin(_glowAnimation.value * 2 * math.pi + 3) *
+                                  3),
+                          right: -15 +
+                              (math.cos(_glowAnimation.value * 2 * math.pi + 3) *
+                                  2),
+                          child: Transform.rotate(
+                            angle: _rotationAnimation.value * 0.3,
+                            child: Transform.scale(
+                              scale: 0.9 +
+                                  (math.sin(_pulseAnimation.value * math.pi + 2) *
+                                      0.08),
+                              child: Container(
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  gradient: RadialGradient(
+                                    colors: [
+                                      Colors.white.withValues(
+                                          alpha:
+                                              0.08 + (_glowAnimation.value * 0.03)),
+                                      Colors.white.withValues(
+                                          alpha: 0.04 +
+                                              (_glowAnimation.value * 0.015)),
+                                      Colors.white.withValues(alpha: 0.0),
+                                    ],
+                                    stops: const [0.0, 0.8, 1.0],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
-                child: Row(
-                  children: [
-                    // Profile image with tap to zoom
-                    GestureDetector(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return Dialog(
-                              backgroundColor: Colors.transparent,
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.9,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.7,
-                                child: Stack(
-                                  children: [
-                                    InteractiveViewer(
-                                      minScale: 0.5,
-                                      maxScale: 4.0,
-                                      child: widget.profileImage.isNotEmpty
-                                          ? CachedNetworkImage(
-                                              imageUrl: widget.profileImage,
-                                              fit: BoxFit.contain,
-                                              placeholder: (context, url) =>
-                                                  Center(
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                          Color>(maroonPrimary),
-                                                ),
-                                              ),
-                                              errorWidget:
-                                                  (context, url, error) =>
+
+                // Enhanced static wave pattern
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: CustomPaint(
+                    painter: EnhancedWavePatternPainter(
+                      color1: Colors.white.withValues(alpha: 0.1),
+                      color2: Colors.white.withValues(alpha: 0.07),
+                    ),
+                    child: SizedBox(
+                      height: 80,
+                      width: MediaQuery.of(context).size.width,
+                    ),
+                  ),
+                ),
+
+                // Main content container - static without animations
+                Positioned(
+                  bottom: 10,
+                  left: 16,
+                  right: 16,
+                  child: Container(
+                    height: 75,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: maroonPrimary.withValues(alpha: 0.3),
+                          blurRadius: 15,
+                          offset: const Offset(0, 5),
+                          spreadRadius: 0,
+                        ),
+                        BoxShadow(
+                          color: maroonLight.withValues(alpha: 0.15),
+                          blurRadius: 25,
+                          offset: const Offset(0, 10),
+                          spreadRadius: 0,
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        // Profile image with tap to zoom
+                        GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Dialog(
+                                  backgroundColor: Colors.transparent,
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width * 0.9,
+                                    height:
+                                        MediaQuery.of(context).size.height * 0.7,
+                                    child: Stack(
+                                      children: [
+                                        InteractiveViewer(
+                                          minScale: 0.5,
+                                          maxScale: 4.0,
+                                          child: widget.profileImage.isNotEmpty
+                                              ? CachedNetworkImage(
+                                                  imageUrl: widget.profileImage,
+                                                  fit: BoxFit.contain,
+                                                  placeholder: (context, url) =>
                                                       Center(
-                                                child: Icon(
-                                                  Icons.error,
-                                                  color: maroonPrimary,
-                                                  size: 50,
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      valueColor:
+                                                          AlwaysStoppedAnimation<
+                                                              Color>(maroonPrimary),
+                                                    ),
+                                                  ),
+                                                  errorWidget:
+                                                      (context, url, error) =>
+                                                          Center(
+                                                    child: Icon(
+                                                      Icons.error,
+                                                      color: maroonPrimary,
+                                                      size: 50,
+                                                    ),
+                                                  ),
+                                                )
+                                              : Center(
+                                                  child: Icon(
+                                                    Icons.person,
+                                                    color: maroonPrimary,
+                                                    size: 100,
+                                                  ),
                                                 ),
-                                              ),
-                                            )
-                                          : Center(
-                                              child: Icon(
-                                                Icons.person,
-                                                color: maroonPrimary,
-                                                size: 100,
-                                              ),
-                                            ),
-                                    ),
-                                    Positioned(
-                                      top: 10,
-                                      right: 10,
-                                      child: Material(
-                                        color:
-                                            Colors.black.withValues(alpha: 0.5),
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: InkWell(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          onTap: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Container(
-                                            width: 40,
-                                            height: 40,
-                                            decoration: BoxDecoration(
+                                        ),
+                                        Positioned(
+                                          top: 10,
+                                          right: 10,
+                                          child: Material(
+                                            color:
+                                                Colors.black.withValues(alpha: 0.5),
+                                            borderRadius: BorderRadius.circular(20),
+                                            child: InkWell(
                                               borderRadius:
                                                   BorderRadius.circular(20),
-                                            ),
-                                            child: const Icon(
-                                              Icons.close,
-                                              color: Colors.white,
-                                              size: 24,
+                                              onTap: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Container(
+                                                width: 40,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                ),
+                                                child: const Icon(
+                                                  Icons.close,
+                                                  color: Colors.white,
+                                                  size: 24,
+                                                ),
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              ),
+                                  ),
+                                );
+                              },
                             );
                           },
-                        );
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [maroonPrimary, maroonDark],
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: maroonPrimary.withValues(alpha: 0.3),
-                              blurRadius: 8,
-                              spreadRadius: 1,
-                            ),
-                          ],
-                        ),
-                        padding: const EdgeInsets.all(2),
-                        child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          radius: 25,
-                          backgroundImage: widget.profileImage.isNotEmpty
-                              ? CachedNetworkImageProvider(
-                                  widget.profileImage,
-                                )
-                              : null,
-                          child: widget.profileImage.isEmpty
-                              ? Icon(
-                                  Icons.person,
-                                  color: maroonPrimary,
-                                  size: 30,
-                                )
-                              : null,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 15.0),
-                    // Welcome text without animations
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            Utils.getTranslatedLabel(hiWelcomebackKey),
-                            style: GoogleFonts.poppins(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                          Text(
-                            context
-                                    .read<AuthCubit>()
-                                    .getUserDetails()
-                                    .firstName ??
-                                "",
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.poppins(
-                              height: 1.1,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              color: maroonPrimary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Notifications button without animations
-                    BlocBuilder<StaffAllowedPermissionsAndModulesCubit,
-                        StaffAllowedPermissionsAndModulesState>(
-                      builder: (context, state) {
-                        if (state
-                            is StaffAllowedPermissionsAndModulesFetchSuccess) {
-                          return Material(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(15),
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(15),
-                              onTap: () {
-                                Get.toNamed(Routes.notificationsScreen);
-                              },
-                              child: Container(
-                                width: 48,
-                                height: 48,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [maroonPrimary, maroonDark],
-                                  ),
-                                  borderRadius: BorderRadius.circular(15),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color:
-                                          maroonPrimary.withValues(alpha: 0.25),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [maroonPrimary, maroonDark],
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: maroonPrimary.withValues(alpha: 0.3),
+                                  blurRadius: 8,
+                                  spreadRadius: 1,
                                 ),
-                                child: const Icon(
-                                  Icons.notifications_active_rounded,
-                                  color: Colors.white,
-                                  size: 24,
+                              ],
+                            ),
+                            padding: const EdgeInsets.all(2),
+                            child: CircleAvatar(
+                              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                              radius: 25,
+                              backgroundImage: widget.profileImage.isNotEmpty
+                                  ? CachedNetworkImageProvider(
+                                      widget.profileImage,
+                                    )
+                                  : null,
+                              child: widget.profileImage.isEmpty
+                                  ? Icon(
+                                      Icons.person,
+                                      color: isDark ? Colors.white : maroonPrimary,
+                                      size: 30,
+                                    )
+                                  : null,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 15.0),
+                        // Welcome text without animations
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                Utils.getTranslatedLabel(hiWelcomebackKey),
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                                 ),
                               ),
-                            ),
-                          );
-                        }
-
-                        if (state
-                            is StaffAllowedPermissionsAndModulesFetchFailure) {
-                          return Material(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(15),
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(15),
-                              onTap: () {
-                                context.read<AuthCubit>().signOut();
-                                Get.offNamed(Routes.loginScreen);
-                              },
-                              child: Container(
-                                width: 48,
-                                height: 48,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [maroonPrimary, maroonDark],
-                                  ),
-                                  borderRadius: BorderRadius.circular(15),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color:
-                                          maroonPrimary.withValues(alpha: 0.25),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: const Icon(
-                                  Icons.login_outlined,
-                                  color: Colors.white,
-                                  size: 24,
+                              Text(
+                                context
+                                        .read<AuthCubit>()
+                                        .getUserDetails()
+                                        .firstName ??
+                                    "",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.poppins(
+                                  height: 1.1,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: isDark ? Colors.white : maroonPrimary,
                                 ),
                               ),
-                            ),
-                          );
-                        }
+                            ],
+                          ),
+                        ),
+                        // Notifications button without animations
+                        BlocBuilder<StaffAllowedPermissionsAndModulesCubit,
+                            StaffAllowedPermissionsAndModulesState>(
+                          builder: (context, state) {
+                            if (state
+                                is StaffAllowedPermissionsAndModulesFetchSuccess) {
+                              return Material(
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(15),
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(15),
+                                  onTap: () {
+                                    Get.toNamed(Routes.notificationsScreen);
+                                  },
+                                  child: Container(
+                                    width: 48,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [maroonPrimary, maroonDark],
+                                      ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color:
+                                              maroonPrimary.withValues(alpha: 0.25),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    child: const Icon(
+                                      Icons.notifications_active_rounded,
+                                      color: Colors.white,
+                                      size: 24,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
 
-                        return const SizedBox();
-                      },
+                            if (state
+                                is StaffAllowedPermissionsAndModulesFetchFailure) {
+                              return Material(
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(15),
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(15),
+                                  onTap: () {
+                                    context.read<AuthCubit>().signOut();
+                                    Get.offNamed(Routes.loginScreen);
+                                  },
+                                  child: Container(
+                                    width: 48,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [maroonPrimary, maroonDark],
+                                      ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color:
+                                              maroonPrimary.withValues(alpha: 0.25),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    child: const Icon(
+                                      Icons.login_outlined,
+                                      color: Colors.white,
+                                      size: 24,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+
+                            return const SizedBox();
+                          },
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      );
-    });
+          );
+        });
+      },
+    );
   }
 }
 

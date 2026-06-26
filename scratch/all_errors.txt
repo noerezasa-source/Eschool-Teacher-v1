@@ -1,0 +1,152 @@
+Analyzing Eschool-Teacher-v1...                                 
+
+warning • Unused import: 'dart:convert'. Try removing the import directive • lib/data/repositories/payroll/payRollRepository.dart:1:8 • unused_import
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/academics/teacherTimeTableDetailsScreen.dart:464:29 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/academics/teacherTimeTableDetailsScreen.dart:467:39 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/academics/teacherTimeTableDetailsScreen.dart:468:39 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/academics/teacherTimeTableDetailsScreen.dart:469:40 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/extracurricular/createExtracurricular.dart:185:32 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/extracurricular/createExtracurricular.dart:238:38 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/extracurricular/extracurricularTimetableScreen.dart:495:29 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/extracurricular/extracurricularTimetableScreen.dart:498:39 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/extracurricular/extracurricularTimetableScreen.dart:499:39 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/extracurricular/extracurricularTimetableScreen.dart:500:40 • prefer_const_constructors
+warning • Unused import: 'package:eschool_saas_staff/utils/system/in_appbanner.dart'. Try removing the import directive • lib/ui/screens/home/widgets/academicsContainer/widgets/teacherAcademicsContainer.dart:5:8 • unused_import
+  error • Undefined name 'AppColorPalette'. Try correcting the name to one that is defined, or defining the name • lib/ui/screens/home/widgets/homeContainer/homeContainer.dart:108:39 • undefined_identifier
+  error • Undefined name 'AppColorPalette'. Try correcting the name to one that is defined, or defining the name • lib/ui/screens/home/widgets/homeContainer/homeContainer.dart:132:33 • undefined_identifier
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/leave/applyLeaveScreen.dart:1752:19 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/leave/applyLeaveScreen.dart:1762:19 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/leave/applyLeaveScreen.dart:1763:19 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/leave/applyLeaveScreen.dart:1765:28 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/leave/applyLeaveScreen.dart:2200:25 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/leave/applyLeaveScreen.dart:2201:25 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/leave/applyLeaveScreen.dart:2203:34 • prefer_const_constructors
+  error • Undefined name 'AppColorPalette'. Try correcting the name to one that is defined, or defining the name • lib/ui/screens/login/loginScreen.dart:85:31 • undefined_identifier
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre. Try replacing the use of the deprecated member with the replacement • lib/ui/screens/onlineExam/createOnlineExam.dart:508:17 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre. Try replacing the use of the deprecated member with the replacement • lib/ui/screens/onlineExam/createOnlineExam.dart:533:19 • deprecated_member_use
+   info • Empty catch block. Try adding statements to the block, adding a comment to the block, or removing the 'catch' clause • lib/ui/screens/onlineExam/createOnlineExam.dart:556:35 • empty_catches
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre. Try replacing the use of the deprecated member with the replacement • lib/ui/screens/onlineExam/createOnlineExam.dart:566:19 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/ui/screens/onlineExam/createOnlineExam.dart:719:56 • deprecated_member_use
+  error • Invalid constant value • lib/ui/screens/onlineExam/previewQuestionBankSoal.dart:219:24 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/onlineExam/previewQuestionBankSoal.dart:256:30 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/onlineExam/previewQuestionBankSoal.dart:528:46 • invalid_constant
+  error • Undefined name 'AppColorPalette'. Try correcting the name to one that is defined, or defining the name • lib/ui/screens/onlineExam/questionOnlineExamScreen.dart:41:37 • undefined_identifier
+  error • Undefined name 'AppColorPalette'. Try correcting the name to one that is defined, or defining the name • lib/ui/screens/onlineExam/questionOnlineExamScreen.dart:42:36 • undefined_identifier
+  error • Invalid constant value • lib/ui/screens/onlineExam/questionOnlineExamScreen.dart:334:64 • invalid_constant
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/student/studentProfileScreen.dart:362:32 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/student/studentProfileScreen.dart:435:9 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/student/studentProfileScreen.dart:443:30 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/student/studentProfileScreen.dart:643:50 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/student/studentProfileScreen.dart:646:51 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/student/studentProfileScreen.dart:676:9 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/student/studentProfileScreen.dart:684:30 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/student/studentProfileScreen.dart:728:9 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/student/studentProfileScreen.dart:734:15 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/student/studentProfileScreen.dart:735:15 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/student/studentsScreen.dart:902:43 • prefer_const_constructors
+  error • Invalid constant value • lib/ui/screens/system/addAnnouncementScreen.dart:161:36 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/system/addAnnouncementScreen.dart:225:32 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/system/addAnnouncementScreen.dart:299:42 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/system/addAnnouncementScreen.dart:314:44 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/system/addAnnouncementScreen.dart:453:42 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/system/addAnnouncementScreen.dart:459:44 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/addQuestionScreen.dart:481:26 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/addQuestionScreen.dart:607:28 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/addQuestionScreen.dart:877:32 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/addQuestionScreen.dart:947:32 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/addQuestionScreen.dart:1118:32 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/addQuestionScreen.dart:1215:40 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/addQuestionScreen.dart:1286:66 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/addQuestionScreen.dart:1310:40 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/addQuestionScreen.dart:1360:26 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/addQuestionScreen.dart:1399:26 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/addQuestionScreen.dart:1447:26 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/addQuestionScreen.dart:1470:53 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/addQuestionScreen.dart:1803:66 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/addQuestionScreen.dart:1865:28 • invalid_constant
+   info • The imported package 'webview_flutter' isn't a dependency of the importing package. Try adding a dependency for 'webview_flutter' in the 'pubspec.yaml' file • lib/ui/screens/teacherAcademics/attendanceRecapScreen.dart:3:8 • depend_on_referenced_packages
+  error • Undefined name 'AppColorPalette'. Try correcting the name to one that is defined, or defining the name • lib/ui/screens/teacherAcademics/bankQuestionScreen.dart:49:37 • undefined_identifier
+  error • Undefined name 'AppColorPalette'. Try correcting the name to one that is defined, or defining the name • lib/ui/screens/teacherAcademics/bankQuestionScreen.dart:50:36 • undefined_identifier
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/bankQuestionScreen.dart:145:33 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/bankQuestionScreen.dart:447:32 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/bankQuestionScreen.dart:539:60 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/bankQuestionScreen.dart:550:46 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/questionBankListScreen.dart:219:33 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/questionBankListScreen.dart:538:61 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/questionBankListScreen.dart:541:62 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/questionBankListScreen.dart:1214:24 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/questionSubjectScreen.dart:198:33 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/questionSubjectScreen.dart:396:26 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/questionSubjectScreen.dart:474:61 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/questionSubjectScreen.dart:477:62 • invalid_constant
+warning • Unused import: 'package:url_launcher/url_launcher.dart'. Try removing the import directive • lib/ui/screens/teacherAcademics/recapAttendanceSubjectScreen.dart:12:8 • unused_import
+  error • Undefined name 'AppColorPalette'. Try correcting the name to one that is defined, or defining the name • lib/ui/screens/teacherAcademics/teacherAddEditTopicScreen.dart:98:37 • undefined_identifier
+  error • Undefined name 'AppColorPalette'. Try correcting the name to one that is defined, or defining the name • lib/ui/screens/teacherAcademics/teacherAddEditTopicScreen.dart:99:36 • undefined_identifier
+  error • Undefined name 'AppColorPalette'. Try correcting the name to one that is defined, or defining the name • lib/ui/screens/teacherAcademics/teacherExamResultScreen.dart:129:37 • undefined_identifier
+  error • Undefined name 'AppColorPalette'. Try correcting the name to one that is defined, or defining the name • lib/ui/screens/teacherAcademics/teacherExamResultScreen.dart:130:36 • undefined_identifier
+  error • Undefined name 'AppColorPalette'. Try correcting the name to one that is defined, or defining the name • lib/ui/screens/teacherAcademics/teacherExamResultScreen.dart:131:36 • undefined_identifier
+  error • Undefined name 'AppColorPalette'. Try correcting the name to one that is defined, or defining the name • lib/ui/screens/teacherAcademics/teacherExamResultScreen.dart:132:34 • undefined_identifier
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/teacherExamResultScreen.dart:412:51 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/teacherExamResultScreen.dart:451:63 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/teacherExamResultScreen.dart:476:49 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/teacherExamResultScreen.dart:631:47 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/teacherExamResultScreen.dart:639:47 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/teacherExamResultScreen.dart:686:28 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/teacherExamResultScreen.dart:740:34 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/teacherExamResultScreen.dart:993:40 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/teacherExamResultScreen.dart:1138:29 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/teacherExamResultScreen.dart:1596:36 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/teacherExamResultScreen.dart:1609:42 • invalid_constant
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/teacherAcademics/teacherManageAnnouncementScreen.dart:1723:26 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/teacherAcademics/teacherManageAnnouncementScreen.dart:1819:26 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/screens/teacherAcademics/teacherManageTopicScreen.dart:1396:21 • prefer_const_constructors
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/widgets/editQuestionScreen.dart:586:26 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/widgets/editQuestionScreen.dart:715:26 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/widgets/editQuestionScreen.dart:738:53 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/widgets/editQuestionScreen.dart:792:28 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/widgets/editQuestionScreen.dart:881:66 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/widgets/editQuestionScreen.dart:1057:28 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/widgets/editQuestionScreen.dart:1320:32 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/widgets/editQuestionScreen.dart:1390:32 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/widgets/editQuestionScreen.dart:1562:32 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/widgets/editQuestionScreen.dart:1662:40 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/widgets/editQuestionScreen.dart:1738:66 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/widgets/editQuestionScreen.dart:1768:40 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/widgets/editQuestionScreen.dart:1823:26 • invalid_constant
+  error • Invalid constant value • lib/ui/screens/teacherAcademics/widgets/editQuestionScreen.dart:1862:26 • invalid_constant
+  error • Undefined name 'AppColorPalette'. Try correcting the name to one that is defined, or defining the name • lib/ui/widgets/leave/leaveDetailsContainer.dart:33:31 • undefined_identifier
+  error • Undefined name 'AppColorPalette'. Try correcting the name to one that is defined, or defining the name • lib/ui/widgets/leave/leaveDetailsContainer.dart:34:29 • undefined_identifier
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/widgets/skeleton/skeletonTeacherManageAssignmentSubmissionScreen.dart:192:42 • prefer_const_constructors
+warning • Unused import: 'package:eschool_saas_staff/ui/screens/teacherAcademics/teacherClassSectionScreen.dart'. Try removing the import directive • lib/ui/widgets/student/attendanceRankingContainer.dart:5:8 • unused_import
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/widgets/student/recapAttendanceContainer.dart:331:23 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/widgets/student/recapAttendanceContainer.dart:331:50 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/widgets/student/studentListCard.dart:121:35 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/widgets/student/studentListCard.dart:122:32 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/widgets/student/studentListCard.dart:123:35 • prefer_const_constructors
+   info • 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion. Try replacing the use of the deprecated member with the replacement • lib/ui/widgets/system/customModernAppBar.dart:75:79 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion. Try replacing the use of the deprecated member with the replacement • lib/ui/widgets/system/customModernAppBar.dart:82:75 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/ui/widgets/system/customModernAppBar.dart:183:47 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/ui/widgets/system/customModernAppBar.dart:185:45 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/ui/widgets/system/customModernAppBar.dart:201:49 • deprecated_member_use
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/widgets/system/customModernAppBar.dart:204:37 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/widgets/system/customModernAppBar.dart:205:37 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/widgets/system/customModernAppBar.dart:206:38 • prefer_const_constructors
+   info • 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion. Try replacing the use of the deprecated member with the replacement • lib/ui/widgets/system/customModernAppBarWithTabs.dart:42:79 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion. Try replacing the use of the deprecated member with the replacement • lib/ui/widgets/system/customModernAppBarWithTabs.dart:49:75 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/ui/widgets/system/customModernAppBarWithTabs.dart:87:49 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/ui/widgets/system/customModernAppBarWithTabs.dart:89:47 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/ui/widgets/system/customModernAppBarWithTabs.dart:105:51 • deprecated_member_use
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/widgets/system/customModernAppBarWithTabs.dart:108:39 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/widgets/system/customModernAppBarWithTabs.dart:109:39 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/widgets/system/customModernAppBarWithTabs.dart:110:40 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/widgets/system/holidayContainer.dart:156:32 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/widgets/system/holidayContainer.dart:166:42 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/widgets/system/holidayContainer.dart:188:27 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/widgets/system/holidayContainer.dart:224:31 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/widgets/system/holidayContainer.dart:364:30 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/ui/widgets/system/holidayContainer.dart:403:25 • prefer_const_constructors
+  error • Undefined name 'AppColorPalette'. Try correcting the name to one that is defined, or defining the name • lib/ui/widgets/system/permissionDetailsContainer.dart:44:31 • undefined_identifier
+  error • Undefined name 'AppColorPalette'. Try correcting the name to one that is defined, or defining the name • lib/ui/widgets/system/permissionDetailsContainer.dart:45:29 • undefined_identifier
+   info • Statements in an if should be enclosed in a block. Try wrapping the statement in a block • lib/utils/system/api.dart:92:7 • curly_braces_in_flow_control_structures
+   info • Unnecessary braces in a string interpolation. Try removing the braces • lib/utils/system/api.dart:240:39 • unnecessary_brace_in_string_interps
+

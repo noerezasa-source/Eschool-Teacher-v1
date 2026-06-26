@@ -644,7 +644,39 @@ class Utils {
   static bool isRTLEnabled(BuildContext context) {
     return Directionality.of(context) == TextDirection.rtl;
   }
+
+  static bool isCurrentTimeWithinSlot(String startTime, String endTime) {
+    if (startTime.isEmpty || endTime.isEmpty) return false;
+    try {
+      final now = DateTime.now();
+      final start = intl.DateFormat('HH:mm:ss').parse(startTime);
+      final end = intl.DateFormat('HH:mm:ss').parse(endTime);
+
+      final todayStart = DateTime(
+          now.year, now.month, now.day, start.hour, start.minute, start.second);
+      final todayEnd = DateTime(
+          now.year, now.month, now.day, end.hour, end.minute, end.second);
+
+      return now.isAfter(todayStart) && now.isBefore(todayEnd);
+    } catch (_) {
+      try {
+        final now = DateTime.now();
+        final start = intl.DateFormat('HH:mm').parse(startTime);
+        final end = intl.DateFormat('HH:mm').parse(endTime);
+
+        final todayStart = DateTime(
+            now.year, now.month, now.day, start.hour, start.minute);
+        final todayEnd = DateTime(
+            now.year, now.month, now.day, end.hour, end.minute);
+
+        return now.isAfter(todayStart) && now.isBefore(todayEnd);
+      } catch (_) {
+        return false;
+      }
+    }
+  }
 }
+
 
 extension DateTimeExtension on DateTime {
   bool isSameDayAs(DateTime other) =>
