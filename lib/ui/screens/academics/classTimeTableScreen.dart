@@ -1,5 +1,6 @@
 import 'package:eschool_saas_staff/cubits/academics/classTimetableCubit.dart';
 import 'package:eschool_saas_staff/cubits/academics/classesCubit.dart';
+import 'package:eschool_saas_staff/cubits/settings/appThemeCubit.dart';
 import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/data/models/academic/classSection.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customErrorWidget.dart';
@@ -52,8 +53,12 @@ class _ClassTimeTableScreenState extends State<ClassTimeTableScreen>
   final ScrollController _scrollController = ScrollController();
 
   // Theme colors
-  Color get _maroonPrimary => AppColorPalette.primaryMaroon;
-  Color get _maroonLight => AppColorPalette.secondaryMaroon;
+  String get _themeMode => context.watch<AppThemeCubit>().state.themeMode;
+  Color get _maroonPrimary => AppColorPalette.getPrimaryColor(_themeMode);
+  Color get _maroonLight => AppColorPalette.getSecondaryColor(_themeMode);
+  bool get _isDark => _themeMode == 'dark';
+  Color get _scaffoldBg => _isDark ? const Color(0xFF121212) : Colors.white;
+  Color get _cardBg => _isDark ? const Color(0xFF1E1E1E) : Colors.white;
   @override
   void initState() {
     super.initState();
@@ -316,39 +321,48 @@ class _ClassTimeTableScreenState extends State<ClassTimeTableScreen>
           }
           final bool isToday = dayIndex == (DateTime.now().weekday - 1);
 
-          return Align(
-              alignment: Alignment.topCenter,
-              child: SingleChildScrollView(
-                controller: _scrollController,
-                padding: const EdgeInsets.only(
-                    top: 20), // Reduced padding since AppBar is now separate
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding:
-                      EdgeInsets.all(constants.appContentHorizontalPadding),
-                  color: Theme.of(context).colorScheme.surface,
-                  child: Column(
-                    children: slots
-                        .map((timeTableSlot) => TimetableSlotContainer(
-                              note: timeTableSlot.note ?? "",
-                              endTime: timeTableSlot.endTime ?? "",
-                              isForClass: true,
-                              teacherName: timeTableSlot
-                                      .subjectTeacher?.teacher?.fullName ??
-                                  "-",
-                              startTime: timeTableSlot.startTime ?? "",
-                              subjectName: timeTableSlot.subject
-                                      ?.getSybjectNameWithType() ??
-                                  "-",
-                              isActive: isToday &&
-                                  Utils.isCurrentTimeWithinSlot(
-                                      timeTableSlot.startTime ?? "",
-                                      timeTableSlot.endTime ?? ""),
-                            ))
-                        .toList(),
+          return Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: Theme.of(context).colorScheme.copyWith(
+                    primary: _maroonPrimary,
+                    secondary: _maroonLight,
+                    surface: _cardBg,
                   ),
-                ),
-              ));
+            ),
+            child: Align(
+                alignment: Alignment.topCenter,
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  padding: const EdgeInsets.only(
+                      top: 20), // Reduced padding since AppBar is now separate
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding:
+                        EdgeInsets.all(constants.appContentHorizontalPadding),
+                    color: _scaffoldBg,
+                    child: Column(
+                      children: slots
+                          .map((timeTableSlot) => TimetableSlotContainer(
+                                note: timeTableSlot.note ?? "",
+                                endTime: timeTableSlot.endTime ?? "",
+                                isForClass: true,
+                                teacherName: timeTableSlot
+                                        .subjectTeacher?.teacher?.fullName ??
+                                    "-",
+                                startTime: timeTableSlot.startTime ?? "",
+                                subjectName: timeTableSlot.subject
+                                        ?.getSybjectNameWithType() ??
+                                    "-",
+                                isActive: isToday &&
+                                    Utils.isCurrentTimeWithinSlot(
+                                        timeTableSlot.startTime ?? "",
+                                        timeTableSlot.endTime ?? ""),
+                              ))
+                          .toList(),
+                    ),
+                  ),
+                )),
+          );
         }
         if (state is ClassTimetableFetchFailure) {
           return Center(
@@ -367,19 +381,27 @@ class _ClassTimeTableScreenState extends State<ClassTimeTableScreen>
   }
 
   Widget _buildTimetableSkeleton() {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: SingleChildScrollView(
-        controller: _scrollController,
-        padding: const EdgeInsets.only(top: 20),
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.all(constants.appContentHorizontalPadding),
-          color: Theme.of(context).colorScheme.surface,
-          child: Shimmer.fromColors(
-            baseColor: Colors.grey.shade300,
-            highlightColor: Colors.grey.shade100,
-            child: Column(
+    return Theme(
+      data: Theme.of(context).copyWith(
+        colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: _maroonPrimary,
+              secondary: _maroonLight,
+              surface: _cardBg,
+            ),
+      ),
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          padding: const EdgeInsets.only(top: 20),
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.all(constants.appContentHorizontalPadding),
+            color: _scaffoldBg,
+            child: Shimmer.fromColors(
+              baseColor: _isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+              highlightColor: _isDark ? Colors.grey.shade700 : Colors.grey.shade100,
+              child: Column(
               children: List.generate(6, (index) {
                 return Container(
                   margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
@@ -510,12 +532,14 @@ class _ClassTimeTableScreenState extends State<ClassTimeTableScreen>
           ),
         ),
       ),
+    )
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: _scaffoldBg,
       appBar: _buildAppBar(),
       body: BlocConsumer<ClassesCubit, ClassesState>(
         listener: (context, state) {

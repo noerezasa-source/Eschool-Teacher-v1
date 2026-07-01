@@ -37,6 +37,7 @@ class _ProfileContainerState extends State<ProfileContainer>
   int _hoveredMenuIndex = -1;
   late AnimationController _animationController;
   late Animation<double> _animation;
+  Offset? _tapPos;
 
   // Animation controllers from homeContainerAppbar
   late AnimationController _glowAnimationController;
@@ -179,23 +180,46 @@ class _ProfileContainerState extends State<ProfileContainer>
 
         return BlocBuilder<AuthCubit, AuthState>(
           builder: (context, authstate) {
-            return Stack(
-              children: [
-                // Animated Background Pattern
-                AnimatedBuilder(
-                  animation: _animationController,
-                  builder: (context, child) {
-                    return CustomPaint(
-                      size: Size(MediaQuery.of(context).size.width,
-                          MediaQuery.of(context).size.height),
-                      painter: BackgroundPatternPainter(
-                        animation: _animation,
-                        primaryColor: maroonPrimary.withValues(alpha: 0.03),
-                        accentColor: maroonLight.withValues(alpha: 0.02),
-                      ),
-                    );
-                  },
-                ),
+            return Listener(
+              onPointerDown: (event) {
+                setState(() {
+                  _tapPos = event.localPosition;
+                });
+              },
+              onPointerMove: (event) {
+                setState(() {
+                  _tapPos = event.localPosition;
+                });
+              },
+              onPointerUp: (event) {
+                setState(() {
+                  _tapPos = null;
+                });
+              },
+              onPointerCancel: (event) {
+                setState(() {
+                  _tapPos = null;
+                });
+              },
+              child: Stack(
+                children: [
+                  // Animated Background Pattern
+                  AnimatedBuilder(
+                    animation: _animationController,
+                    builder: (context, child) {
+                      return CustomPaint(
+                        size: Size(MediaQuery.of(context).size.width,
+                            MediaQuery.of(context).size.height),
+                        painter: BackgroundPatternPainter(
+                          animation: _animation,
+                          primaryColor: maroonPrimary.withValues(alpha: 0.03),
+                          accentColor: maroonLight.withValues(alpha: 0.02),
+                          themeMode: currentTheme,
+                          tapPosition: _tapPos,
+                        ),
+                      );
+                    },
+                  ),
 
             // Main Content
             AnimationLimiter(
@@ -499,9 +523,10 @@ class _ProfileContainerState extends State<ProfileContainer>
             // Enhanced Curved App Bar
             _buildDramaticCurvedAppBar(context: context),
           ],
-        );
-      },
-    );
+        ),
+      );
+    },
+  );
       },
     );
   }
@@ -1611,11 +1636,15 @@ class BackgroundPatternPainter extends CustomPainter {
   final Animation<double> animation;
   final Color primaryColor;
   final Color accentColor;
+  final String themeMode;
+  final Offset? tapPosition;
 
   BackgroundPatternPainter({
     required this.animation,
     required this.primaryColor,
     required this.accentColor,
+    required this.themeMode,
+    this.tapPosition,
   }) : super(repaint: animation);
 
   @override

@@ -87,7 +87,7 @@ import 'package:eschool_saas_staff/ui/screens/teacherAcademics/bankQuestionScree
 import 'package:eschool_saas_staff/ui/screens/onlineExam/onlineExamScreen.dart';
 import 'package:eschool_saas_staff/ui/screens/onlineExam/createOnlineExam.dart';
 import 'package:eschool_saas_staff/ui/screens/onlineExam/editOnlineExam.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart' hide Transition;
 import 'package:eschool_saas_staff/cubits/onlineExam/onlineExamCubit.dart';
 import 'package:eschool_saas_staff/cubits/questionOnlineExam/questionOnlineExamCubit.dart';
 import 'package:eschool_saas_staff/data/repositories/exam/onlineExamRepository.dart';
@@ -341,14 +341,23 @@ class Routes {
     GetPage(
         name: notificationsScreen,
         page: () => NotificationsScreen.getRouteInstance()),
-    GetPage(name: classesScreen, page: () => ClassesScreen.getRouteInstance()),
+    GetPage(
+      name: classesScreen,
+      page: () => ClassesScreen.getRouteInstance(),
+      transition: Transition.rightToLeftWithFade,
+      transitionDuration: const Duration(milliseconds: 380),
+    ),
     GetPage(
       name: teacherMyTimetableScreen,
       page: () => TeacherMyTimetableScreen.getRouteInstance(),
+      transition: Transition.rightToLeftWithFade,
+      transitionDuration: const Duration(milliseconds: 380),
     ),
     GetPage(
       name: classTimetableScreen,
       page: () => ClassTimeTableScreen.getRouteInstance(),
+      transition: Transition.rightToLeftWithFade,
+      transitionDuration: const Duration(milliseconds: 380),
     ),
     GetPage(
       name: sessionYearsScreen,

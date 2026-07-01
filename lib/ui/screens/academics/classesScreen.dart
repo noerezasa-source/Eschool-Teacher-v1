@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'dart:math';
 import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
+import 'package:eschool_saas_staff/cubits/settings/appThemeCubit.dart';
 import 'package:eschool_saas_staff/cubits/academics/classesWithTeacherDetailsCubit.dart';
 import 'package:eschool_saas_staff/data/models/academic/subjectTeacher.dart';
 import 'package:eschool_saas_staff/ui/widgets/system/customModernAppBar.dart';
@@ -39,6 +40,13 @@ class ClassesScreen extends StatefulWidget {
 
 class _ClassesScreenState extends State<ClassesScreen>
     with SingleTickerProviderStateMixin {
+  String get _themeMode => context.watch<AppThemeCubit>().state.themeMode;
+  Color get _primaryColor => AppColorPalette.getPrimaryColor(_themeMode);
+  Color get _secondaryColor => AppColorPalette.getSecondaryColor(_themeMode);
+  bool get _isDark => _themeMode == 'dark';
+  Color get _scaffoldBg => _isDark ? const Color(0xFF121212) : Colors.white;
+  Color get _cardBg => _isDark ? const Color(0xFF1E1E1E) : Colors.white;
+
   late AnimationController _controller;
   final ScrollController _scrollController = ScrollController();
   final FocusNode _searchFocusNode = FocusNode();
@@ -95,19 +103,19 @@ class _ClassesScreenState extends State<ClassesScreen>
     return Theme(
       data: Theme.of(context).copyWith(
         colorScheme: Theme.of(context).colorScheme.copyWith(
-              primary: AppColorPalette.primaryMaroon,
-              secondary: AppColorPalette.secondaryMaroon,
-              surface: Colors.white,
+              primary: _primaryColor,
+              secondary: _secondaryColor,
+              surface: _cardBg,
             ),
       ),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: _scaffoldBg,
         appBar: CustomModernAppBar(
           title: 'Daftar Kelas',
           icon: Icons.school,
           fabAnimationController: _controller,
-          primaryColor: AppColorPalette.primaryMaroon,
-          lightColor: AppColorPalette.secondaryMaroon,
+          primaryColor: _primaryColor,
+          lightColor: _secondaryColor,
           onBackPressed: () => Navigator.of(context).pop(),
           showHelperButton: true,
           helperIcon: _isSearchActive ? Icons.close : Icons.search,
@@ -154,7 +162,7 @@ class _ClassesScreenState extends State<ClassesScreen>
                   children: [
                     CustomPaint(
                       painter: BackgroundPatternPainter(
-                        color: AppColorPalette.primaryMaroon,
+                        color: _primaryColor,
                       ),
                     ),
                     // Decorative particles for modern look
@@ -170,7 +178,7 @@ class _ClassesScreenState extends State<ClassesScreen>
                           height: 4 + Random().nextDouble() * 8,
                           decoration: BoxDecoration(
                             color:
-                                AppColorPalette.primaryMaroon.withValues(alpha: 0.4),
+                                _primaryColor.withValues(alpha: _isDark ? 0.15 : 0.4),
                             borderRadius: BorderRadius.circular(20),
                           ),
                         ),
@@ -235,11 +243,11 @@ class _ClassesScreenState extends State<ClassesScreen>
                   margin:
                       const EdgeInsets.fromLTRB(16, 8, 16, 8), // Better margins
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: _cardBg,
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColorPalette.primaryMaroon.withValues(alpha: 0.15),
+                        color: _primaryColor.withValues(alpha: 0.15),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                         spreadRadius: 1,
@@ -251,7 +259,7 @@ class _ClassesScreenState extends State<ClassesScreen>
                       ),
                     ],
                     border: Border.all(
-                      color: AppColorPalette.primaryMaroon.withValues(alpha: 0.1),
+                      color: _primaryColor.withValues(alpha: 0.1),
                       width: 1.5,
                     ),
                   ),
@@ -263,13 +271,13 @@ class _ClassesScreenState extends State<ClassesScreen>
                     textInputAction: TextInputAction.search,
                     style: GoogleFonts.poppins(
                       fontSize: 16,
-                      color: AppColorPalette.primaryMaroon,
+                      color: _primaryColor,
                       fontWeight: FontWeight.w500,
                     ),
                     decoration: InputDecoration(
                       hintText: 'Cari kelas berdasarkan nama...',
                       hintStyle: GoogleFonts.poppins(
-                        color: AppColorPalette.secondaryMaroon.withValues(alpha: 0.6),
+                        color: _secondaryColor.withValues(alpha: 0.6),
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
                       ),
@@ -277,7 +285,7 @@ class _ClassesScreenState extends State<ClassesScreen>
                         padding: const EdgeInsets.all(12),
                         child: Icon(
                           Icons.search_rounded,
-                          color: AppColorPalette.primaryMaroon,
+                          color: _primaryColor,
                           size: 22,
                         ),
                       ),
@@ -335,7 +343,7 @@ class _ClassesScreenState extends State<ClassesScreen>
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color:
-                                AppColorPalette.primaryMaroon.withValues(alpha: 0.1),
+                                _primaryColor.withValues(alpha: 0.1),
                           ),
                           child: Center(
                             child: Transform.scale(
@@ -343,7 +351,7 @@ class _ClassesScreenState extends State<ClassesScreen>
                               child: Icon(
                                 Icons.school_outlined,
                                 size: 100,
-                                color: AppColorPalette.primaryMaroon
+                                color: _primaryColor
                                     .withValues(alpha: 0.7),
                               ),
                             ),
@@ -357,8 +365,8 @@ class _ClassesScreenState extends State<ClassesScreen>
                 ShaderMask(
                   shaderCallback: (bounds) => LinearGradient(
                     colors: [
-                      AppColorPalette.primaryMaroon,
-                      AppColorPalette.secondaryMaroon,
+                      _primaryColor,
+                      _secondaryColor,
                     ],
                   ).createShader(bounds),
                   child: CustomTextContainer(
@@ -388,7 +396,7 @@ class _ClassesScreenState extends State<ClassesScreen>
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColorPalette.primaryMaroon,
+                    backgroundColor: _primaryColor,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     shape: RoundedRectangleBorder(
@@ -463,8 +471,8 @@ class _ClassesScreenState extends State<ClassesScreen>
                             // Keep search active, just clear the query
                           });
                         },
-                        primaryColor: AppColorPalette.primaryMaroon,
-                        accentColor: AppColorPalette.secondaryMaroon,
+                        primaryColor: _primaryColor,
+                        accentColor: _secondaryColor,
                         title: 'Kelas Tidak Ditemukan',
                         description:
                             'Tidak ditemukan kelas yang sesuai dengan pencarian "$_searchQuery". Coba gunakan kata kunci yang berbeda.',
@@ -482,11 +490,11 @@ class _ClassesScreenState extends State<ClassesScreen>
                               vertical: 12,
                             ),
                             decoration: BoxDecoration(
-                              color: AppColorPalette.primaryMaroon
+                              color: _primaryColor
                                   .withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: AppColorPalette.primaryMaroon
+                                color: _primaryColor
                                     .withValues(alpha: 0.2),
                                 width: 1,
                               ),
@@ -495,7 +503,7 @@ class _ClassesScreenState extends State<ClassesScreen>
                               children: [
                                 Icon(
                                   Icons.search_rounded,
-                                  color: AppColorPalette.primaryMaroon,
+                                  color: _primaryColor,
                                   size: 20,
                                 ),
                                 const SizedBox(width: 12),
@@ -505,7 +513,7 @@ class _ClassesScreenState extends State<ClassesScreen>
                                     style: GoogleFonts.poppins(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
-                                      color: AppColorPalette.primaryMaroon,
+                                      color: _primaryColor,
                                     ),
                                   ),
                                 ),
@@ -562,7 +570,7 @@ class _ClassesScreenState extends State<ClassesScreen>
             // Enhanced Main Card with Improved Frosted Glass Effect
             Card(
               elevation: 16,
-              shadowColor: AppColorPalette.primaryMaroon.withValues(alpha: 0.3),
+              shadowColor: _primaryColor.withValues(alpha: 0.3),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(28),
               ),
@@ -577,14 +585,14 @@ class _ClassesScreenState extends State<ClassesScreen>
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
-                          AppColorPalette.secondaryMaroon.withValues(alpha: 0.9),
+                          _primaryColor.withValues(alpha: 0.9),
+                          _secondaryColor.withValues(alpha: 0.9),
                         ],
                         stops: const [0.2, 1.0],
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColorPalette.primaryMaroon.withValues(alpha: 0.2),
+                          color: _primaryColor.withValues(alpha: 0.2),
                           blurRadius: 15,
                           offset: const Offset(0, 8),
                         ),
@@ -681,8 +689,8 @@ class _ClassesScreenState extends State<ClassesScreen>
       BuildContext context, dynamic classSection, int index) {
     final bool isEven = index.isEven;
     final cardGradient = [
-      Colors.white,
-      Colors.white,
+      _cardBg,
+      _cardBg,
     ];
 
     return TweenAnimationBuilder(
@@ -704,8 +712,8 @@ class _ClassesScreenState extends State<ClassesScreen>
                       context: context);
                 },
                 borderRadius: BorderRadius.circular(24),
-                splashColor: AppColorPalette.primaryMaroon.withValues(alpha: 0.2),
-                highlightColor: AppColorPalette.primaryMaroon.withValues(alpha: 0.1),
+                splashColor: _primaryColor.withValues(alpha: 0.2),
+                highlightColor: _primaryColor.withValues(alpha: 0.1),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(24),
@@ -716,14 +724,14 @@ class _ClassesScreenState extends State<ClassesScreen>
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColorPalette.primaryMaroon.withValues(alpha: 0.2),
+                        color: _primaryColor.withValues(alpha: 0.2),
                         blurRadius: 15,
                         offset: const Offset(0, 8),
                         spreadRadius: 1,
                       ),
                     ],
                     border: Border.all(
-                      color: AppColorPalette.primaryMaroon.withValues(alpha: 0.2),
+                      color: _primaryColor.withValues(alpha: 0.2),
                       width: 1.5,
                     ),
                   ),
@@ -749,7 +757,7 @@ class _ClassesScreenState extends State<ClassesScreen>
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: AppColorPalette.primaryMaroon.withValues(alpha: 0.15),
+            color: _primaryColor.withValues(alpha: 0.15),
             width: 1.5,
           ),
         ),
@@ -757,8 +765,8 @@ class _ClassesScreenState extends State<ClassesScreen>
           begin: isEven ? Alignment.centerLeft : Alignment.centerRight,
           end: isEven ? Alignment.centerRight : Alignment.centerLeft,
           colors: [
-            AppColorPalette.primaryMaroon.withValues(alpha: 0.15),
-            AppColorPalette.secondaryMaroon.withValues(alpha: 0.08),
+            _primaryColor.withValues(alpha: 0.15),
+            _secondaryColor.withValues(alpha: 0.08),
           ],
         ),
         borderRadius: const BorderRadius.vertical(
@@ -776,7 +784,7 @@ class _ClassesScreenState extends State<ClassesScreen>
                   style: GoogleFonts.poppins(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
-                    color: AppColorPalette.primaryMaroon,
+                    color: _primaryColor,
                   ),
                 ),
               ],
@@ -799,8 +807,8 @@ class _ClassesScreenState extends State<ClassesScreen>
           _buildEnhancedInfoRow(
               context, 'Guru Kelas', classTeacherNames, Icons.person_outline,
               gradient: [
-                AppColorPalette.primaryMaroon.withValues(alpha: 0.08),
-                AppColorPalette.secondaryMaroon.withValues(alpha: 0.02),
+                _primaryColor.withValues(alpha: 0.08),
+                _secondaryColor.withValues(alpha: 0.02),
               ]),
 
           // Add spacing before button
@@ -818,7 +826,7 @@ class _ClassesScreenState extends State<ClassesScreen>
                     context: context);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColorPalette.primaryMaroon,
+                backgroundColor: _primaryColor,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 shape: RoundedRectangleBorder(
@@ -858,8 +866,8 @@ class _ClassesScreenState extends State<ClassesScreen>
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColorPalette.primaryMaroon.withValues(alpha: 0.12),
-            AppColorPalette.secondaryMaroon.withValues(alpha: 0.08),
+            _primaryColor.withValues(alpha: 0.12),
+            _secondaryColor.withValues(alpha: 0.08),
           ],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
@@ -867,13 +875,13 @@ class _ClassesScreenState extends State<ClassesScreen>
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppColorPalette.primaryMaroon.withValues(alpha: 0.1),
+            color: _primaryColor.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
         ],
         border: Border.all(
-          color: AppColorPalette.primaryMaroon.withValues(alpha: 0.2),
+          color: _primaryColor.withValues(alpha: 0.2),
           width: 1.5,
         ),
       ),
@@ -882,11 +890,11 @@ class _ClassesScreenState extends State<ClassesScreen>
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
+              color: _primaryColor.withValues(alpha: 0.9),
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: AppColorPalette.primaryMaroon.withValues(alpha: 0.3),
+                  color: _primaryColor.withValues(alpha: 0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -904,7 +912,7 @@ class _ClassesScreenState extends State<ClassesScreen>
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: AppColorPalette.secondaryMaroon,
+                    color: _secondaryColor,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -913,7 +921,7 @@ class _ClassesScreenState extends State<ClassesScreen>
                   style: GoogleFonts.poppins(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
-                    color: AppColorPalette.primaryMaroon,
+                    color: _primaryColor,
                   ),
                 ),
               ],
@@ -933,7 +941,7 @@ class _ClassesScreenState extends State<ClassesScreen>
     return CustomErrorWidget(
       message: state.errorMessage,
       onRetry: () => getClassesWithTeacherDetails(),
-      primaryColor: AppColorPalette.primaryMaroon,
+      primaryColor: _primaryColor,
     );
   }
 
@@ -966,11 +974,11 @@ class _ClassesScreenState extends State<ClassesScreen>
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 16),
       child: Shimmer.fromColors(
-        baseColor: Colors.grey.shade300,
-        highlightColor: Colors.grey.shade100,
+        baseColor: _isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+        highlightColor: _isDark ? Colors.grey.shade700 : Colors.grey.shade100,
         child: Card(
           elevation: 16,
-          shadowColor: AppColorPalette.primaryMaroon.withValues(alpha: 0.3),
+          shadowColor: _primaryColor.withValues(alpha: 0.3),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(28),
           ),
@@ -1035,7 +1043,7 @@ class _ClassesScreenState extends State<ClassesScreen>
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: _cardBg,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -1046,8 +1054,8 @@ class _ClassesScreenState extends State<ClassesScreen>
         ],
       ),
       child: Shimmer.fromColors(
-        baseColor: Colors.grey.shade300,
-        highlightColor: Colors.grey.shade100,
+        baseColor: _isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+        highlightColor: _isDark ? Colors.grey.shade700 : Colors.grey.shade100,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -1107,7 +1115,7 @@ class _ClassesScreenState extends State<ClassesScreen>
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
+                  color: _isDark ? Colors.grey.shade900 : Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -1156,7 +1164,7 @@ class _ClassesScreenState extends State<ClassesScreen>
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
+                  color: _isDark ? Colors.grey.shade900 : Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -1243,7 +1251,7 @@ class _ClassesScreenState extends State<ClassesScreen>
                   width: 100,
                   height: 32,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: _cardBg,
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
@@ -1262,6 +1270,11 @@ class ClassSubjectsBottomsheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeState = context.watch<AppThemeCubit>().state;
+    final primaryColor = AppColorPalette.getPrimaryColor(themeState.themeMode);
+    final isDark = themeState.themeMode == 'dark';
+    final cardBg = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+
     return CustomBottomsheet(
       // removed
       child: Column(
@@ -1275,15 +1288,15 @@ class ClassSubjectsBottomsheet extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               gradient: LinearGradient(
                 colors: [
-                  AppColorPalette.primaryMaroon.withValues(alpha: 0.9),
-                  AppColorPalette.primaryMaroon.withValues(alpha: 0.85),
+                  primaryColor.withValues(alpha: 0.9),
+                  primaryColor.withValues(alpha: 0.85),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColorPalette.shadowColor.withValues(alpha: 0.25),
+                  color: primaryColor.withValues(alpha: isDark ? 0.08 : 0.25),
                   blurRadius: 12,
                   spreadRadius: 2,
                   offset: const Offset(0, 6),
@@ -1349,16 +1362,16 @@ class ClassSubjectsBottomsheet extends StatelessWidget {
                         margin:
                             const EdgeInsets.only(bottom: 16, left: 12, right: 12),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: cardBg,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                             color:
-                                AppColorPalette.primaryMaroon.withValues(alpha: 0.15),
+                                primaryColor.withValues(alpha: 0.15),
                             width: 1.5,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.04),
+                              color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.04),
                               blurRadius: 15,
                               spreadRadius: 1,
                               offset: const Offset(0, 5),
@@ -1373,9 +1386,9 @@ class ClassSubjectsBottomsheet extends StatelessWidget {
                               onTap: () {
                                 HapticFeedback.lightImpact();
                               },
-                              splashColor: AppColorPalette.primaryMaroon
+                              splashColor: primaryColor
                                   .withValues(alpha: 0.1),
-                              highlightColor: AppColorPalette.primaryMaroon
+                              highlightColor: primaryColor
                                   .withValues(alpha: 0.05),
                               child: Padding(
                                 padding: const EdgeInsets.all(16),
@@ -1388,7 +1401,7 @@ class ClassSubjectsBottomsheet extends StatelessWidget {
                                       style: GoogleFonts.poppins(
                                         fontSize: 17,
                                         fontWeight: FontWeight.w600,
-                                        color: AppColorPalette.primaryMaroon,
+                                        color: primaryColor,
                                         height: 1.3,
                                       ),
                                     ),
@@ -1400,7 +1413,7 @@ class ClassSubjectsBottomsheet extends StatelessWidget {
                                       child: Container(
                                         height: 1,
                                         width: double.infinity,
-                                        color: AppColorPalette.primaryMaroon
+                                        color: primaryColor
                                             .withValues(alpha: 0.1),
                                       ),
                                     ),
@@ -1414,14 +1427,14 @@ class ClassSubjectsBottomsheet extends StatelessWidget {
                                           height: 48,
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
-                                            color: AppColorPalette.primaryMaroon
+                                            color: primaryColor
                                                 .withValues(alpha: 0.1),
                                           ),
                                           child: Center(
                                             child: Icon(
                                               Icons.person_rounded,
                                               color:
-                                                  AppColorPalette.primaryMaroon,
+                                                  primaryColor,
                                               size: 24,
                                             ),
                                           ),
@@ -1440,7 +1453,7 @@ class ClassSubjectsBottomsheet extends StatelessWidget {
                                                 style: GoogleFonts.poppins(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.w600,
-                                                  color: Colors.black87,
+                                                  color: isDark ? Colors.white : Colors.black87,
                                                 ),
                                               ),
                                               Text(
@@ -1448,7 +1461,7 @@ class ClassSubjectsBottomsheet extends StatelessWidget {
                                                 style: GoogleFonts.poppins(
                                                   fontSize: 13,
                                                   fontWeight: FontWeight.w400,
-                                                  color: Colors.black54,
+                                                  color: isDark ? Colors.white70 : Colors.black54,
                                                 ),
                                               ),
                                             ],

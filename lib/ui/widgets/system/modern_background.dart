@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/cubits/settings/appThemeCubit.dart';
+import 'package:eschool_saas_staff/ui/widgets/system/presidential_background_helper.dart';
 
 class ModernBackground extends StatefulWidget {
   final Widget child;
@@ -19,6 +20,7 @@ class ModernBackground extends StatefulWidget {
 class _ModernBackgroundState extends State<ModernBackground>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  Offset? _tapPos;
 
   @override
   void initState() {
@@ -44,26 +46,49 @@ class _ModernBackgroundState extends State<ModernBackground>
         const Color softMaroon = Color(0xFFD27D8F);
         const Color goldAccent = Color(0xFFFFD700);
 
-        return Stack(
-          children: [
-            SizedBox.expand(
-              child: AnimatedBuilder(
-                animation: _controller,
-                builder: (context, child) {
-                  return CustomPaint(
-                    painter: ModernCurvePainter(
-                      animationValue: _controller.value,
-                      primaryColor: primaryMaroon,
-                      secondaryColor: softMaroon,
-                      accentColor: goldAccent,
-                      themeName: themeName,
-                    ),
-                  );
-                },
+        return Listener(
+          onPointerDown: (event) {
+            setState(() {
+              _tapPos = event.localPosition;
+            });
+          },
+          onPointerMove: (event) {
+            setState(() {
+              _tapPos = event.localPosition;
+            });
+          },
+          onPointerUp: (event) {
+            setState(() {
+              _tapPos = null;
+            });
+          },
+          onPointerCancel: (event) {
+            setState(() {
+              _tapPos = null;
+            });
+          },
+          child: Stack(
+            children: [
+              SizedBox.expand(
+                child: AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, child) {
+                    return CustomPaint(
+                      painter: ModernCurvePainter(
+                        animationValue: _controller.value,
+                        primaryColor: primaryMaroon,
+                        secondaryColor: softMaroon,
+                        accentColor: goldAccent,
+                        themeName: themeName,
+                        tapPosition: _tapPos,
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-            widget.child,
-          ],
+              widget.child,
+            ],
+          ),
         );
       },
     );
@@ -76,6 +101,7 @@ class ModernCurvePainter extends CustomPainter {
   final Color secondaryColor;
   final Color accentColor;
   final String themeName;
+  final Offset? tapPosition;
 
   ModernCurvePainter({
     required this.animationValue,
@@ -83,10 +109,14 @@ class ModernCurvePainter extends CustomPainter {
     required this.secondaryColor,
     required this.accentColor,
     required this.themeName,
+    this.tapPosition,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
+    // Draw the 8 Presidents' floating icons first
+    PresidentialBackgroundHelper.paint(canvas, size, animationValue, themeName, tapPosition: tapPosition);
+
     var paint = Paint()
       ..style = PaintingStyle.fill
       ..strokeWidth = 0;
@@ -455,6 +485,7 @@ class ModernCurvePainter extends CustomPainter {
         oldDelegate.primaryColor != primaryColor ||
         oldDelegate.secondaryColor != secondaryColor ||
         oldDelegate.accentColor != accentColor ||
-        oldDelegate.themeName != themeName;
+        oldDelegate.themeName != themeName ||
+        oldDelegate.tapPosition != tapPosition;
   }
 }
