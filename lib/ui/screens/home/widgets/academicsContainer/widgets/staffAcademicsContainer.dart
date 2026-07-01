@@ -1,7 +1,6 @@
-
-
 import 'dart:math';
 import 'package:eschool_saas_staff/cubits/settings/appThemeCubit.dart';
+import 'package:eschool_saas_staff/ui/widgets/system/osStyleMenuWidgets.dart';
 import 'package:eschool_saas_staff/utils/system/colorPalette.dart';
 import 'package:eschool_saas_staff/app/routes.dart';
 import 'package:eschool_saas_staff/cubits/authentication/authCubit.dart';
@@ -14,7 +13,6 @@ import 'package:eschool_saas_staff/utils/system/systemModulesAndPermissions.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 class StaffAcademicsContainer extends StatefulWidget {
@@ -27,25 +25,24 @@ class StaffAcademicsContainer extends StatefulWidget {
 
 class _StaffAcademicsContainerState extends State<StaffAcademicsContainer>
     with TickerProviderStateMixin {
-  int _hoveredMenuIndex = -1;
-  late AnimationController _animationController;
-  late Animation<double> _animation;
+  late AnimationController _bgAnimController;
+  late Animation<double> _bgAnimation;
+  Offset? _tapPos;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
+    _bgAnimController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 30),
     )..repeat();
-
-    _animation =
-        Tween<double>(begin: 0, end: 2 * pi).animate(_animationController);
+    _bgAnimation =
+        Tween<double>(begin: 0, end: 2 * pi).animate(_bgAnimController);
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _bgAnimController.dispose();
     super.dispose();
   }
 
@@ -54,894 +51,597 @@ class _StaffAcademicsContainerState extends State<StaffAcademicsContainer>
     return BlocBuilder<AppThemeCubit, AppThemeState>(
       builder: (context, themeState) {
         final currentTheme = themeState.themeMode;
-        final maroonPrimary = AppColorPalette.getPrimaryColor(currentTheme);
-        final maroonLight = AppColorPalette.getSecondaryColor(currentTheme);
+        final primary = AppColorPalette.getPrimaryColor(currentTheme);
+        final primaryLight = AppColorPalette.getSecondaryColor(currentTheme);
 
-        final StaffAllowedPermissionsAndModulesCubit
-            staffAllowedPermissionsAndModulesCubit =
+        final perms =
             context.read<StaffAllowedPermissionsAndModulesCubit>();
 
-        return Stack(
-          children: [
-            // Animated Background Pattern
-            AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, child) {
-                return CustomPaint(
-                  size: Size(MediaQuery.of(context).size.width,
-                      MediaQuery.of(context).size.height),
-                  painter: BackgroundPatternPainter(
-                    animation: _animation,
-                    primaryColor: maroonPrimary.withValues(alpha: 0.03),
-                    accentColor: maroonLight.withValues(alpha: 0.02),
-                  ),
-                );
-              },
-            ),
+        // Pre-compute icon colors that adapt to the current primary theme
+        Color ic(double hue) => OsMenuIconColors.fromHue(hue, primary, themeMode: currentTheme);
 
-            // Main Content
+        return Listener(
+          onPointerDown: (event) {
+            setState(() {
+              _tapPos = event.localPosition;
+            });
+          },
+          onPointerMove: (event) {
+            setState(() {
+              _tapPos = event.localPosition;
+            });
+          },
+          onPointerUp: (event) {
+            setState(() {
+              _tapPos = null;
+            });
+          },
+          onPointerCancel: (event) {
+            setState(() {
+              _tapPos = null;
+            });
+          },
+          child: Stack(
+            children: [
+              // Subtle animated background
+              AnimatedBuilder(
+                animation: _bgAnimController,
+                builder: (context, child) {
+                  return CustomPaint(
+                    size: Size(MediaQuery.of(context).size.width,
+                        MediaQuery.of(context).size.height),
+                    painter: _BackgroundPainter(
+                      animation: _bgAnimation,
+                      primaryColor: primary.withValues(alpha: 0.03),
+                      accentColor: primaryLight.withValues(alpha: 0.02),
+                      themeMode: currentTheme,
+                      tapPosition: _tapPos,
+                    ),
+                  );
+                },
+              ),
+
+            // Main scrollable content
             AnimationLimiter(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 padding: const EdgeInsets.only(
-                  top: 120, // Increased to match AppBar height
+                  top: 130,
                   left: 16,
                   right: 16,
-                  bottom: 100,
+                  bottom: 110,
                 ),
                 child: Column(
                   children: AnimationConfiguration.toStaggeredList(
-                    duration: const Duration(milliseconds: 600),
+                    duration: const Duration(milliseconds: 500),
                     childAnimationBuilder: (widget) => SlideAnimation(
-                      verticalOffset: 30.0,
+                      verticalOffset: 24.0,
                       child: FadeInAnimation(child: widget),
                     ),
                     children: [
-                      const SizedBox(height: 50),
-                      // Classes Section
-                      staffAllowedPermissionsAndModulesCubit.isPermissionGiven(
-                              permission: viewClassesPermissionKey)
-                          ? _buildMenuSection(
-                              context: context,
-                              title: "Kelas",
+                      const SizedBox(height: 36),
+
+                      // ─── KELAS ───────────────────────────────────────
+                      if (perms.isPermissionGiven(
+                          permission: viewClassesPermissionKey))
+                        OsStyleMenuSection(
+                          title: "Kelas",
+                          primaryColor: primary,
+                          menus: [
+                            OsStyleMenuItem(
                               icon: Icons.class_outlined,
-                              iconColor: maroonPrimary.withValues(alpha: 0.9),
-                              index: 0,
-                              maroonPrimary: maroonPrimary,
-                              maroonLight: maroonLight,
-                              menus: [
-                                _buildMenuItem(
-                                  context: context,
-                                  icon: Icons.view_list,
-                                  title: "Lihat Kelas",
-                                  index: 0,
-                                  onTap: () =>
-                                      Get.toNamed(Routes.classesScreen),
-                                  maroonPrimary: maroonPrimary,
-                                  maroonLight: maroonLight,
-                                ),
-                              ],
-                            )
-                          : const SizedBox(),
-
-                      // Session Year Section
-                      staffAllowedPermissionsAndModulesCubit.isPermissionGiven(
-                              permission: viewSessionYearsPermissionKey)
-                          ? _buildMenuSection(
-                              context: context,
-                              title: "Tahun Ajaran",
-                              icon: Icons.calendar_today,
-                              iconColor: maroonPrimary.withValues(alpha: 0.9),
-                              index: 1,
-                              maroonPrimary: maroonPrimary,
-                              maroonLight: maroonLight,
-                              menus: [
-                                _buildMenuItem(
-                                  context: context,
-                                  icon: Icons.view_list,
-                                  title: "Lihat Tahun Ajaran",
-                                  index: 1,
-                                  onTap: () =>
-                                      Get.toNamed(Routes.sessionYearsScreen),
-                                  maroonPrimary: maroonPrimary,
-                                  maroonLight: maroonLight,
-                                ),
-                              ],
-                            )
-                          : const SizedBox(),
-
-                      // Leave Section
-                      _buildMenuSection(
-                        context: context,
-                        title: "Cuti",
-                        icon: Icons.work_off,
-                        iconColor: maroonPrimary.withValues(alpha: 0.9),
-                        index: 2,
-                        maroonPrimary: maroonPrimary,
-                        maroonLight: maroonLight,
-                        menus: [
-                          _buildMenuItem(
-                            context: context,
-                            icon: Icons.add_circle_outline,
-                            title: "Ajukan Cuti",
-                            index: 2,
-                            onTap: () => Get.toNamed(Routes.applyLeaveScreen),
-                            maroonPrimary: maroonPrimary,
-                            maroonLight: maroonLight,
-                          ),
-                          _buildMenuItem(
-                            context: context,
-                            icon: Icons.list_alt,
-                            title: "Cuti Saya",
-                            index: 3,
-                            onTap: () => Get.toNamed(Routes.leavesScreen,
-                                arguments: LeavesScreen.buildArguments(
-                                    showMyLeaves: true)),
-                            maroonPrimary: maroonPrimary,
-                            maroonLight: maroonLight,
-                          ),
-                          (staffAllowedPermissionsAndModulesCubit
-                                      .isModuleEnabled(
-                                          moduleId: staffLeaveManagementModuleId
-                                              .toString()) &&
-                                  staffAllowedPermissionsAndModulesCubit
-                                      .isPermissionGiven(
-                                          permission:
-                                              approveLeavePermissionKey))
-                              ? _buildMenuItem(
-                                  context: context,
-                                  icon: Icons.people,
-                                  title: "Cuti Staf",
-                                  index: 4,
-                                  onTap: () => Get.toNamed(Routes.staffsScreen,
-                                      arguments: StaffsScreen.buildArguments(
-                                          forStaffLeave: true)),
-                                  maroonPrimary: maroonPrimary,
-                                  maroonLight: maroonLight,
-                                )
-                              : const SizedBox(),
-                          (staffAllowedPermissionsAndModulesCubit
-                                      .isModuleEnabled(
-                                          moduleId: staffLeaveManagementModuleId
-                                              .toString()) &&
-                                  staffAllowedPermissionsAndModulesCubit
-                                      .isPermissionGiven(
-                                          permission:
-                                              approveLeavePermissionKey))
-                              ? _buildMenuItem(
-                                  context: context,
-                                  icon: Icons.school,
-                                  title: "Cuti Guru",
-                                  index: 5,
-                                  onTap: () => Get.toNamed(
-                                    Routes.teachersScreen,
-                                    arguments: TeachersScreen.buildArguments(
-                                        teacherNavigationType:
-                                            TeacherNavigationType.leave),
-                                  ),
-                                  maroonPrimary: maroonPrimary,
-                                  maroonLight: maroonLight,
-                                )
-                              : const SizedBox(),
-                        ],
-                      ),
-
-                      // Timetable Section
-                      (staffAllowedPermissionsAndModulesCubit.isModuleEnabled(
-                                  moduleId:
-                                      timetableManagementModuleId.toString()) &&
-                              staffAllowedPermissionsAndModulesCubit
-                                  .isPermissionGiven(
-                                      permission: viewTimetablePermissionKey))
-                          ? _buildMenuSection(
-                              context: context,
-                              title: "Jadwal",
-                              icon: Icons.schedule,
-                              iconColor: maroonPrimary.withValues(alpha: 0.9),
-                              index: 4,
-                              maroonPrimary: maroonPrimary,
-                              maroonLight: maroonLight,
-                              menus: [
-                                _buildMenuItem(
-                                  context: context,
-                                  icon: Icons.view_timeline,
-                                  title: "Jadwal Kelas",
-                                  index: 7,
-                                  onTap: () =>
-                                      Get.toNamed(Routes.classTimetableScreen),
-                                  maroonPrimary: maroonPrimary,
-                                  maroonLight: maroonLight,
-                                ),
-                                _buildMenuItem(
-                                  context: context,
-                                  icon: Icons.person_search,
-                                  title: "Jadwal Guru",
-                                  index: 8,
-                                  onTap: () => Get.toNamed(
-                                    Routes.teachersScreen,
-                                    arguments: TeachersScreen.buildArguments(
-                                        teacherNavigationType:
-                                            TeacherNavigationType.timetable),
-                                  ),
-                                  maroonPrimary: maroonPrimary,
-                                  maroonLight: maroonLight,
-                                ),
-                              ],
-                            )
-                          : const SizedBox(),
-
-                      // Question Bank Section
-                      _buildMenuSection(
-                        context: context,
-                        title: "Bank Soal",
-                        icon: Icons.quiz,
-                        iconColor: maroonPrimary.withValues(alpha: 0.9),
-                        index: 6,
-                        maroonPrimary: maroonPrimary,
-                        maroonLight: maroonLight,
-                        menus: [
-                          _buildMenuItem(
-                            context: context,
-                            icon: Icons.question_answer,
-                            title: "Bank Soal",
-                            index: 11,
-                            onTap: () {
-                              Get.toNamed(Routes.questionSubjectScreen,
-                                  arguments: {'isStaffView': true});
-                            },
-                            maroonPrimary: maroonPrimary,
-                            maroonLight: maroonLight,
-                          ),
-                        ],
-                      ),
-
-                      // Assignment Monitoring Section
-                      staffAllowedPermissionsAndModulesCubit.isPermissionGiven(
-                              permission: "assignment-monitoring")
-                          ? _buildMenuSection(
-                              context: context,
-                              title: "Monitoring Tugas",
-                              icon: Icons.assignment_outlined,
-                              iconColor: maroonPrimary,
-                              index: 6,
-                              maroonPrimary: maroonPrimary,
-                              maroonLight: maroonLight,
-                              menus: [
-                                _buildMenuItem(
-                                  context: context,
-                                  icon: Icons.assessment_outlined,
-                                  title: "Monitoring Tugas Guru",
-                                  index: 14,
-                                  onTap: () {
-                                    Get.toNamed(
-                                        Routes.assignmentMonitoringScreen);
-                                  },
-                                  maroonPrimary: maroonPrimary,
-                                  maroonLight: maroonLight,
-                                ),
-                              ],
-                            )
-                          : const SizedBox(),
-
-                      // Offline Exam Section
-                      (staffAllowedPermissionsAndModulesCubit.isModuleEnabled(
-                                  moduleId:
-                                      examManagementModuleId.toString())) &&
-                              (staffAllowedPermissionsAndModulesCubit
-                                      .isPermissionGiven(
-                                          permission:
-                                              viewExamsPermissionKey) ||
-                                  staffAllowedPermissionsAndModulesCubit
-                                      .isPermissionGiven(
-                                          permission:
-                                              viewExamResultPermissionKey))
-                          ? _buildMenuSection(
-                              context: context,
-                              title: "Ujian Offline",
-                              icon: Icons.school,
-                              iconColor: maroonPrimary.withValues(alpha: 0.9),
-                              index: 5,
-                              maroonPrimary: maroonPrimary,
-                              maroonLight: maroonLight,
-                              menus: [
-                                staffAllowedPermissionsAndModulesCubit
-                                        .isPermissionGiven(
-                                            permission: viewExamsPermissionKey)
-                                    ? _buildMenuItem(
-                                        context: context,
-                                        icon: Icons.edit_document,
-                                        title: "Jadwal Ujian Offline",
-                                        index: 9,
-                                        onTap: () =>
-                                            Get.toNamed(Routes.examsScreen),
-                                        maroonPrimary: maroonPrimary,
-                                        maroonLight: maroonLight,
-                                      )
-                                    : const SizedBox(),
-                                staffAllowedPermissionsAndModulesCubit
-                                        .isPermissionGiven(
-                                            permission:
-                                                viewExamResultPermissionKey)
-                                    ? _buildMenuItem(
-                                        context: context,
-                                        icon: Icons.analytics,
-                                        title: "Hasil Ujian Offline",
-                                        index: 10,
-                                        onTap: () => Get.toNamed(
-                                            Routes.offlineResultScreen),
-                                        maroonPrimary: maroonPrimary,
-                                        maroonLight: maroonLight,
-                                      )
-                                    : const SizedBox(),
-                              ],
-                            )
-                          : const SizedBox(),
-
-                      // Online Exam Section
-                      _buildMenuSection(
-                        context: context,
-                        title: "Ujian Online",
-                        icon: Icons.computer,
-                        iconColor: maroonPrimary.withValues(alpha: 0.9),
-                        index: 7,
-                        maroonPrimary: maroonPrimary,
-                        maroonLight: maroonLight,
-                        menus: [
-                          _buildMenuItem(
-                            context: context,
-                            icon: Icons.quiz,
-                            title: "Ujian Online",
-                            index: 12,
-                            onTap: () => Get.toNamed(Routes.onlineExamScreen),
-                            maroonPrimary: maroonPrimary,
-                            maroonLight: maroonLight,
-                          ),
-                          if (staffAllowedPermissionsAndModulesCubit
-                              .isModuleEnabled(
-                                  moduleId:
-                                      assignmentManagementModuleId.toString()))
-                            _buildMenuItem(
-                              context: context,
-                              icon: Icons.assessment,
-                              title: "Hasil Ujian Online",
-                              index: 13,
-                              onTap: () =>
-                                  Get.toNamed(Routes.onlineExamResultScreen),
-                              maroonPrimary: maroonPrimary,
-                              maroonLight: maroonLight,
+                              title: "Lihat Kelas",
+                              iconBgColor: ic(OsMenuIconColors.hueClass),
+                              primaryColor: primary,
+                              isLast: true,
+                              onTap: () => Get.toNamed(Routes.classesScreen),
                             ),
-                          _buildMenuItem(
-                            context: context,
-                            icon: Icons.visibility,
-                            title: "Status Siswa Ujian",
-                            index: 16,
-                            onTap: () => Get.toNamed(Routes.examStatusScreen),
-                            maroonPrimary: maroonPrimary,
-                            maroonLight: maroonLight,
+                          ],
+                        ),
+
+                      // ─── TAHUN AJARAN ─────────────────────────────────
+                      if (perms.isPermissionGiven(
+                          permission: viewSessionYearsPermissionKey))
+                        OsStyleMenuSection(
+                          title: "Tahun Ajaran",
+                          primaryColor: primary,
+                          menus: [
+                            OsStyleMenuItem(
+                              icon: Icons.calendar_month_outlined,
+                              title: "Lihat Tahun Ajaran",
+                              iconBgColor: ic(OsMenuIconColors.hueSchedule),
+                              primaryColor: primary,
+                              isLast: true,
+                              onTap: () =>
+                                  Get.toNamed(Routes.sessionYearsScreen),
+                            ),
+                          ],
+                        ),
+
+                      // ─── CUTI ─────────────────────────────────────────
+                      OsStyleMenuSection(
+                        title: "Cuti",
+                        primaryColor: primary,
+                        menus: _buildLeaveMenus(context, perms, primary, ic),
+                      ),
+
+                      // ─── JADWAL ───────────────────────────────────────
+                      if (perms.isModuleEnabled(
+                              moduleId: timetableManagementModuleId.toString()) &&
+                          perms.isPermissionGiven(
+                              permission: viewTimetablePermissionKey))
+                        OsStyleMenuSection(
+                          title: "Jadwal",
+                          primaryColor: primary,
+                          menus: [
+                            OsStyleMenuItem(
+                              icon: Icons.view_timeline_outlined,
+                              title: "Jadwal Kelas",
+                              iconBgColor: ic(OsMenuIconColors.hueSchedule),
+                              primaryColor: primary,
+                              onTap: () =>
+                                  Get.toNamed(Routes.classTimetableScreen),
+                            ),
+                            OsStyleMenuItem(
+                              icon: Icons.person_search_outlined,
+                              title: "Jadwal Guru",
+                              iconBgColor: ic(OsMenuIconColors.hueSchedule + 15),
+                              primaryColor: primary,
+                              isLast: true,
+                              onTap: () => Get.toNamed(
+                                Routes.teachersScreen,
+                                arguments: TeachersScreen.buildArguments(
+                                    teacherNavigationType:
+                                        TeacherNavigationType.timetable),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                      // ─── BANK SOAL ────────────────────────────────────
+                      OsStyleMenuSection(
+                        title: "Bank Soal",
+                        primaryColor: primary,
+                        menus: [
+                          OsStyleMenuItem(
+                            icon: Icons.quiz_outlined,
+                            title: "Bank Soal",
+                            iconBgColor: ic(OsMenuIconColors.hueQuestion),
+                            primaryColor: primary,
+                            isLast: true,
+                            onTap: () => Get.toNamed(
+                              Routes.questionSubjectScreen,
+                              arguments: {'isStaffView': true},
+                            ),
                           ),
                         ],
                       ),
 
-                      // Extracurricular Section
-                      _buildMenuSection(
-                        context: context,
+                      // ─── MONITORING TUGAS ─────────────────────────────
+                      if (perms.isPermissionGiven(
+                          permission: "assignment-monitoring"))
+                        OsStyleMenuSection(
+                          title: "Monitoring Tugas",
+                          primaryColor: primary,
+                          menus: [
+                            OsStyleMenuItem(
+                              icon: Icons.assessment_outlined,
+                              title: "Monitoring Tugas Guru",
+                              iconBgColor: ic(OsMenuIconColors.hueMonitor),
+                              primaryColor: primary,
+                              isLast: true,
+                              onTap: () => Get.toNamed(
+                                  Routes.assignmentMonitoringScreen),
+                            ),
+                          ],
+                        ),
+
+                      // ─── UJIAN OFFLINE ────────────────────────────────
+                      if (perms.isModuleEnabled(
+                              moduleId: examManagementModuleId.toString()) &&
+                          (perms.isPermissionGiven(
+                                  permission: viewExamsPermissionKey) ||
+                              perms.isPermissionGiven(
+                                  permission: viewExamResultPermissionKey)))
+                        OsStyleMenuSection(
+                          title: "Ujian Offline",
+                          primaryColor: primary,
+                          menus: _buildOfflineExamMenus(
+                              context, perms, primary, ic),
+                        ),
+
+                      // ─── UJIAN ONLINE ─────────────────────────────────
+                      OsStyleMenuSection(
+                        title: "Ujian Online",
+                        primaryColor: primary,
+                        menus: _buildOnlineExamMenus(
+                            context, perms, primary, ic),
+                      ),
+
+                      // ─── EKSTRAKURIKULER ──────────────────────────────
+                      OsStyleMenuSection(
                         title: "Ekstrakurikuler",
-                        icon: Icons.sports_soccer,
-                        iconColor: maroonPrimary.withValues(alpha: 0.9),
-                        index: 8,
-                        maroonPrimary: maroonPrimary,
-                        maroonLight: maroonLight,
+                        primaryColor: primary,
                         menus: [
-                          _buildMenuItem(
-                            context: context,
-                            icon: Icons.list,
+                          OsStyleMenuItem(
+                            icon: Icons.sports_soccer_outlined,
                             title: "Kelola Ekstrakurikuler",
-                            index: 17,
+                            iconBgColor: ic(OsMenuIconColors.hueExtra),
+                            primaryColor: primary,
                             onTap: () =>
                                 Get.toNamed(Routes.extracurricularScreen),
-                            maroonPrimary: maroonPrimary,
-                            maroonLight: maroonLight,
                           ),
-                          _buildMenuItem(
-                            context: context,
-                            icon: Icons.calendar_today,
+                          OsStyleMenuItem(
+                            icon: Icons.calendar_today_outlined,
                             title: "Jadwal Ekstrakurikuler",
-                            index: 18,
+                            iconBgColor: ic(OsMenuIconColors.hueExtra + 15),
+                            primaryColor: primary,
                             onTap: () =>
                                 Get.toNamed(Routes.extracurricularTimetable),
-                            maroonPrimary: maroonPrimary,
-                            maroonLight: maroonLight,
                           ),
-                          _buildMenuItem(
-                            context: context,
-                            icon: Icons.people,
+                          OsStyleMenuItem(
+                            icon: Icons.group_outlined,
                             title: "Daftar Anggota",
-                            index: 19,
+                            iconBgColor: ic(OsMenuIconColors.hueExtra + 30),
+                            primaryColor: primary,
                             onTap: () =>
                                 Get.toNamed(Routes.extracurricularMember),
-                            maroonPrimary: maroonPrimary,
-                            maroonLight: maroonLight,
                           ),
-                          _buildMenuItem(
-                            context: context,
-                            title: 'Absensi Ekstrakurikuler',
+                          OsStyleMenuItem(
                             icon: Icons.edit_calendar_rounded,
-                            index: 20,
+                            title: "Absensi Ekstrakurikuler",
+                            iconBgColor: ic(OsMenuIconColors.hueExtra - 20),
+                            primaryColor: primary,
+                            isLast: true,
                             onTap: () =>
                                 Get.toNamed(Routes.extracurricularAttendance),
-                            maroonPrimary: maroonPrimary,
-                            maroonLight: maroonLight,
                           ),
                         ],
                       ),
 
-                      // Message Section
-                      (staffAllowedPermissionsAndModulesCubit.isModuleEnabled(
-                                      moduleId: announcementManagementModuleId
-                                          .toString()) &&
-                                  staffAllowedPermissionsAndModulesCubit
-                                      .isPermissionGiven(
-                                          permission:
-                                              viewNotificationPermissionKey)) ||
-                              (staffAllowedPermissionsAndModulesCubit
-                                      .isModuleEnabled(
-                                          moduleId: announcementManagementModuleId
-                                              .toString()) &&
-                                  staffAllowedPermissionsAndModulesCubit
-                                      .isPermissionGiven(
-                                          permission:
-                                              viewAnnouncementPermissionKey))
-                          ? _buildMenuSection(
-                              context: context,
-                              title: "Pengumumkan",
-                              icon: Icons.announcement,
-                              iconColor: maroonPrimary.withValues(alpha: 0.9),
-                              index: 8,
-                              maroonPrimary: maroonPrimary,
-                              maroonLight: maroonLight,
-                              menus: [
-                                (staffAllowedPermissionsAndModulesCubit
-                                            .isModuleEnabled(
-                                                moduleId:
-                                                    announcementManagementModuleId
-                                                        .toString()) &&
-                                        staffAllowedPermissionsAndModulesCubit
-                                            .isPermissionGiven(
-                                                permission:
-                                                    viewNotificationPermissionKey))
-                                    ? _buildMenuItem(
-                                        context: context,
-                                        icon: Icons.notifications,
-                                        title: "Kelola Notifikasi",
-                                        index: 14,
-                                        onTap: () => Get.toNamed(Routes
-                                            .manageNotificationScreen),
-                                        maroonPrimary: maroonPrimary,
-                                        maroonLight: maroonLight,
-                                      )
-                                    : const SizedBox(),
-                                (staffAllowedPermissionsAndModulesCubit
-                                            .isModuleEnabled(
-                                                moduleId:
-                                                    announcementManagementModuleId
-                                                        .toString()) &&
-                                        staffAllowedPermissionsAndModulesCubit
-                                            .isPermissionGiven(
-                                                permission:
-                                                    viewAnnouncementPermissionKey))
-                                    ? _buildMenuItem(
-                                        context: context,
-                                        icon: Icons.campaign,
-                                        title: "Kelola Pengumuman",
-                                        index: 15,
-                                        onTap: () => Get.toNamed(Routes
-                                            .manageAnnouncementScreen),
-                                        maroonPrimary: maroonPrimary,
-                                        maroonLight: maroonLight,
-                                      )
-                                    : const SizedBox(),
-                              ],
-                            )
-                          : const SizedBox(),
+                      // ─── PENGUMUMAN ───────────────────────────────────
+                      if (_showAnnouncementSection(perms))
+                        OsStyleMenuSection(
+                          title: "Pengumuman",
+                          primaryColor: primary,
+                          menus: _buildAnnouncementMenus(
+                              context, perms, primary, ic),
+                        ),
 
-                      // Payment Section
-                      (staffAllowedPermissionsAndModulesCubit.isModuleEnabled(
-                                  moduleId:
-                                      feesManagementModuleId.toString())) ||
-                              (staffAllowedPermissionsAndModulesCubit
-                                  .isModuleEnabled(
-                                      moduleId:
-                                          expenseManagementModuleId.toString()))
-                          ? _buildMenuSection(
-                              context: context,
-                              title: "Pembayaran",
-                              icon: Icons.payments,
-                              iconColor: maroonPrimary.withValues(alpha: 0.9),
-                              index: 9,
-                              maroonPrimary: maroonPrimary,
-                              maroonLight: maroonLight,
-                              menus: [
-                                (staffAllowedPermissionsAndModulesCubit
-                                            .isModuleEnabled(
-                                                moduleId: feesManagementModuleId
-                                                    .toString()) &&
-                                        staffAllowedPermissionsAndModulesCubit
-                                            .isPermissionGiven(
-                                                permission:
-                                                    viewFeesPaidPermissionKey))
-                                    ? _buildMenuItem(
-                                        context: context,
-                                        icon: Icons.paid,
-                                        title: "Biaya yang Dibayar",
-                                        index: 16,
-                                        onTap: () =>
-                                            Get.toNamed(Routes.paidFeesScreen),
-                                        maroonPrimary: maroonPrimary,
-                                        maroonLight: maroonLight,
-                                      )
-                                    : const SizedBox(),
-                                (staffAllowedPermissionsAndModulesCubit
-                                            .isModuleEnabled(
-                                                moduleId: expenseManagementModuleId
-                                                    .toString()) &&
-                                        staffAllowedPermissionsAndModulesCubit
-                                            .isPermissionGiven(
-                                                permission:
-                                                    viewPayrollListPermissionKey))
-                                    ? _buildMenuItem(
-                                        context: context,
-                                        icon: Icons.account_balance_wallet,
-                                        title: "Kelola Gaji",
-                                        index: 17,
-                                        onTap: () => Get.toNamed(
-                                            Routes.managePayrollScreen),
-                                        maroonPrimary: maroonPrimary,
-                                        maroonLight: maroonLight,
-                                      )
-                                    : const SizedBox(),
-                                staffAllowedPermissionsAndModulesCubit
-                                        .isModuleEnabled(
-                                            moduleId: expenseManagementModuleId
-                                                .toString())
-                                    ? context
-                                            .read<AuthCubit>()
-                                            .getUserDetails()
-                                            .isSchoolAdmin()
-                                        ? const SizedBox()
-                                        : _buildMenuItem(
-                                            context: context,
-                                            icon: Icons.account_balance,
-                                            title: myPayRollKey,
-                                            index: 18,
-                                            onTap: () => Get.toNamed(
-                                                Routes.myPayrollScreen),
-                                            maroonPrimary: maroonPrimary,
-                                            maroonLight: maroonLight,
-                                          )
-                                    : const SizedBox(),
-                                staffAllowedPermissionsAndModulesCubit
-                                        .isModuleEnabled(
-                                            moduleId: expenseManagementModuleId
-                                                .toString())
-                                    ? _buildMenuItem(
-                                        context: context,
-                                        icon: Icons.money,
-                                        title: "Tunjangan & Potongan",
-                                        index: 19,
-                                        onTap: () => Get.toNamed(Routes
-                                            .allowancesAndDeductionsScreen),
-                                        maroonPrimary: maroonPrimary,
-                                        maroonLight: maroonLight,
-                                      )
-                                    : const SizedBox(),
-                              ],
-                            )
-                          : const SizedBox(),
+                      // ─── PEMBAYARAN ───────────────────────────────────
+                      if (_showPaymentSection(perms))
+                        OsStyleMenuSection(
+                          title: "Pembayaran",
+                          primaryColor: primary,
+                          menus: _buildPaymentMenus(
+                              context, perms, primary, ic),
+                        ),
                     ],
                   ),
                 ),
               ),
             ),
           ],
-        );
-      },
-    );
-  }
-
-  Widget _buildMenuSection({
-    required BuildContext context,
-    required String title,
-    required IconData icon,
-    required Color iconColor,
-    required int index,
-    required List<Widget> menus,
-    required Color maroonPrimary,
-    required Color maroonLight,
-  }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final themeMode = context.read<AppThemeCubit>().state.themeMode;
-    return AnimationConfiguration.staggeredList(
-      position: index,
-      duration: const Duration(milliseconds: 400),
-      child: SlideAnimation(
-        verticalOffset: 40,
-        child: FadeInAnimation(
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 20),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: isDark
-                    ? [
-                        AppColorPalette.getLightColor(themeMode),
-                        AppColorPalette.getLightColor(themeMode)
-                            .withValues(alpha: 0.95),
-                      ]
-                    : [
-                        Colors.white,
-                        Colors.white.withValues(alpha: 0.95),
-                      ],
-              ),
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: iconColor.withValues(alpha: 0.1),
-                  blurRadius: 15,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-              border: Border.all(
-                color: iconColor.withValues(alpha: isDark ? 0.2 : 0.05),
-                width: 1,
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(18),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              iconColor.withValues(alpha: 0.2),
-                              iconColor.withValues(alpha: 0.1),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: iconColor.withValues(alpha: 0.1),
-                              blurRadius: 8,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Icon(
-                          icon,
-                          color: iconColor,
-                          size: 24,
-                        ),
-                      ),
-                      const SizedBox(width: 14),
-                      Text(
-                        title,
-                        style: GoogleFonts.poppins(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: isDark ? Colors.white : Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  height: 1,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        iconColor.withValues(alpha: 0.05),
-                        iconColor.withValues(alpha: 0.2),
-                        iconColor.withValues(alpha: 0.05),
-                      ],
-                    ),
-                  ),
-                ),
-                ...menus,
-                const SizedBox(height: 4),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMenuItem({
-    required BuildContext context,
-    required IconData icon,
-    required String title,
-    required int index,
-    required VoidCallback onTap,
-    required Color maroonPrimary,
-    required Color maroonLight,
-  }) {
-    final isHovered = _hoveredMenuIndex == index;
-
-    return StatefulBuilder(builder: (context, setState) {
-      final isDark = Theme.of(context).brightness == Brightness.dark;
-      final themeMode = context.read<AppThemeCubit>().state.themeMode;
-      return MouseRegion(
-        onEnter: (_) => this.setState(() => _hoveredMenuIndex = index),
-        onExit: (_) => this.setState(() => _hoveredMenuIndex = -1),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            gradient: isHovered
-                ? LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      maroonPrimary.withValues(alpha: 0.05),
-                      maroonLight.withValues(alpha: 0.1),
-                    ],
-                  )
-                : null,
-            borderRadius: BorderRadius.circular(16),
-            border: isHovered
-                ? Border.all(
-                    color: maroonPrimary.withValues(alpha: 0.1),
-                    width: 1,
-                  )
-                : null,
-          ),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(16),
-              onTap: onTap,
-              splashColor: maroonPrimary.withValues(alpha: 0.1),
-              highlightColor: Colors.transparent,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                child: Row(
-                  children: [
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: isHovered
-                            ? maroonPrimary.withValues(alpha: 0.1)
-                            : (isDark
-                                ? AppColorPalette.getLightColor(themeMode)
-                                : AppColorPalette.getWarmBeigeColor(themeMode)
-                                    .withValues(alpha: 0.5)),
-                        shape: BoxShape.circle,
-                        boxShadow: isHovered
-                            ? [
-                                BoxShadow(
-                                  color: maroonPrimary.withValues(alpha: 0.1),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ]
-                            : null,
-                      ),
-                      child: Icon(
-                        icon,
-                        color: isHovered
-                            ? maroonPrimary
-                            : (isDark ? Colors.white70 : maroonLight),
-                        size: 20,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          fontWeight:
-                              isHovered ? FontWeight.w600 : FontWeight.w500,
-                          color: isDark
-                              ? (isHovered
-                                  ? Colors.white
-                                  : Colors.white.withValues(alpha: 0.8))
-                              : (isHovered
-                                  ? Colors.black
-                                  : Colors.black.withValues(alpha: 0.8)),
-                        ),
-                      ),
-                    ),
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      transform: Matrix4.translationValues(
-                          isHovered ? 8.0 : 0.0, 0.0, 0.0),
-                      child: Icon(
-                        Icons.arrow_forward_ios,
-                        color: isHovered
-                            ? maroonPrimary
-                            : (isDark
-                                ? Colors.white30
-                                : maroonLight.withValues(alpha: 0.5)),
-                        size: 16,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
         ),
       );
-    });
+    },
+  );
+}
+
+  // ── Helper builders ────────────────────────────────────────────────────────
+
+  bool _showAnnouncementSection(
+      StaffAllowedPermissionsAndModulesCubit perms) {
+    return (perms.isModuleEnabled(
+                moduleId: announcementManagementModuleId.toString()) &&
+            perms.isPermissionGiven(
+                permission: viewNotificationPermissionKey)) ||
+        (perms.isModuleEnabled(
+                moduleId: announcementManagementModuleId.toString()) &&
+            perms.isPermissionGiven(
+                permission: viewAnnouncementPermissionKey));
+  }
+
+  bool _showPaymentSection(StaffAllowedPermissionsAndModulesCubit perms) {
+    return perms.isModuleEnabled(
+            moduleId: feesManagementModuleId.toString()) ||
+        perms.isModuleEnabled(
+            moduleId: expenseManagementModuleId.toString());
+  }
+
+  List<Widget> _buildLeaveMenus(
+    BuildContext context,
+    StaffAllowedPermissionsAndModulesCubit perms,
+    Color primary,
+    Color Function(double) ic,
+  ) {
+    final items = <OsStyleMenuItem>[];
+    items.add(OsStyleMenuItem(
+      icon: Icons.add_circle_outline,
+      title: "Ajukan Cuti",
+      iconBgColor: ic(OsMenuIconColors.hueLeave),
+      primaryColor: primary,
+      onTap: () => Get.toNamed(Routes.applyLeaveScreen),
+    ));
+    items.add(OsStyleMenuItem(
+      icon: Icons.history,
+      title: "Cuti Saya",
+      iconBgColor: ic(OsMenuIconColors.hueLeave + 20),
+      primaryColor: primary,
+      onTap: () => Get.toNamed(Routes.leavesScreen,
+          arguments: LeavesScreen.buildArguments(showMyLeaves: true)),
+    ));
+    if (perms.isModuleEnabled(
+            moduleId: staffLeaveManagementModuleId.toString()) &&
+        perms.isPermissionGiven(permission: approveLeavePermissionKey)) {
+      items.add(OsStyleMenuItem(
+        icon: Icons.people_outline,
+        title: "Cuti Staf",
+        iconBgColor: ic(OsMenuIconColors.hueLeave + 40),
+        primaryColor: primary,
+        onTap: () => Get.toNamed(Routes.staffsScreen,
+            arguments: StaffsScreen.buildArguments(forStaffLeave: true)),
+      ));
+      items.add(OsStyleMenuItem(
+        icon: Icons.school_outlined,
+        title: "Cuti Guru",
+        iconBgColor: ic(OsMenuIconColors.hueLeave + 60),
+        primaryColor: primary,
+        onTap: () => Get.toNamed(
+          Routes.teachersScreen,
+          arguments: TeachersScreen.buildArguments(
+              teacherNavigationType: TeacherNavigationType.leave),
+        ),
+      ));
+    }
+    // mark last
+    if (items.isNotEmpty) {
+      final last = items.removeLast();
+      items.add(OsStyleMenuItem(
+        icon: last.icon,
+        title: last.title,
+        iconBgColor: last.iconBgColor,
+        primaryColor: last.primaryColor,
+        isLast: true,
+        onTap: last.onTap,
+      ));
+    }
+    return items;
+  }
+
+  List<Widget> _buildOfflineExamMenus(
+    BuildContext context,
+    StaffAllowedPermissionsAndModulesCubit perms,
+    Color primary,
+    Color Function(double) ic,
+  ) {
+    final items = <OsStyleMenuItem>[];
+    if (perms.isPermissionGiven(permission: viewExamsPermissionKey)) {
+      items.add(OsStyleMenuItem(
+        icon: Icons.edit_document,
+        title: "Jadwal Ujian Offline",
+        iconBgColor: ic(OsMenuIconColors.hueExamOffline),
+        primaryColor: primary,
+        onTap: () => Get.toNamed(Routes.examsScreen),
+      ));
+    }
+    if (perms.isPermissionGiven(permission: viewExamResultPermissionKey)) {
+      items.add(OsStyleMenuItem(
+        icon: Icons.analytics_outlined,
+        title: "Hasil Ujian Offline",
+        iconBgColor: ic(OsMenuIconColors.hueExamOffline + 20),
+        primaryColor: primary,
+        onTap: () => Get.toNamed(Routes.offlineResultScreen),
+      ));
+    }
+    if (items.isNotEmpty) {
+      final last = items.removeLast();
+      items.add(OsStyleMenuItem(
+        icon: last.icon,
+        title: last.title,
+        iconBgColor: last.iconBgColor,
+        primaryColor: last.primaryColor,
+        isLast: true,
+        onTap: last.onTap,
+      ));
+    }
+    return items;
+  }
+
+  List<Widget> _buildOnlineExamMenus(
+    BuildContext context,
+    StaffAllowedPermissionsAndModulesCubit perms,
+    Color primary,
+    Color Function(double) ic,
+  ) {
+    final items = <OsStyleMenuItem>[];
+    items.add(OsStyleMenuItem(
+      icon: Icons.laptop_chromebook_outlined,
+      title: "Ujian Online",
+      iconBgColor: ic(OsMenuIconColors.hueExamOnline),
+      primaryColor: primary,
+      onTap: () => Get.toNamed(Routes.onlineExamScreen),
+    ));
+    if (perms.isModuleEnabled(
+        moduleId: assignmentManagementModuleId.toString())) {
+      items.add(OsStyleMenuItem(
+        icon: Icons.assessment_outlined,
+        title: "Hasil Ujian Online",
+        iconBgColor: ic(OsMenuIconColors.hueExamOnline + 20),
+        primaryColor: primary,
+        onTap: () => Get.toNamed(Routes.onlineExamResultScreen),
+      ));
+    }
+    items.add(OsStyleMenuItem(
+      icon: Icons.visibility_outlined,
+      title: "Status Siswa Ujian",
+      iconBgColor: ic(OsMenuIconColors.hueExamOnline - 20),
+      primaryColor: primary,
+      isLast: true,
+      onTap: () => Get.toNamed(Routes.examStatusScreen),
+    ));
+    if (items.isNotEmpty) {
+      final last = items.removeLast();
+      items.add(OsStyleMenuItem(
+        icon: last.icon,
+        title: last.title,
+        iconBgColor: last.iconBgColor,
+        primaryColor: last.primaryColor,
+        isLast: true,
+        onTap: last.onTap,
+      ));
+    }
+    return items;
+  }
+
+  List<Widget> _buildAnnouncementMenus(
+    BuildContext context,
+    StaffAllowedPermissionsAndModulesCubit perms,
+    Color primary,
+    Color Function(double) ic,
+  ) {
+    final items = <OsStyleMenuItem>[];
+    if (perms.isModuleEnabled(
+            moduleId: announcementManagementModuleId.toString()) &&
+        perms.isPermissionGiven(permission: viewNotificationPermissionKey)) {
+      items.add(OsStyleMenuItem(
+        icon: Icons.notifications_outlined,
+        title: "Kelola Notifikasi",
+        iconBgColor: ic(OsMenuIconColors.hueAnnouncement),
+        primaryColor: primary,
+        onTap: () => Get.toNamed(Routes.manageNotificationScreen),
+      ));
+    }
+    if (perms.isModuleEnabled(
+            moduleId: announcementManagementModuleId.toString()) &&
+        perms.isPermissionGiven(permission: viewAnnouncementPermissionKey)) {
+      items.add(OsStyleMenuItem(
+        icon: Icons.campaign_outlined,
+        title: "Kelola Pengumuman",
+        iconBgColor: ic(OsMenuIconColors.hueAnnouncement + 20),
+        primaryColor: primary,
+        onTap: () => Get.toNamed(Routes.manageAnnouncementScreen),
+      ));
+    }
+    if (items.isNotEmpty) {
+      final last = items.removeLast();
+      items.add(OsStyleMenuItem(
+        icon: last.icon,
+        title: last.title,
+        iconBgColor: last.iconBgColor,
+        primaryColor: last.primaryColor,
+        isLast: true,
+        onTap: last.onTap,
+      ));
+    }
+    return items;
+  }
+
+  List<Widget> _buildPaymentMenus(
+    BuildContext context,
+    StaffAllowedPermissionsAndModulesCubit perms,
+    Color primary,
+    Color Function(double) ic,
+  ) {
+    final items = <OsStyleMenuItem>[];
+    if (perms.isModuleEnabled(moduleId: feesManagementModuleId.toString()) &&
+        perms.isPermissionGiven(permission: viewFeesPaidPermissionKey)) {
+      items.add(OsStyleMenuItem(
+        icon: Icons.paid_outlined,
+        title: "Biaya yang Dibayar",
+        iconBgColor: ic(OsMenuIconColors.hueFinance),
+        primaryColor: primary,
+        onTap: () => Get.toNamed(Routes.paidFeesScreen),
+      ));
+    }
+    if (perms.isModuleEnabled(
+            moduleId: expenseManagementModuleId.toString()) &&
+        perms.isPermissionGiven(permission: viewPayrollListPermissionKey)) {
+      items.add(OsStyleMenuItem(
+        icon: Icons.account_balance_wallet_outlined,
+        title: "Kelola Gaji",
+        iconBgColor: ic(OsMenuIconColors.hueFinance + 20),
+        primaryColor: primary,
+        onTap: () => Get.toNamed(Routes.managePayrollScreen),
+      ));
+    }
+    if (perms.isModuleEnabled(
+        moduleId: expenseManagementModuleId.toString())) {
+      if (!context.read<AuthCubit>().getUserDetails().isSchoolAdmin()) {
+        items.add(OsStyleMenuItem(
+          icon: Icons.account_balance_outlined,
+          title: myPayRollKey,
+          iconBgColor: ic(OsMenuIconColors.hueFinance + 40),
+          primaryColor: primary,
+          onTap: () => Get.toNamed(Routes.myPayrollScreen),
+        ));
+      }
+      items.add(OsStyleMenuItem(
+        icon: Icons.money_outlined,
+        title: "Tunjangan & Potongan",
+        iconBgColor: ic(OsMenuIconColors.huePayroll),
+        primaryColor: primary,
+        onTap: () => Get.toNamed(Routes.allowancesAndDeductionsScreen),
+      ));
+    }
+    if (items.isNotEmpty) {
+      final last = items.removeLast();
+      items.add(OsStyleMenuItem(
+        icon: last.icon,
+        title: last.title,
+        iconBgColor: last.iconBgColor,
+        primaryColor: last.primaryColor,
+        isLast: true,
+        onTap: last.onTap,
+      ));
+    }
+    return items;
   }
 }
 
-
-
-class BackgroundPatternPainter extends CustomPainter {
+// ── Background painter (unchanged) ─────────────────────────────────────────
+class _BackgroundPainter extends CustomPainter {
   final Animation<double> animation;
   final Color primaryColor;
   final Color accentColor;
+  final String themeMode;
+  final Offset? tapPosition;
 
-  BackgroundPatternPainter({
+  _BackgroundPainter({
     required this.animation,
     required this.primaryColor,
     required this.accentColor,
+    required this.themeMode,
+    this.tapPosition,
   }) : super(repaint: animation);
 
   @override
   void paint(Canvas canvas, Size size) {
-    final width = size.width;
-    final height = size.height;
-
-    // Optimized dots pattern
     final dotPaint = Paint()
       ..color = primaryColor
       ..style = PaintingStyle.fill;
-
-    for (var x = 0.0; x < width; x += 60.0) {
-      for (var y = 0.0; y < height; y += 60.0) {
+    for (var x = 0.0; x < size.width; x += 60.0) {
+      for (var y = 0.0; y < size.height; y += 60.0) {
         final offset = sin(x * 0.02 + y * 0.02 + animation.value) * 2;
-        canvas.drawCircle(
-          Offset(x + offset, y + offset),
-          1.2,
-          dotPaint,
-        );
+        canvas.drawCircle(Offset(x + offset, y + offset), 1.2, dotPaint);
       }
     }
-
-    // Simplified wave
     final wavePaint = Paint()
       ..color = accentColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
-
-    for (var startY = 100.0; startY < height; startY += 250) {
-      final path = Path();
-      path.moveTo(0, startY);
-
-      for (var x = 0.0; x < width; x += 20.0) {
-        final y = startY + sin(x * 0.01 + animation.value) * 15;
-        path.lineTo(x, y);
+    for (var startY = 100.0; startY < size.height; startY += 250) {
+      final path = Path()..moveTo(0, startY);
+      for (var x = 0.0; x < size.width; x += 20.0) {
+        path.lineTo(x, startY + sin(x * 0.01 + animation.value) * 15);
       }
-
       canvas.drawPath(path, wavePaint);
     }
   }
 
   @override
-  bool shouldRepaint(BackgroundPatternPainter oldDelegate) => true;
+  bool shouldRepaint(_BackgroundPainter old) => true;
 }
+
+// Keep BackgroundPatternPainter alias for any imports from other files
+typedef BackgroundPatternPainter = _BackgroundPainter;
